@@ -115,7 +115,7 @@ def assign_labels(data, centroids):
   return tags
 
 
-def kmeans(data, k=3, max_iter=10, halting_sim=0.9999):
+def kmeans(data, k=3, max_iter=10, halting_sim=0.999):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''
   centroid_indices = np.random.choice(len(data), size=k, replace=False)
   centroids = [data[i] for i in centroid_indices]
@@ -127,7 +127,7 @@ def kmeans(data, k=3, max_iter=10, halting_sim=0.9999):
     # halt when old centroids are very similar to new centroids
     centroid_sims = [cossim(centroids[idx], prev_centroids[idx]) for idx in range(len(centroids))]
     if all(s > halting_sim for s in centroid_sims):
-      print(f'halting at iteration: {i}')
+      print(f'halting at iteration: {i} with sims: {centroid_sims}')
       break
 
     # compute new centroids based on labels

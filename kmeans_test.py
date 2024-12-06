@@ -20,23 +20,26 @@ bins = 10
 bin_symbols = make_bins(bins=bins)
 bin_ranges = discretize(0, 100, bins)
 
+# for each feature/column make a symbol
+f1_key_symbol = hdv()
+f2_key_symbol = hdv()
+
 data_symbols = []
 for idx in range(len(data)):
   [f1, f2] = data[idx]
   for (start, stop), bin_symbol in zip(bin_ranges, bin_symbols):
 
     # for each feature (2) map the feature's value to the range
-    #  it is between. then use that range's symbol to represent
-    #  the feature's value
+    #  it is between. then bind that range's symbol with the feature's
+    #  key symbol
     if f1 > start and f1 < stop:
-      f1_symbol = bin_symbol
+      f1_symbol = bind(f1_key_symbol, bin_symbol)
     if f2 > start and f2 < stop:
-      f2_symbol = bin_symbol
+      f2_symbol = bind(f2_key_symbol, bin_symbol)
 
-  # bind all (2) the feature symbols together into a single symbol
+  # bundle all (2) the feature symbols together into a single symbol
   #  which represents the entire row of features
-  sample_symbol = bind(f1_symbol, f2_symbol)
-
+  sample_symbol = bundle(f1_symbol, f2_symbol)
   data_symbols.append(sample_symbol)
 
 
