@@ -1,21 +1,23 @@
+import random
 from utils import *
 
 
 data = [
   # cluster 0's points are near 0,0
-  [1, 1],
-  [1, 2],
-  [3, 1],
-  [1, 2],
-  [2, 3],
+  [7, 1],
+  [4, 9],
+  [3, 5],
+  [11, 7],
+  [2, 13],
 
   # cluster 1's points are near 100,100
-  [99, 94],
+  [86, 94],
   [99, 98],
-  [97, 99],
+  [90, 85],
   [99, 94],
-  [98, 98],
+  [91, 98],
 ]
+random.shuffle(data)
 targets = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 bins = 10
 bin_symbols = make_bins(bins=bins)

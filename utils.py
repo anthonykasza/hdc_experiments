@@ -123,22 +123,21 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
     for centroid_idx in range(len(prev_centroids)):
       samples = []
       for sample_idx in range(len(data)):
-        print('the bug is non-deterministic')
-        print('why do we sometimes get sample lists with no samples?')
-        print(sample_idx, centroid_idx)
         if labels[sample_idx] == centroid_idx:
           samples.append(data[sample_idx])
-        if len(samples) == 0:
-          print("    clusters have converged, something is wrong :(")
-          return labels, centroids, i
+      if len(samples) == 0:
+        print('returning because there are no samples to bundle')
+        return labels, centroids, i
       centroids[centroid_idx] = bundle(*samples)
 
 
     # halt check, all centroids are halting_sim similar to their previous vectors
     centroid_sims = [cossim(c1, c2) for c1,c2 in zip(centroids, prev_centroids)]
     if all(s > halting_sim for s in centroid_sims):
+      print(f'returning because sim halt, iterations {i}')
       return labels, centroids, i
 
   # the algo ran out of iterations
+  print('returning because exhaustion')
   return labels, centroids, max_iter
 
