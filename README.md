@@ -1,3 +1,1057 @@
 An attempt to learn more about VSAs and HDC.
 
-Run example.py to compare traditional kmeans clustering and a custom HDC kmeans clustering using the iris dataset.
+
+References
+----------
+- Language Geometry using Random Indexing
+- Hyperdimensional Computing: An Introduction to Computing in Distributed Representation with High-Dimensional Random Vectors (Kanerva)
+- Holographic Reduced Representations (Plate)
+- HDCluster: An Accurate Clustering Using Brain-Inspired High-Dimensional Computing
+- A comparison of vector symbolic architectures
+- [Computing with High-Dimensional Vectors](https://www.youtube.com/watch?v=zUCoxhExe0o) (Kanerva) 
+  - Stanford University Colloquium on Computer Systems EE380 Spring 2023
+- Learning with Holographic Reduced Representations
+- [Vector Symbolic Architectures In Clojure](https://www.youtube.com/watch?v=j7ygjfbBJD0) (Carin Meier)
+- Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens
+- GraphHD: Efficient graph classification using hyperdimensional computing
+- GrapHD: Graph-Based Hyperdimensional Memorization for Brain-Like Cognitive Learning
+- [Understanding Hyperdimensional Computing for Parallel Single-Pass Learning](https://github.com/Cornell-RelaxML/Hyperdimensional-Computing)
+  - binary HDC is finite group (order=2) approximation of FHRR (unit cycle) which is a Lie group
+    - 2 phases: 0 and 180. the smallest possible finite group
+    - FHRR didn't really make sense until you think about it in terms of approximating it via a finite-group VSA.  the exponential binding operation likely ties into a power law
+  - finite groups of larger orders could better approximate the unity cycle
+    - "This cyclic group VSA is in some sense a “subset” of the unit cycle VSA, and as n goes to infinity, it approximates the the unit cycle VSA arbitrarily well [Plate, 1994], serving as an interpolation between the binary HDC and the unit cycle VSA"
+    - a group of size 60 is like a 60-sides die representing a marble. not quite but close.
+  - 6.2 Cycle Group VSA
+    - "addition modulo n as binding operation"
+    - sim is measured by the cosine of the phase differences
+    - bundling for learning a centroid/prototype is replaced with stochastic gradient decent
+    - "We leave exploration of non-Abelian VSAs to future work"
+  - [cgr](https://github.com/hyperdimensional-computing/torchhd/blob/main/torchhd/tensors/cgr.py)
+- A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
+- Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
+- SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
+- Classification using Hyperdimensional Computing: A Review
+  - table 1 is interesting
+- Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
+- HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
+  - figure 1b is awesome! and is similar to Figure 1 of Modular Composite Representation
+Variable Binding for Sparse Distributed Representations: Theory and Applications
+  - "Sparse block-codes can be regarded as an extreme version of competitive coding principles observed in the brain"
+- High-Dimensional Computing with Sparse Vectors
+  - segements (block)
+  - context-dependent thinning durin bundling (they call is sumset)
+  - modulo sum of indices, segment-wise permutation
+- Geometric Analogue of Holographic Reduced Representation
+  - "Replacing convolutions by geometric products one arrives at reduced representations analogous to HRR but interpretable in terms of geometry"
+  - intro
+    - quantum computation is "tensor products of two-dimensional complex vectors called qubits"
+    - replace tensor product with geometric ones from geometric algebra (GA)
+    - "Systems where HRR are applicable might therefore, at least in principle, perform quantum algorithms"
+  - the beef
+    - BSC is mapped to HRR thru an exponential map
+    - "the 'algebra' formalizes a procedure that resembles an IQ test". if groups/algebras define IQ tests then of course we should be using them to build AI
+    - wow, math.
+  - conclusion
+    - something about the geometric product?
+- Modular Composite Representation (MCR)
+  - Thank you to the University of Memphis for making the research paper EASY to locate on the interwebs and FREE, as ,in beer, to download
+    - hurray! open science!
+  - figure 4 reminds me of Gilbert Strang's [The Big Picture of Linear Algebra](https://youtu.be/rwLOfdfc4dw?t=284)
+    - orthogonality around a circle
+  - "each model utilizes a different distance (or similarity) measurement, which explains the variations in performance between the two models"
+  - same as Cyclic Group Representation "but uses a bundling based on element-wise mode instead of addition of complex numbers"
+    - if each element is an approximate angle of a circle, why not bundle with the cyclic mean?
+- Efficient Hyperdimensional Computing with Modular Composite Representations
+  - hardware! hyperdimensional coprocessing unit on risc-v. neat.
+  - after having implemented BSBC, MCR seems like the same thing
+    - the modulo N is the block size is the order of the finite-group
+    - in BSBC each hv can be permuted cyclically and each block can be permuted cyclically - a toroid shape.
+      - each hv is a candy necklace
+        - the necklace is not perfectly round because the hv has a finite number of blocks
+      - each hv element (in MCR) or block (in BSBC) is a bead of the necklace. its value represents a dot on the bead.
+        - the bead is not perfectly round because the block has a finite size
+      - [see this](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Torus_cycles_(labeled).png/341px-Torus_cycles_(labeled).png). "b" is the circular hv. "a" is the cyclical block. the value of the block sits as a single point on "a".
+    - MCR works on the compressed representations of BSBC hv
+    - BSBC hv are vectors of 1-hot cyclic segments
+      - blocks are thinned within eeach op
+      - cyclic/modulus structure is built by permutation of
+        - elements within blocks
+        - blocks within vectors
+        - one can imagine all bits of a block forming a circle. within each block only 1 (element) location on the circle is active at at time. hv are just lists of approximated circles.
+          - why not compute on lists of approximated spheres?
+      - can block sizes change in BSBC/MCR? perhaps block size changes depending on the operation?
+        - TO TRY: add/drop an element adjacent to the hot bit
+          - whatever is done to 1 block must be done to all blocks
+        - the vector remains a multiple of the number of blocks it contains
+      - can the number of blocks within a vector change?
+        - yeah, bind hv with a random matrix
+  - ops
+    - bundle is majority vote, ties broken randomly or with the lowest mode
+    - bind is modulo addition
+    - unbind is modulo subtraction. perfect unbind, no noise.
+    - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...
+      - expand the hvs to their decompressed binary form, flatten them, then take the cossim of them
+      - replace cossine sim with circular sim/dist metric
+  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in C. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
+    - superposition is majority voting, not addition.
+    - what is the optimal number of discrete/sampled phasors?
+      - can we have too many?
+- Toroidal topology of population activity in grid cells
+  - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
+  - thank you, rats.
+  - "What kind of network architecture keeps the activity on a toroidal manifold ... remains to be determined"
+  - why a torus? why not a [lumpy torus](https://www.youtube.com/watch?v=sEnugXJblFU)?
+- Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
+- HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
+- [VSAONLINE](https://sites.google.com/view/hdvsaonline/home) and its [GGroup](https://groups.google.com/g/vsacommunity/about)
+- [MIDNIGHTVSA](https://sites.google.com/ltu.se/midnightvsa)
+- [Vector Symbolic Architectures](https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2) (Luis El Srouji)
+- Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
+- Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
+- EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
+- [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
+- Generalized Holographic Reduced Representations
+- Recasting Self-Attention with Holographic Reduced Representations
+- Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
+- [Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021](https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/)
+- Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
+- [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
+- [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
+  - DVS are super neat
+  - CNN-level performance without a CNN
+  - [Pt I: Hyperdimensional Computing (HDC) with Peter Sutor (Interview)](https://www.youtube.com/watch?v=1T2WdXcnefc)
+    - instead of clipping bundle after each operation, periodically clip when the bundle elements get too big/small
+  - [Pt II: Hyperdimensional Computing (HDC) with Peter Sutor (Interview)](https://www.youtube.com/watch?v=VjQBpJR3wsg)
+    - if you iterate the training data, it's possible to boost while learning
+      - this is similar to what was done in A Brain-Inspired Hyperdimensional Computing Approach for Classifying Massive DNA Methylation Data of Cancer
+    - [pyhdc](https://github.com/ncos/pyhdc)
+    - shout outs to San Jose and Cardiff U
+  - [April 2024 AICamp Boston meetup - Peter Sutor - Hyperdimensional Computing](https://www.youtube.com/watch?v=Nob2j5aY0yw)
+- Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
+- Configurable Hardware Acceleration for Hyperdimensional Computing Extension on RISC-V
+  - hyperdimensional coprocessor unit - push HDC tasks into hardware
+- Orthogonal Matrices for MBAT Vector Symbolic Architectures, and a “Soft” VSA Representation for JSON
+  - represent JSON objects as hypervectors for ML on JSON. very cool.
+    - i wonder if nosql databases do something like this
+  - bindings can be typed by introducing a common signal (a random matrix) in grouped symbols, this is how nested structures can be created
+  - "VSAs in general, can be viewed as similarity-preserving hash codes for complex structures, where resulting hashes are amenable to machine learning and to searching for nearest neighbors"
+- Efficient Host Intrusion Detection using Hyperdimensional Computing
+  - they can find attack in Sysflow data by embedding provence graphs and ATT&CK TTPs into hypervectors and then mathing on them
+  - "We adopted the method to work with an arbitrary length of paths within the graph, enhancing the capability of our framework to efficiently identify attack patterns of any length within provenance graphs"
+- Audio Fingerprinting with Holographic Reduced Representations
+- HyperCam: Low-Power Onboard Computer Vision for IoT Cameras
+  - HDC vision using COTS hardware. bravo!
+    - DVS are neat but they aren't cheap
+  - naive encoding method
+    - pixel position codebook uses randomized leveling
+      - there will be no correlation between levels?
+    - pixel value codebook uses linear leveling
+      - the paper randomizes which bits they flip but all the bits hold the same amount of information so it doesn't matter
+    - pixels are encoded as bind(Row, Col, Val)
+    - images are encoded as bundle(pixel_binding0, pixel_binding1, ...)
+  - rewrite 1
+    - utilize permutation operation instead of position codebook to save memory
+      - still no correlation between row1,col1 and row2,col1?
+  - rewrite 2
+    - another codebook reduction to save memory
+    - pixels are treated as 1d?
+  - rewrite 3
+    - introduced weighted bundling operation to ensure pixel values that occur more often are considered more important
+      - this sort of reminds me of adjusting the contrast on a b/w image
+        - up the black and white values so the mid-tones become less important
+  - rewrite 4
+    - the sparse bundling operation:
+      - randomly select some percent of the elements and bundle those only
+      - use a CountSketch or BloomFilter backend
+    - they merged the binding operation and generation of value HVs into a single pass for more better performance
+  - remaining thoughts
+    - i don't understand how BF and CS are used
+    - i really like the idea of a partial bundling operation
+      - it seems related to leveling strategies (replace, average, inc/dev)
+      - how would other other operation modifications be useful? partial permutation?
+    - they are very concerned with performance. why not reduce HV dimensions? this would have made all operations more efficient (and less accurate)
+    - they don't address the fact that neighboring pixels are often very near in value
+- Detecting COVID-19 Related Pneumonia on CT Scans using Hyperdimensional Computing
+  - this is awesome because it's theoretical AND tangible
+    - wow, expert radiologists are only 70% accurate!
+  - the use of opencv to adjust contrast prior to encoding reminds me of HyperCam's weighting added in rewrite 3
+    - they use b/w images and pixel values of 0-255
+  - "For creating the hypervectors, we use orthogonal or uncorrelated encoding [13]–[15] to represent the position of each pixel and linear or correlated encoding [17] to represent the pixel intensity."
+    - similar to HyperCam, this paper uses uncorrelated positional encoding of pixels
+    - using orthogonal encoding for pixels reminds me of using categorical encoding for integer values
+    - dataset 3 having different image sizes than datasets 1 and 2 complicates things
+      - i dunno if this will work but... use a single codebook of size 512 (the largest feature range) for all features
+        - for 200x300 pixel images, flip some percent of the HV's elements to 0
+          - `x_hv = zero_flip(levels[pixel_x], 312/512)`
+          - `y_hv = zero_flip(levels[pixel_y], 212/512)`
+          - `value_hv = zero_flip(levels[pixel_val], 256/512)`
+        - for 512x512 pixel images, don't flip anything for positional variables
+          - `x_hv = levels[pixel_x]`
+          - `y_hv = levels[pixel_y]`
+          - `value_hv = zero_flip(levels[pixel_val], 256/512)`
+        - then `pixel_binding0 = bind(x_hv, y_hv, value_hv)`
+        - then `image_bundle = bundle(pixel_binding0, pixel_binding1 ... pixel_bindingN)`
+  - "Future research needs to be done to discover an encoding that is not dependent upon pixel position and that could be implemented to three-dimensional images"
+- [A Brain-Inspired Hyperdimensional Computing Approach for Classifying Massive DNA Methylation Data of Cancer](https://github.com/cumbof/chopin2)
+  - they, too, use uncorrelated levels to encode a range of numberical values. why?
+    - i tried MNIST classification with leveled codebooks and it didn't work as well as randomized codebooks. i don't understand why
+  - this is very cool: during training, if the wrong class is predicted, they subtract the sample_hv from all incorrect class prototypes
+    - this is done in MoleHD as well and is mentioned in "Tutorial on Hyperdimensional Computing"
+    - then they continually bundle the sample_hv into the correct class prototype HV until the accuracy reaches some threshold 
+  - they also demonstrate that more dimensions and more levels doesn't mean better accuracy. table 4 shows that there's a sweet-spot for the datasets they use
+- HDC-MiniROCKET: Explicit Time Encoding in Time Series Classification with Hyperdimensional Computing
+  - i don't understand most of this paper but...
+  - they bind in the timestep of the observation when encoding, which validates what thingy/ does
+    - they use fractional binding (power encoding) to level the timesteps
+      - they also mention DFT so i assume they're using FHRR
+    - "To be able of adjust the temporal similarity of feature vectors, we introduce a parameter s, which influences the graded similarity between consecutive timestamps"
+    - "s weigths the importance of temporal position – the higher its value, the more dissimilar become timestamps"
+    - "the similarity of two feature vectors, each bound to the encoding of their timestamp, gradually decreases with increasing difference of the timestamps."
+    - "It is very important to keep in mind that not all tasks and datasets benefit from explicit temporal encoding (e.g.. we can similarly construct datasets where temporal encoding is harmful."
+    - "In practice, selecting s should incorporate knowledge about the particular task."
+- [MIT 9.13 The Human Brain, Spring 2019](https://www.youtube.com/watch?v=ba-HMvDn_vU&list=PLUl4u3cNGP60IKRN_pFptIBxeiMc0MCJP)
+  - this course is radical
+  - grid cells, whoa
+- Intrusion Detection in IoT Networks Using Hyperdimensional Computing: A Case Study on the NSL-KDD Dataset
+  - i like the application of HDC to network detection <3
+  - i don't like using public intrusion datasets
+  - i don't like assuming DoS or scan detection has any relevance to other types of attacks
+  - "Another avenue for future research could involve extending the model to handle sophisticated attacks, such as zero-day and advanced persistent threats, and incorporating real-time detection and response for better performance in dynamic, resource-constrained IoT environments."
+    - let's say you bought 100 zero-days to further evaluate this experiment
+      - at $100,000 each, that'll only run about $10,000,000
+      - once you buy an ohdays, it is an ohday no longer
+- Network Anomaly Detection for IoT Using Hyperdimensional Computing on NSL-KDD
+  - this is very similar to "Intrusion Detection in IoT Networks Using Hyperdimensional Computing: A Case Study on the NSL-KDD Dataset" but with 1/4 different authors and way more math equations
+- An Extension to Basis-Hypervectors for Learning from Circular Data in Hyperdimensional Computing
+  - basis-hypervectors, a representation of an atomic symbol
+  - level-hypervectors, derived from, and correlated with, a basis-hv
+  - class-hypervectors, a centroid or "prototype"
+  - query-hypervectors, an unlabeled HV which is queried against all class-hvs
+  - classification model, a group of class-hvs is the model. compare a query-hv against each of the class-hvs to determine its label
+  - regression model, a set of linearly leveled level-hvs is the model. 
+    - starts at a place and goes to another place
+    - requires a lookup function to conver the real-number to an HV
+    - bundle the levels to make a levels_bundle, then bind(query, levels_bundle)
+      - i'm pretty sure this is what factorization.py does
+  - on uncorrelated codebooks "While this seems suitable for encoding letters, which to some extent represent unrelated information, clearly it is not as adequate for other kinds of unitary information, such as real numbers"
+  - "the level-hypervectors created with the existing method, as described above, have a fixed distance between each pair of hypervectors."
+  - circular-hypervectors, similar to leveling but each "level" hv represents a single point "of a set of equidistant points on a circle"
+    - both even and odd number of levels can be used
+    - hvs which are represent opposite side of the circle have minimum similarity (they are as similar are any 2 random hv)
+    - see figure 6
+      - r parameter controls window of simialrity. r value determines global circular vs local circular similarity of circular levels, similar to global linear vs local linear
+  - their results
+    - surgery robots, so cool
+    - it's nice to see that leveling didn't perform as well as random symbols for them too on a classification task. maybe that's why it doesn't work well on MNIST digit classification
+  - is it possible to create exponential/log correlate levels?
+    - it seems to be possible, albeit my code is a overcomplicated... see `toys/zeek/thingy/testing/Baseline/tests.codebook_btest/output`
+
+  - why haven't any of the paper's on image classification use 2d ngrams?
+    - random (non) levels
+    - linear levels
+    - circular levels
+    - permutation
+    - no one has tried using column and row ngrams. sorta like a kernel/mask/convolution
+      - after using photoshop filters for last 20 years i finally understand how they work
+- [Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements](https://www.youtube.com/watch?v=aYbJ_beUja8)
+  - VSAs enable probabilist programming
+    - binding encodes data, similarity computes probability, bundling updates beliefs (learns), unbinding is sort of like conditional probabilities
+    - lots o' math
+      - "Fractional binding is mathematically equivalent to the inverse Fourier transform of data encoded with RFFs"
+    - let's make some mental leaps: VSAs are probabilities, quantum things are probabilities, VSAs are quantum things, VSAs are neuromorphically inspired, our brains are quantum computers
+  - why do the waterloo papers use a different format for their References sections compared to other papers?
+- [Efficient navigation using a scalable, biologically inspired spatial representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
+  - [code](https://github.com/ctn-waterloo/cogsci2020-ssp-nav). thank you.
+- A neural representation of continuous space using fractional binding
+- MoleHD: Ultra-Low-Cost Drug Discovery using Hyperdimensional Computing
+  - [SMILES](https://en.wikipedia.org/wiki/Simplified_Molecular_Input_Line_Entry_System) are already strings, so just embed them into hv then learn
+  - retrain/fine-tune during training by subtract example from incorrect class prototypes and add to correct ones
+- [Structure and Interpretation of Computer Programs](https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/)
+- Hypervector Design for Efficient Hyperdimensional Computing on Edge Devices
+  - [tinyML Research Symposium 2021](https://www.youtube.com/watch?v=CSJ9Qr-SkeQ)
+- Autonomous Learning with High-Dimensional Computing Architecture Similar to von Neumann’s
+  - "the circuits in the cerebellum are laid out beautifully in 3D for a massive long-term memory for high-dimensional vectors"
+  - "The vectors can be binary or integer or real or complex—the computing power comes more from high dimensionality (e.g., H = 10,000) than from the nature of vector components."
+  - "New representations are made from existing ones with explicit calculation, which is fundamentally different from the generation of representations in an autoencoder or in the layers of a deep neural net as it is trained."
+  - "they [HDC/VSA] compute with high precision if the dimensionality is high enough—and even if some of the simple circuits malfunction! In contrast, traditional circuits for computing with numbers are complicated and are expected to work flawlessly"
+  - catastrophic forgetting in neural nets is akin to a phase transition in physics, the network changes all at once
+  - storing information beyond short-term capacity is called "chunking"
+    - chunking is related to ngrams
+  - short-term memory can work on about 10 vectors (1 chunk) at a time, these are summarized into a single vector called "focus"
+    - sensors, actuators, and memory are all integrated into the "focus" or the current state of self
+      - this reminds me of the Ship of Theseus
+  - "the cochlea of the inner ear analyses sound into frequencies—it Fourier-transforms the sound before passing it on to the rest of the brain"
+  - "the optic nerve brings in information along about 1.4 million fibers and the primary visual cortex distributes it among 280 million neurons—a 200-fold increase"
+    - that's a huge fan out. hey brain. here's some raw vision data. now, do the analytics.
+  - "Detecting. Recognizing previously encountered states makes it possible to detect irregularities and anomalies that can serve as an alarm, for example."
+  - he keeps using this term "regularities" to refer to patterns/structure in data. regularities are anything that isn't random.
+  - everytime i read something by this Pentti guy, i wish there was more 
+- Computing with Hypervectors for Efficient Speaker Identification
+  - "The proposed speech encoder aims to capture the pronunciation variations between speakers"
+  - algo
+    - formants in a time window are embedded into a hypervector
+    - ngrams are created from ordered time-slice hypervectors
+      - component HV are weighted by when creating the ngram HV
+        - weights are the "total energy of a spectrum slice" at each component time
+      - weights for ngram components are normalized
+    - ngram hypervectors are summed up to create a profile/prototype of the speaker
+  - what are "similarly located formants"?
+  - "training and testing on 40 speakers’ data take roughly 5 minutes on an Apple M1 processor"
+  - "The results obtained so far are solely based on making use of one acoustic feature (formants) and their course over a short time. There are many more acoustic features yet to be considered, such as the pitch and cepstral coefficients. HD computing is especially suited for encoding a combination of features and producing a fixed-dimensional representation for them [27]. Therefore, its identification accuracy is expected to keep improving when combined with other acoustic features, with a modest increase in computing time and memory use."
+- Neuro-Symbolic Architecture Meets Large Language Models: A Memory-Centric Perspective
+  - "While VSA excels at manipulating and reasoning with symbolic information, it typically assumes that the input data is intrinsically structured and symbolic in nature."
+  - in Fig 3b, what happens to the index of hypervector which have the same number of 1 elements but a different permutation of 1s? how are the 2 different HV indexed?
+    - nearest neighbor becomes a simple subtraction of indices, but how can you support that NN operation and permutation of HV?
+  - "In essence, quantization in NeSy [HDC/VSA] systems can be understood as a function whose performance is influenced by parameters in the symbolic space, such as the length and number of vector-symbolic representations."
+- [QLS/CAMBAM Seminar - Chris Eliasmith - February 25 2025](https://youtu.be/DvRWP4Xxhro?t=782)
+  - i like the penguin+cat explaination of bundling
+  - it reminds me of [My Wife and My Mother-in-Law](https://en.wikipedia.org/wiki/My_Wife_and_My_Mother-in-Law)
+- A Neurodiversity-Inspired Solver for the Abstraction & Reasoning Corpus (ARC) Using Visual Imagery and Program Synthesis
+  - wow.
+- Vector Symbolic Algebras for the Abstraction and Reasoning Corpus
+  - [ARC Prize 2025](https://www.kaggle.com/competitions/arc-prize-2025)
+  - [code](https://github.com/ijoffe/ARC-VSA-2025)
+    - [vsa.py](https://github.com/ijoffe/ARC-VSA-2025/blob/main/src/vsa.py#L75) shows how to make "number tags" from a basis hypervector
+    - uses [sspspace](https://github.com/ctn-waterloo/sspspace) also by UoW
+      - i wish the demo notebook had words describing what was going on in each cell
+  - reminds me of "A Neurodiversity-Inspired Solver for the Abstraction & Reasoni..."
+  - 2.1.1 Holographic Reduced Representations
+    - complex number hv elements
+    - similarity, cosine sim
+      - 2 input vectors, 1 scalar result
+      - the cost of "cleaning up" noisy vectors depends on the size of your library/codebook
+    - bundle, addition
+      - combines 2 input vectors resulting in a single vector which is similar to both inputs
+    - bind, circular convolution (DFT then multiplication)
+      - combines 2 input vectors resulting in a single vector which is unlike either input. if you know some of the inputs to a result, the other inputs may be recovered through another bind op
+      - used to build records
+        - the paper uses the term "slot-filler". others have other used the term role/filler
+      - used to build sequential structures
+        - "repeated binding" in HRR is possible unlike in a ternary/binary VSA
+          - this sounds computationally expensive
+    - inversion, used for unbinding
+      - 1 input vector, resulting in 1 output vector. when the input and result are bound their result is the binding identity vector (all=1)
+      - unbinding is used for querying
+  - 2.1.2 Spatial Semantic Pointers
+    - SSP is HRR for continuous spaces
+    - can be used for
+      - modeling grid cells
+      - spatial reasoning
+        - does not use language which means LLMs aren't useful. in human brains language and spatial tasks are handled by different brainial regions
+    - "SSP space"
+      - instead of calculating all the levels upfront, the math let's you efficiently calculate the level
+        - it may have sounded expensive at first until you see the FT reduces
+      - instead of having a discretized leveling vectors precomputed in memory, you just compute levels as needed
+      - data feature vectors can thus be represented as bindings (records) of continuous numeric values
+        - range bounds on the features values the space can represent?
+          - "the zero vector in the feature space (i.e., the origin) is represented as the identity vector in the SSP space"
+        - "Binding is addition in the feature space"
+        - "Inversion is negation in the feature space"
+  - dual process theory
+    - thinking fast and slow
+      - deep learning is system 1
+      - old symbolic models are system 2
+      - vsa are both systems and "VSAs are biologically and cognitively plausible and can be implemented in spiking NN"
+        - snn == loihi
+    - in my opinion, this link is tenuous as dp theory could arguably frame any 2-step process. i am not no scientist tho.
+  - ARC
+    - it's tough for computers and relatively simple for humans
+      - spatial tasks. no language required to:
+        1. close your eyes
+        2. imagine a 3d object
+        3. rotate the object with your mind's eye
+      - language is not the gateway to all intelligence, thus LLMs alone will never reach agi
+    - "objectness, goal-directedness, numbers, and geometry"
+  - recognize objects, synthesize transformation hypotheses (programs), select best guess
+    - objects: "a group of pixels transformed cohesively", "task-dependent"
+      - "representing position in Cartesian coordinates makes performing translations simple but rotations complicated, and vice versa for polar coordinates"
+      - colour. caegorical. only supports single-coloured objects
+      - centre. is midpoint of object's border as SSP
+      - shape. normalized bundle all of object's pixels as SSPs relative to centre
+        - does not consider symmetry (mirroring), pixel counts, or other "higher-level object properties". the authors admit their work is a start and can be improved upon
+    - programs: think fast and slow and use a DSL
+      - humans are constrained by their own transformation DSLs which are a mixture of transformations they've seen previously
+      - e.g. RECOLOUR, RECENTRE, RESHAPE, GENERATE
+      - rules (if-then conditions) which map input objects to output objects
+    - synthesis: do what humans do
+      - first, determine the solution grid size. this restricts possible objects/transformations
+      - demonstration, abduction, rule induction, and answer deduction
+      - use a nn
+  - other ARCish datasets: Sort-of-ARC, 1D-ARC, KidsARC, ConceptARC, MiniARC
+  - "we do not address the fundamental problem of how these conceptualizations came to be; instead, we assume they have already been acquired"
+    - from playing with:
+      - malcolmn gladwell's [grid puzzle](https://puzzling.stackexchange.com/questions/25738/malcolm-gladwells-outliers-progressive-matrices-puzzle)
+      - minecraft and legos
+  - instead of synthesizing programs, how could transformation sythensis occur?
+  - 5.2 limitations. "our solver can conceptualize neither many-to-one nor many-to-many object mappings" :(
+- Loihi: A Neuromorphic Manycore Processor with On-Chip Learning
+  - "low-EE-hee"
+  - SNNs incorporate time as an explicit dependency in their computations
+  - spike trains, "a sum of ... delta functions ... where tk is the time of the k-th [transmission]"
+    - i wonder if times are measured from transmission by the orig synapse or from receipt by the resp synapse? perhaps somewhere in between? like a tap.
+    - how fast does an action potential travel from one neuron to another?
+      - i wonder if wiring lengths are considered. some axons can reach multiple feet in length
+  - i could not understand most of this paper
+- Multivariate Time Series Analysis for Driving Style Classification using Neural Networks and Hyperdimensional Computing
+- An Introduction to Hyperdimensional Computing for Robotics
+  - "The fact that in hyperdimensional computing most things work only approximately, requires a diferent engineer’s mindset."
+- Hyperdimensional computing as a framework for systematic aggregation of image descriptors
+- [Navigation Using a Biologically Inspired Spatial Representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
+  - "SSPs utilize the concept of fractional binding to extend vector symbolic architectures to include continous value signals in addition to discrete symbols"
+- The Recommendation Functional Architecture as the Basis for a Neurophysiological Understanding of Cognition
+  - L. Andrew Coward
+  - REM reinforcement
+  - perceive, cluster (find patterns), then select (compete)
+  - incremental without overwritting previous patterns
+- Efficient Exploration in Edge-Friendly Hyperdimensional Reinforcement Learning
+  - QHD: A brain-inspired hyperdimensional reinforcement learning algorithm
+    - a prior paper but it doesn't read as clearly
+    - very greedy, perhaps too greedy
+  - more better faster than a deep q approach
+  - fig 2
+    - each possible action is modeled using an hv
+    - action1_q_value = sim(action1_hv, current_state_hv)
+  - "experience replay buffer" memory
+    - current_state, prev_state, and action use to estimate q value for state-action pair
+    - update the hv modeling the action using weighted bundling or subtraction
+  - to encourage exploration, incorporate a confidence/confusion metric
+- [Word Embeddings with HD Computing/VSA](https://drive.google.com/file/d/1vXO4wtBI2swI6uQUew3Y3NARM6GHXV8f/view)
+  - context embeddings are a fun trick for languages where word order (subject-verb-object) conveys information 
+  - do context embeddings work well on non-english languages?
+- Vector Symbolic Architectures as a Computing Framework for Emerging Hardware
+  - Section 5
+- Exploring Storing Capacity of Hyperdimensional Binary Vectors
+  - "HD computing also "includes ideas from probability theory, statistics and abstract algebra""
+  - "Based on the obtained results ... we can state that a binary vector of size N = 2,500 is enough"
+  - see Table 2
+    - it actually got worse with too many dimensions!
+- [An Introduction to Vector Symbolic Architectures and Hyperdimensional Computing, VSA Tutorial](https://www.tu-chemnitz.de/etit/proaut/vsa_ecai20)
+- Representing Objects, Relations, and Sequences
+  - a bind operator that is it's own inverse has some issues.
+    1. the girl, `bind(THE_hv, GIRL_hv)`
+    2. the smart girl, `bind(THE_hv, SMART_hv, GIRL_hv)`
+    3. the very smart girl, `bind(THE_hv, VERY_hv, SMART_hv, GIRL_hv)`
+    4. the very very smart girl, `bind(THE_hv, VERY_hv, VERY_hv, SMART_hv, GIRL_hv)`
+      - VERY_hv bound to VERY_hv will equal the identity HV (all=1)
+      - the result of number 2 and number 4 will be indistinguishable
+- Learning from Hypervectors: A Survey on Hypervector Encoding
+  - TLDR: all you need is coding
+  - "resistive RAM-based processing" aka memristors
+    - Mem-fractive Properties of Mushrooms
+      - grey oyster fungi
+    - Sustainable memristors from shiitake mycelium for high-frequency bioelectronics
+      - mycelia memristors
+      - edible space computers
+        - shiitake and button
+      - [code](https://github.com/javeharron/abhothData)
+      - "dehydration  can preserve the observed properties in a previously “programmed” sample"
+      - "Unlike expensive conventional memristors, culturing fungal memristors does not require large facilities or rare minerals. The process can be scaled to grow large systems, which can be programmed and pre-served for long-term use at low cost."
+  - szection III. hypervector mapping
+    - orthogonal hv for symbolic/categorical data
+      - orthogonality can be improved by generating atomic hv from sogol sequence
+        - A Linear-Time, Optimization-Free, and Edge Device-Compatible Hypervector Encoding 
+        - No-multiplication deterministic hyperdimensional encoding for resource-constrained devices
+      - low discrepency sobol sequences ensure roughly the same mean in each generated HV but ensures better orthogonality.
+        - better orthogonality means less random noise introduced when bundling or leveling
+        - i wonder how sampling in this way influences binding compared to bundling
+    - correlated hv for numeric data
+      - uniform steps
+      - non-uniform steps
+    - (fractional) power encoding works well on 2d input
+      - W = A<sup>u</sup> ⊕ B<sup>v</sup>
+      - with encoding pixel x,y position using uniform leveling W doesn't have the desired properties
+    - sparsity
+      - "Choosing the proper sparsity factor can significantly reduce the number of arithmetic operations"
+      - it may be wise to consider the operations used by the encoding process while choosing a sparsity factor. for example, multiplying 2 sparse vectors results in a sparser vector
+        - Low-Power Sparse Hyperdimensional Encoder for Language Recognition
+          - "the n-gram and text hypervectors can benefit far less from such initial sparsity"
+          - they discuss how XOR must be interpreted when using sparse hv
+    - sampling elements from a non-normal distribution induces that kernel
+    - different hv element types will hold information in different ways
+      - binary is nearest to the metal
+      - bipolar is easiest to reason about and is fundamentally the same as binary
+      - integers allow for variations on leveling and clipping. binding/bundling operations are still relatively intuitive
+      - f32 can hold more info than a single bit but they are treated more like vectors of blocks instead of vectors of bits which makes their binding/bundling operations less intuitive
+- An Encoding Framework for Binarized Images using HyperDimensional Computing
+  - local linear leveling
+  - Figure 5
+  - minor leveling between major levels
+  - a window around a point where anything outside of the window is maximally orthogonal
+- Hyperdimensional computing as a framework for systematic aggregation of image descriptors
+  - 3.1.5 uses concatenation of bits from random basis "major level" hv. compare with local linear leveling
+    - if a subrange is divided into thirds, and the desired location is between hv1 and hv2 then 1/3 of the elements from h1 and 2/3 of the elements from hv2 are concatenated to form the position hv
+    - this introduces unwanted artefacts as the paper admits. see local linear mapping for an improved method
+      - "this approach is able to evaluate similarities across the grid borders"
+      - local linear mapping evaluates similarities within grid borders
+- Classification using hyperdimensional computing: a review with comparative analysis
+  - fig5 and fig6 are both excellent
+  - 2.3.1 encoding univariate data, correlated hypervectors for dicrete levels
+    - they only discuss leveling from a basis hv to its inverse but leveling can also utilize a walk as done in "local linear mapping"
+  - section 3 has pseudocode for various modeling types. fig 13 is a taxonomy of the types:
+    - prototypes
+      - centroid
+      - adaptive
+      - regenerative
+      - compressed
+      - semi-spervised
+      - multiprototype
+    - optimization
+      - linear discriminant analysis
+      - svm
+      - backprop
+      - ridge regression
+- HDnn-PIM: Efficient in Memory Design of Hyperdimensional Computing with Feature Extraction
+  - pretrained CNN frontend plumbed to an HDC backend. neato.
+  - 2 HDnn algorithmic flow
+    - use the first few convolutions and first pooling layer of popular pretrained DNNs, such as ResNet, to learn convolutional features of each set of training images
+    - multiply the extracted image features by a random matrix to project the features onto fixed length hypervectors
+      - this reminds me of MBAT
+    - use HD operations, like add and clip, to learn class prototypes. use cossim operation for inference.
+    - i dont understand (3) FE tuning
+- Designing Vector-Symbolic Architectures for Biomedical Applications: Ten Tips and Common Pitfalls
+  - molto bene. grazie mille. i love tip #10. science needs more tutorial style papers that include code. this paper is great even for those who study VSAs but are outside of the the biomedical domain.
+  - [use-cases](https://github.com/cumbof/Biomed-VSAs) that are licensed permissively. very cool.
+    - the paper reads a bit promotional for the author's hdlib project but since it's open source i can forgive all marketing aspects of the paper.
+  - "How to avoid the pitfall: add 3D information to the codebook"
+    - it would be nice to see some discussion of "correlation-aware codes" and how to select the best type of correlation-aware code. for example, should the design use circular codes since it represents angular data? or should it use linear codes? if linear, local or global linear codes?
+  - since many of the concept codebooks use uncorrelated atomic hypervectors i wonder how the results of each use case would be influenced by using sobol sequences to maximize orthogonality of atomic symbols.
+  - "As long as all your vectors share the same dimensionality, they can be mathematically combined, regardless of their origin"
+    - some VSA support resizing of a hypervector, via matrix multiplication, to enable computing on varying sized hv
+  - "Instead of taking just the single best match, take the top 2-3 matches, bundle them together, and then search the codebook again with this new, denoised vector" this is clever, but i agree that "A better long-term solution is to design your encoding scheme hierarchically"
+  - types of input data examined in the paper
+    - categorical data (symbol)
+      - bioinfo data seems to have lots of records which are easily expressed as bundles of bound key-value pairs
+      - diagnosis, medication, lab_test, etc
+    - numeric data (number)
+      - a brief mention of FPE for numeric ranges
+      - bond angles and molecule handedness
+    - compositional data (containers)
+      - sequential data
+        - long and categorical: acgt
+        - numeric: ecg, emg, eeg
+      - relational data
+        - patient knowledge graphs
+        - molecules (again)
+      - multi-modal data
+    - opaque data
+      - images
+      - use the early layers of a CNN as a front-end then VSA as a backend
+  - i couldn't find the source code for uhd :(
+- All You Need is Unary: End-to-End Bit-Stream Processing in Hyperdimensional Computing
+  - "demonstrating that there is no need for randomness in HDC systems" ... "In this work, we advocate unary HVs, free from randomness"
+    - randomness is used to decrease orthog between basis hv but orthog can be ensured in other ways
+    - how does removing randomness for the HV generation process affect security or cloud-based HDC computing paradigms?
+    - random HVs (10k random bits) look much like encrypted data. i suspect using ld sequences tarnishes this resemblance
+  - ld sequence, van der corput
+  - unary bit-stream processing
+  - figure 1, the bumpy blue field is caused by noise in the hv
+    - another way to decrease the height of these lumps is to increase hv dimensionality but that comes with a computational tax on _every_ operation
+  - leveling
+    - instead of flipping bits at random, flip some proportion of bits to 1s which represents 1 equal-sized level in the range
+    - the example from the paper uses vectors with dim = 1024 and b/w pixel intensity range of 256, so each level is represented by 4 elements of the hvs
+    - there's no step in the level procedure that says, "randomly pick 10 bits to flip"
+      - if you want level 37, `[1] * (37 * (1024//256)) + [0] * (1024 - 37*(1024//256))`
+      - if you want level 250, `[1] * (250 * (1024//256)) + [0] * (1024 - 250*(1024//256))`
+- uHD: Unary Processing for Lightweight and Dynamic Hyperdimensional Computing
+  - image embedding without binding in x,y coordinates sounds efficient
+  - more ld seqeunce stuff
+  - i don't full understand this paper
+- Predicting the toxicity of chemical compounds via Hyperdimensional Computing
+  - binary string classifier similar to spam sms model
+    - 2 centroid/prototype hv
+    - subtraction is used during training misclassification
+  - data are SMILES ASCII strings (127 basis hv)
+    - molecule -> 3d graph -> SMILES -> hypervector
+      - an encoding of an encoding of an ...
+    - SMILES has different tokenization strategies, they compare different ones: atom-wise, k-mer, or fragment-based
+  - discovered optimal subsequence length
+  - source code!
+- A novel Vector-Symbolic Architecture for graph encoding and its application to viral pangenome-based species classification
+  - viruses evolve quickly. good for classifying unseen variants/strains
+    - any overlap with how malware variants are developed?
+  - graph encoding of viral species
+    - pangenome kmers -> graphs -> hypervector
+      - "These pangenome graphs are powerful representations that can capture large-scale structural variations, such as insertions, deletion, and rearrangements, which are often missed by linear sequence alignment"
+    - a node is a kmer
+    - edge represents kmer adjacency
+      - edge weight is the label/class
+  - kmer_length=9, stride=1, grapHD encoding scheme
+    - 2.3.2 contains pseudo-code implementation of the embedding procedure
+  - retraining only made use of additive reinforcements, no subtraction used. why?
+- HDC-X: A Hyperdimensional Computing Framework for Efficient Classification on Low-Power Devices
+  - [code](https://github.com/jianglanwei/HDC-X)
+  - leveling strategy for representing numbers is global linear using a single hv
+- A Walsh Hadamard Derived Linear Vector Symbolic Architecture
+  - [HLB code](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding)
+  - Hadamard transform instead of Fourier in HRR
+  - 4.2.1 Connectionist Symbolic Pseudo Secrets
+    - bind in a secret hv before sending hv to a cloud/remote server (e.g. federated learning). homomorphic encryption.
+    - when result hv are returned from remote server to client, unbind the secret hv from it
+- Practical Lessons on Vector-Symbolic Architectures in Deep Learning-Inspired Environments
+  - MAP is great
+    - "Even faster, with a linear runtime, multiple add permute (MAP (11)) and Hadamard linear binding (HLB (4)) appear as the best candidates for DNN integration."
+    - "HLB can be seen as a real continuation of MAP-I"
+  - overall guidance
+    1. "Prefer linear VSAs or GPU-optimized implementations of HRR"
+    2. "Replace cosine similarity with a linear readout"
+    3. "Use linear VSAs or HRR equivalently under noise-free or noisy conditions"
+    4. "Use weighted multi-level compositions to create hierarchical data structures"
+- MissionHD: Hyperdimensional Refinement of Distribution-Deficient Reasoning Graphs for Video Anomaly Detection
+  - nsf
+    - 2127780  $299,999.00  4yrs  cyber
+    - 2319198  $360,000.00  3yrs  cyber
+    - 2321840  $796,800.00  3yrs  bioinformatics
+    - 2312517  $499,793.00  3yrs  cyber
+    - 2235472  $450,000.00  3yrs  cyber
+    - 2431561  $499,999.00  3yrs  cyber
+  - semiconductor research corporation
+  - mil
+    - office naval research
+    - army research office
+    - air force office of scientific research
+  - industry
+    - xilinx
+    - cisco
+- A Neural Hypervector Model of Memory-Driven Spatial Navigation
+  - "modeling navigation-oriented memory"
+  - i like that they used real humans
+- Brain Inspired Probabilistic Occupancy Grid Mapping with Vector Symbolic Architectures
+  -  multi-agent mapping is neat. hive mind.
+  - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
+- Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
+ 
+
+
+Summary
+-------
+What is Hyperdimensional computing?
+See [this video](https://www.youtube.com/watch?v=8Lonl-jSqUw).
+See a [Tutorial on Hyperdimensional Computing](https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/).
+
+What makes a Vector Symbolic Architecture?
+- concepts are high, but fixed, dimension random vectors. structure is built up from randomness
+- holographic elements / distributed information
+- operatorations: multiply, add, permute, similarity, ...
+
+What are the differences between VSAs?
+- Denis Kleyko provides a great [Overview of different HD Computing/VSA models](https://redwood.berkeley.edu/wp-content/uploads/2021/08/Module2_VSA_models_slides.pdf)
+- [A comparison of Vector Symbolic Architectures](https://arxiv.org/abs/2001.11797) provides a comprehensive taxonomy of architectures
+
+Why use HDC?
+- HDC is inspired by the Tensor Product Representation
+- supports probabilistic calculations
+- supports online/streaming learning
+- it aligns well with the theory of "distributed representation" aka "assemblies of neurons" theory of the brain
+- learned results are not a blackbox but are instead interpretable
+- by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
+
+
+Notable VSAs
+------------
+- *Tensor Product Representations*
+  - lossless :)
+  - dimensionality grows :(
+
+- *Holographic Reduced Representations*
+  - standard HRR
+  - *Fourier HRR*
+  - *Geometric Analogue of HRR*
+  - *Vector-Derived Binding*
+  - *Square Matrix Representations*
+
+- *Binary Spatter Codes*
+  - a special case of HRR where values are bound to binary
+
+- *Multiply Add Permute*
+  - MAP-C (real)
+  - MAP-B (bipolar)
+    - the same thing as BSC but I think it's the easiest VSA to think about
+  - MAP-I (integer)
+
+- *Sparse Binary Distributed Representations*
+  - Conjunction-Disjunction
+  - Context-Dependent Thinning
+  - only VSA where bind(A,B) is similar to bind(A,C)
+
+- *(Binary) Sparse Block Codes*
+  - similarities to SBDR, BSC, CGR
+  - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
+  - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+  - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
+    - some method of mapping vector indices to blocks is necessary
+    - each hv can have its own unique element-to-block map
+  - conceptualizing the block as a circle is useful
+    - convert the 1hot value into degrees/radians
+    - compare the degrees of different blocks for a distance metric
+    - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks. always scale up so as to not lose information
+     - hv1 has a block size of 4 with value of 3: 270 degrees
+     - hv2 has a block size of 12 with value of 9: 270 degrees
+     - hv3 has a block size of 64 with value 48: 270 degrees
+    - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
+      - the distance between 2 hv is the sum of their block distances divided by their number of blocks
+      - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
+
+- *Matrix Binding of Additive Terms*
+  - binding is a matrix multiplication
+  - permutation is a matrix multiplication
+  - resizing is a matrix multiplication
+  - bundling is just addition
+
+- *Modular Composite Representation*
+  - binding is component-wise modular addition just like BSBC, BSC, FHRR, CGR
+  - *Cyclic Group Representation*
+    - uses a different bundle and similarity op than MCR
+
+- *Bloom filter*
+  - a special case of VSA
+  - standard, counting, scalable, etc.
+
+- *Walsh Hadamard Derived Linear Vector Symbolic Architecture*
+- *Sobol Sequence Optimization for Hardware-Efficient Vector Symbolic Architectures*
+
+
+VSA Operations 
+--------------
+not all operations are applicable to all architectures.
+operations can be conceptualize with 3 abstraction levels:
+- elements operations which result in blocks or vectors
+- blocks operations which result in blocks or vectors
+- vectors operations which result in vectors or vector spaces
+
+implementations of operations need to consider:
+- atomic elements
+  - types: bool, int, float
+  - algebraic qualities: identity, symmetry, inverse
+  - bounds checking
+    - clipping, ensure element values are within a range
+    - normalization, ensure element values are normalized to a range
+- dimensionality and segmentation of vectors
+- sparsity of vectors or segments
+  - adding sparse vectors decreases sparsity
+  - multiplying sparse vectors increase sparsity
+- precision of results
+  - cleanup step
+
+operations include:
+- addition, summing two vectors into a single vector preserves information from both consituents
+  - aka: bundle, summation, superposition, learning, accumulation, majority vote
+
+- multiplication, multiplying two vectors into a single vector moves the relationship between the inputs to a new region of the hyperspace 
+  - aka: bind, compose, XOR, FFT, circular convolution
+    - binding approximates TPR by because HDC requires fixed-dimensionality
+    - see The Binding Problem
+  - exponentiation
+    - fractional power encoding (FPE)
+      - aka: trajectory association
+      - bind vector x times with itself, then the vector represents x
+        - raise each element to the exponent x
+        - this only works if the bind op is NOT the inverse of itself
+      - multiplying is the same as adding exponents if the base vectors are the same
+        - accomplishes scalar-like behavior 
+      - variants on FPE
+        - FPE with hadamard binding (phasor)
+        - FPE with circular convolution binding (real valued)
+        - block local circular convolution (sparse)
+        - VFA, vector function architecture
+          - FPE VSA plus a kernel function
+            - your task will dictate your kernel but it opens the door to using VSA for learning with kernel functions
+              - multidimensional kernels
+              - window/modulus/circular kernels
+              - periodic multidimensional kernels
+                - grid cells, hex pattern in mice neurons
+                - crystallography
+                - lattice-based crypto
+          - "the distribution from which components of the base vector are sampled [how sparsity is sprinkled into the HVs] determines the shape of the FPE kernel, which in turn induces a VFA for computing with band-limited functions"
+          - any FPE with uniformly sampled base vectors have a universal kernel
+            - whittaker-shannon interpolation formula
+              - sinc function
+                - normalized vs not
+                - well defined envelop
+                - crosses zero at the integers
+          - binding a scalar to a vector (function) shifts the vector
+          - binding 2 vectors (functions) together is a convolution of functions
+             - functions are compositional
+          - calculate similarities between functions
+
+- division, undo multiplication
+  - aka: unbind, factorization, decomposition
+  - in some VSA unbinding is imperfect and requires a second cleanup operation
+
+- cleanup, replace an operation's result with something else based on the result
+  - its nearest neighbor in memory
+    - resonator networks
+    - replace the noisy HV from unbinding with the most similar HV in memory
+  - a filtered version of itself
+    - thinning
+      - ensure the density/sparsity of a vector/segment
+
+- permutation, preserves the order of elements or segments 
+  - aka: shift, rotate, braid, protect
+  - the operation needs to be invertible
+    - does not need to be perfectly invertible if a cleanup is used
+  - permute is similar to multiple
+  - reverse is one type of permutation operation which:
+    - takes 0 parameters
+    - is lossess
+    - is the inverse of itself
+  - shift is one type of permuation operation which:
+    - takes 1 parameter
+    - is lossess
+    - can be inverted by flipping the sign of the parameter
+
+- similarity, a measure applied to vectors (segments) pairwise
+  - e.g. cos similarity, hamming distance
+  - similarity is robust to noise
+
+- substitution, mutating an HV to become more similar to another HV
+  - this is useful for leveling a vector space
+  - HV1 becomes more similar to HV2, HV2 remains unchanged
+  - a sequence of 'levels' (bins/buckets) is produces which leads from HV1 to HV2
+
+- segmentation, create structure or depth
+  - segment a vector into positional blocks
+    - aka: blocking, grouping, chunking, windowing
+    - locality preserving encoding (LPE)
+      - thermometer code
+        - linearly discretized levels
+          - the first vector is hdv(all=0)
+          - the last vector is hdv(all=1)
+          - the HV grows its count of 1 values by flipping 0s to 1s by incrementing index
+        - bundle(HVs[2],HVs[2]) != bundle(HVs[1],HVs[3])
+          - if using integers: 2 + 2 != 1 + 3
+          - consider the linearly discritized vector of hypervectors: HVs
+          - bundling/binding indices of the hyperspace do not behave as adding/multiplying integers would
+      - float code / sliding code
+        - simmilar to 1-hot but more like window-hot, where the window is centered around the element
+        - uses a fixed width window, slide across the all zeros vector, ensure bits in the window are 1s
+        - the window is slid across the all-zeros HV
+        - the start of the window is the HV's index in hypserspace
+        - more sparse compared to thermometer codes
+          - different similarity kernel
+      - scatter code
+        - no strict limitation on number of levels in a hyperspace
+        - hspace[0] = some random dense vector
+        - each level is created by randomly flipping a few elements in the previous unit
+
+  - segment the 'space' between vectors into levels
+    - aka: leveling, sampling, binning, discretization, quantization, bucketing
+    - enearby levels are somewhat similar, distant levels are dissimilar
+    - leveling strategies
+      - linear, for representing a continuous range as an evenly spaced buckets
+        - exact linear, dimensions / bins = elementsPerBin
+        - approximate linear mapping - cheaper than exact linear mapping 
+          - "Approximate linear mapping [58] does not guarantee ideal linear characteristic of the mapping, but the overall decay of similarity between feature levels will be approximately linear"
+          - only store the start and stop HVs instead of the entire hyperspace
+          - construct levels on the fly
+      - circular, useful for modulus/cyclical calculations such as:
+        - seasons of the year, hours of the day, months of the year, color spaces, round-robin hashing (rendezvous/hrw)
+      - logarithmic/exponential, shrink of shrink/growth of growth
+      - fibonacci (retracement)
+      - combine different leveling strategies to create a vector space with varying granularity
+        - e.g. log then linear
+        - elliptic, like a circle but longer on two of the sides
+
+- generation
+  - make a new hypervector
+    - consider the type, range, normalizaton of elements
+  - methods
+    - random uniform
+    - random weighted
+      - can be used to ensure sparsity
+    - low discrepency
+      - used to ensure orthogonality
+    - hv generated outside of the VSA
+      - learned from a CNN
+      - raw feature vector multiplied by a (random) matrix
+    - based on an existing hv
+      - learned from semantic contexts
+      - permute existing hv
+
+
+Searching Memory
+----------------
+Consider the following: unbinding a "scene" of objects each with some set of properties
+- decompose the scene into its composed constituents
+  - objects in the scene have properties
+    - color
+    - shape
+    - location
+      - x
+      - y
+  - e.g. scene = bind(HV1, HV2, HV3)
+    - HV1 = bind(color_HV, shape_HV, bind(x, y))
+    - HV2 = bind(color_HV, shape_HV, bind(x, y))
+    - HV3 = bind(color_HV, shape_HV, bind(x, y))
+  - to understand the scene, you need to search the codebook for combinations of all atomic symbols for all properties
+    - this can be expensive, which is why selecting an efficient encoding method is important
+  - assume there are 100 unique items in each HV's codebook (lookup memory)
+    - 100 possible items for HV1
+    - 100 possible items for HV2
+    - 100 possible items for HV3
+    - worst case: 10 * 100 * 100 = 1_000_000 item combinations to check cossim with
+- Resonator Networks
+  - aka Hopfield Network
+  - similar to the result of gradient descent
+  - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
+  - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
+    - create 'estimate' vectors, these represent your initial guesses
+      - xhat, yhat, zhat = hdv(), hdv(), hdv()
+    - do something with the estimates
+    - update the estimates based on results of comparison to portions of the codebooks
+    - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
+    - iterates to find best
+      - z, with estimates of y and x
+      - y, with estimates of x and z
+      - z, with estimates of y and z
+- Hyperdimensional Quantum Factorization
+  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
+  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
+    - this approach is better than resonator networks
+  - hardware does not currently exist to implement. womp womp.
+
+
+
+
+Misc
+----
+- code
+  - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
+  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations), 
+  - [openhd](https://github.com/UCSD-SEELab/openhd)
+  - [hdtorch](https://pypi.org/project/hdtorch/)
+  - [hdlib](https://github.com/cumbof/hdlib)
+  - [hypervector](https://github.com/rishikanthc/hypervector)
+    - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
+  - [hdc](https://github.com/Zeldax64/hdc), HDC examples in C++ including BSC Vector classes and item memories
+    - no license :(
+- pangenomics
+  - studying all the genes of all strains of a species
+  - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
+  - [a tube map visualization](https://pmc.ncbi.nlm.nih.gov/articles/PMC10638906/figure/F1/) of a pangeonmic graph from  "Pangenome graph construction from genome alignments with Minigraph-Cactus" 
+    - [a tube map view of the loop](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Chicago_L_diagram_sb.svg/1827px-Chicago_L_diagram_sb.svg.png)
+- HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
+  - increasing complexity of each element is "better" at conveying information than making the vectors longer
+  - more complex element types make for more complex hardware needs
+- hrrformer
+- datasets mentioned in literature
+  - isolet
+  - ucihar
+  - mnist
+  - UCI Machine Learning Repository
+  - UCR Time Series Archive
+  - Numenta Anomaly Benchmark (NAB)
+  - Long-Range Arena (LRA)
+  - malware
+    - Microsoft Malware Classification Challenge (Kaggle)
+    - The Drebin Dataset
+    - EMBER (Elastic Malware Benchmark for Empowering Researchers)
+  - eTraM : Event-based Traffic Monitoring Dataset
+    - FREE event data from a DVS camera
+    - https://github.com/eventbasedvision/eTraM
+    - https://eventbasedvision.github.io/eTraM/
+  - [CICIDS2017](https://www.unb.ca/cic/datasets/ids-2017.html)
+  - [Car-Hacking](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset)
+  - NWPU-RESISC45 - REmote Sensing Image Scene Classification
+  - FMA: A Dataset For Music Analysis
+  - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
+- VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
+- when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
+  - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
+  - sparse vectors are more easily compressed, making them more memory efficient 
+- how to encode a vector into a vector symbol? multiply it by a constant random matrix (a projection/hat matrix)
+- one of the big issues with HDC/VSA is that there is no standard method of encoding the application-specific data into vectors
+  - should i bind with multiplication or permuation? that depends on your use-case.
+  - "the HV representations must be designed to capture the information that is important for solving the problem and presenting it in a form that can be exploited by the HDC/VSA"
+  - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
+    - turning a 2d image into a 1d vector simply by concatination is naive
+    - there is a need to incorporate both x and y axis data as well as pixel color value
+    - partial permutation can address this by creating a radius where similar colors will have similar HVs
+    - fractional power encoding can also be used
+      - generate role-filler HVs for x and y
+      - then raise the x vector to the exponent indicating the column of the pixel
+      - do the same for the y
+      - bind the pixel value HV with the exponentialized x and y HVs
+- permute
+  - is bind-like
+  - permuation can be done randomly
+  - permuation can be done on vectors, matrices, tensors or blocks
+    - permutation can be done in groups of elements (blocks)
+      - blocks do not need to be continuous
+  - can permuation be done 'partially' as bundle and bind can?
+    - yes. what happens if only 2 elements are swapped in an hv?
+- low discrepency sequences
+  - i'm not sure about using these...
+  - sobol and others
+  - much literature points to these instead of random hv generation
+  - ld seqs fill a space more evenly. randomly filling a space will produce clumps
+  - similar to ordered dithering and halftones 
+  - may be useful for images as in uhd
+- HDC can be incorporated into NN to make both better
+  - NN frontend to generate HVs
+  - HDC frontend to generate vectors for NN
+- what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the levels' range's max/min?
+- fix sized ternary vectors remind me of
+  - nPrint: A Standard Data Representation for Network Traffic Analysis
+    - concatenate all maximum length PDUs together to make a long sparse block vector
+  - Ramanujan's sum, namaste sir
+    - infinite sum of natural numbers equals -1/12
+    - one of the steps to solve the formula is to calculate 1/2 as the sum of the infinite series: 1 - 1 + 1 - 1 + 1 - ...
+- multiple time-based signals can be quantized, then the signal at each timestep can be bundled together
+  - combining multiple signals into a single vector
+  - this was done for seizure detection as well as gesture identification
+- "In general, DL’s [Deep Learning] strength is in learning a mapping from one space to another, given that these spaces are densely populated with examples. HDC, however, shines when there is a specific, known structure that one wishes to encode."
+- HDC models can be improved with adversarial mutated samples, just like other models
+  - mutate/alter the training data with some strategy (random noise, column/row permuation, etc)
+  - train/test on the mutated data
+  - inspired by fuzzing techniques
+- HDC has capacity limits in the number of symbols...
+  - you can have in working memory given the need for a cleanup step in retrieval
+  - you can bundle together before the resulting HV converge to random noise
+    - this causes results of bundling to "forget"
+- Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing
+  - https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing
+  - i do not understand all the math discussed
+ - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
+- a block can be thought of and operated on like a 'sampled' (or 'reduced') version of its source vector
+  - all HV symbols are conceptually sampled versions of larger, and more precise, vector
+    - the tensor product is the Platonic Form
+  - blocks are a special case of vector which carry with them a:
+    - source vector
+    - contextual mapping into their source vector
+- there is no least significant bit in a hyper vector. all the elements hold th same amount of information
+- concentration of measure ensures randomly intialized HVs are dissimilar
+- each dimension (element) of an HV increases the vector space exponentially
+  - projecting something onto a bigger surface is often useful
+    - think about a screen projector, it makes small images easier to see
+  - projecting higher dimensional data into lower dimensions is often useful too
+    - think about the 2d shadow cast by a 3d object
+- [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
+- if we can substitute from one HV to another, making hv1 more similar to hv2...
+  - can we make hv1 more unlike hv2?
+  - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
+- special purpose block coding or hv which support holographic operations
+  - 30000 dim hvs
+    - block_size: 3
+    - block_count: 10000
+  - index % 3 determines if an operation applies to the element
+    - 0, used for bundling
+    - 1, used for permuting
+    - 2, used for binding
+  - each operation would essentially be done partially at 33% but would have a deterministic pattern to which elements it 'fails' on
+- binding
+  - binding all the hypervectors in a VSA together converges to the binding identity
+  - binding is a symmetric operation. bind with itself to invert.
+    - A rotated/reflected around the hypercube according to B results in C
+  - binding is a group operation
+    - element * element = element
+    - the space is the set of all possible hypervectors
+      - consider integer MAP... clipping influences the group
+    - permutation is a binding operation. it too forms a group.
+      - multi-binding with multiplcation is commutative
+      - multi-binding with permutation is not unless constrained to cyclic shifting
+  - binding is how we "combine" concepts into new concepts in our mind
+- i wonder if our brains bundle when we sleep
+- "science cannot move forward without heaps"
+  - [thank you to the heaps](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
+

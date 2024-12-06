@@ -1,0 +1,8 @@
+[package]
+description = thingy
+tags = things and stuff
+script_dir = scripts
+test_command = cd testing && btest -c btest.cfg
+version = main
+depends =
+  zeek >=7.1.0

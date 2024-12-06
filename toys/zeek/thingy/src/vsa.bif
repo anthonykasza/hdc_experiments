@@ -1,0 +1,71 @@
+module VSA;
+type hypervector: vector;
+const VSA::dimensions: count;
+const VSA::range_size: count;
+
+
+%%{
+#include <random>
+#include <chrono>
+#include <vector>
+#include <zeek/Val.h>
+
+using namespace std;
+
+
+int RandomNonZeroReal(int range_size) {
+  if (range_size < 1) {
+    throw std::invalid_argument("Range size must be at least 1.");
+  }
+
+  auto seed = std::chrono::steady_clock::now().time_since_epoch().count();
+  std::mt19937 engine(static_cast<unsigned int>(seed));
+  std::uniform_int_distribution<int> dist(1, 2 * range_size);
+
+  int num = dist(engine);
+  return (num <= range_size) ? num : -(num - range_size);
+}
+
+%%}
+
+
+function hdv_all1%(n: count%): hypervector %{
+  vector<int> v(n, 1);
+  zeek::Vector* zeek_vector = zeek::make_intrusive<zeek::VectorVal>(v);
+  return zeek_vector;
+%}
+
+function hdv_all0%(n: count%): hypervector %{
+  vector<int> v(n, 0);
+  zeek::Vector* zeek_vector = zeek::make_intrusive<zeek::VectorVal>(v);
+  return zeek_vector;
+%}
+
+function hdv%(n: count%): hypervector %{
+  vector<int> v = {};
+  for (int i = 0; i < n; i++) {
+    v.push_back(zeek::val_mgr->Int(RandomNonZeroReal(VSA::range_size)));
+  }
+  zeek::Vector* zeek_vector = zeek::make_intrusive<zeek::VectorVal>(v);
+  return zeek_vector;
+%}
+
+function make_ngrams%(v: vector of hypervector, n: count%): vector of vector of hypervector %{
+%}
+
+function make_levels%(steps: vector of count, zeek_vector1: hypervector, zeek_vector2: hypervector%): vector of hypervector %{
+%}
+
+function sim%(zeek_vector1: hypervector, zeek_vector2: hypervector%): double %{
+%}
+
+function bundle%(hdvs: vector of hypervector%): hypervector %{
+%}
+
+function bind%(hdvs: vector of hypervector%): hypervector %{
+%}
+
+function perm%(zeek_vector: hypervector, positions: int%): hypervector %{
+%}
+
+module GLOBAL;
