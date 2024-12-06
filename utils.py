@@ -120,7 +120,6 @@ def kmeans(data, k=3, max_iter=10, halting_sim=0.9999):
   centroid_indices = np.random.choice(len(data), size=k, replace=False)
   centroids = [data[i] for i in centroid_indices]
   prev_centroids = np.zeros_like(centroids)
-  print(f'selected centroids from sample indices {centroid_indices}')
 
   for i in range(max_iter):
     labels = assign_labels(data, centroids)
