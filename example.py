@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn import datasets
 from utils import hdv, bind, bundle
-from utils import make_bins, discretize, kmeans
+from utils import make_bins, discretize, kbundles
 
 
 iris = datasets.load_iris()
@@ -34,11 +34,11 @@ for i, sample in enumerate(iris.data):
   data.append(bundle(*features))
 
 
-# predict labels using kbinding
+# predict labels using kbundles
 from sklearn.metrics import confusion_matrix
 X = iris.data
 y = iris.target
-predicted_labels, centroids = kmeans(data, k=3)
+predicted_labels, centroids, iterations = kbundles(data, k=3)
 cm = confusion_matrix(y, predicted_labels)
 cluster_to_label = cm.argmax(axis=1)
 mapped_cluster_labels = np.array([cluster_to_label[label] for label in predicted_labels])

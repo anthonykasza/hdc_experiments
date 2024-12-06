@@ -1,5 +1,6 @@
 from utils import *
 
+
 data = [
   # cluster 0's points are near 0,0
   [1, 1],
@@ -43,6 +44,6 @@ for idx in range(len(data)):
   data_symbols.append(sample_symbol)
 
 
-predicted_labels, centroids = kmeans(data, k=2)
+predicted_labels, centroids, iterations = kbundles(data_symbols, k=2)
 print('predictions', predicted_labels)
 print('actual labels', targets)

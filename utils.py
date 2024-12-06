@@ -89,58 +89,56 @@ def discretize(min_val, max_val, bins):
   return ranges
 
 
-
-def assign_labels(data, centroids):
-  # assign each sample to a centroid based on cossim
-  tags = []
-
-  for j in range(len(data)):
-    max_sim = 0.0
-    max_sim_idx = -1
-
-    for c in range(len(centroids)):
-      sim_score = cossim(data[j], centroids[c])
-      # keep the largest similarity score
-      if sim_score > max_sim:
-        max_sim = sim_score
-        max_sim_idx = c
-      # flip a coin if similarity scores are equal
-      elif sim_score == max_sim and np.random.choice([True, False]):
-        max_sim = sim_score
-        max_sim_idx = c
-    if max_sim_idx == -1 or max_sim == 0.0:
-      tags.append(np.random.choice(len(centroids)-1))
-    else:
-      tags.append(max_sim_idx)
-  return tags
-
-
-def kmeans(data, k=3, max_iter=10, halting_sim=0.999):
+def kbundles(data, k, max_iter=10, halting_sim=0.99):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''
+
+  # initialize
   centroid_indices = np.random.choice(len(data), size=k, replace=False)
   centroids = [data[i] for i in centroid_indices]
   prev_centroids = np.zeros_like(centroids)
 
+  # assign, update, halt check
   for i in range(max_iter):
-    labels = assign_labels(data, centroids)
 
-    # halt when old centroids are very similar to new centroids
-    centroid_sims = [cossim(centroids[idx], prev_centroids[idx]) for idx in range(len(centroids))]
-    if all(s > halting_sim for s in centroid_sims):
-      print(f'halting at iteration: {i} with sims: {centroid_sims}')
-      break
+    # assign
+    labels = []
+    for sample_idx in range(len(data)):
+      for centroid_idx in range(len(centroids)):
+        sample_centroid_sim = cossim(data[sample_idx], centroids[centroid_idx])
+        max_sim = 0.0
+        max_sim_idx = 0
+        if sample_centroid_sim > max_sim:
+          max_sim = sample_centroid_sim
+          max_sim_centroid_idx = centroid_idx
+        elif sample_centroid_sim == max_sim and np.random.choice([True, False]):
+          max_sim = sample_centroid_sim
+          max_sim_centroid_idx = centroid_idx
+      if max_sim == 0.0:
+        labels.append(np.random.choice(len(centroids)-1))
+      else:
+        labels.append(max_sim_centroid_idx)
 
-    # compute new centroids based on labels
-    new_centroids = []
-    for k in range(len(centroids)):
-      centroid = centroids[k]
-      samples = []
-      for i in range(len(data)):
-        if np.array_equal(centroids[labels[i]], centroid):
-          samples.append(data[i])
-      samples = np.array(samples)
-      new_centroids.append(np.mean(samples, axis=0))
+    # update
     prev_centroids = copy.deepcopy(centroids)
-    centroids = new_centroids
+    for centroid_idx in range(len(prev_centroids)):
+      samples = []
+      for sample_idx in range(len(data)):
+        print('the bug is non-deterministic')
+        print('why do we sometimes get sample lists with no samples?')
+        print(sample_idx, centroid_idx)
+        if labels[sample_idx] == centroid_idx:
+          samples.append(data[sample_idx])
+        if len(samples) == 0:
+          print("    clusters have converged, something is wrong :(")
+          return labels, centroids, i
+      centroids[centroid_idx] = bundle(*samples)
 
-  return np.array(labels), centroids
+
+    # halt check, all centroids are halting_sim similar to their previous vectors
+    centroid_sims = [cossim(c1, c2) for c1,c2 in zip(centroids, prev_centroids)]
+    if all(s > halting_sim for s in centroid_sims):
+      return labels, centroids, i
+
+  # the algo ran out of iterations
+  return labels, centroids, max_iter
+
