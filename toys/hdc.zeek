@@ -56,7 +56,7 @@ function bind(hdv1: vector of int, hdv2: vector of int): vector of int {
   for (idx in hdv1) {
     v[idx] = hdv1[idx] * hdv2[idx];
   }
-  return clip(v);
+  return v;
 }
 
 function unbind(hdv1: vector of int, hdv2: vector of int): vector of int {
@@ -78,7 +78,6 @@ function cossim(hdv1: vector of int, hdv2: vector of int): double {
   local m1 = sqrt(mag1);
   local m2 = sqrt(mag2);
   if (m1 == 0 || m2 == 0) { return 0.0; }
-
   return dot / (m1 * m2);
 }
 
@@ -105,33 +104,28 @@ event zeek_init() {
   local huf = hdv();
 
   # a map of the keys and United States's values
-  local usa_map = bundle(
-    bind(country, usa),
-    bundle(
-      bind(capital, wdc),
-      bind(currency, usd)
-    )
-  ); 
+  local tmp1 = bind(country, usa);
+  local tmp2 = bind(capital, wdc);
+  local tmp3 = bind(currency, usd);
+  local tmp4 = bundle(tmp1, tmp2);
+  local usa_map = bundle(tmp3, tmp4);
   print "united states map vector", usa_map[0:3], "...", usa_map[-3:];
 
   # a map of the keys and Mexico's values
-  local mex_map = bundle(
-    bind(country, mex),
-    bundle(
-      bind(capital, mxc),
-      bind(currency, mxn)
-    )
-  ); 
+  tmp1 = bind(country, mex);
+  tmp2 = bind(capital, mxc);
+  tmp3 = bind(currency, mxn);
+  tmp4 = bundle(tmp1, tmp2);
+  local mex_map = bundle(tmp3, tmp4);
   print "mexico map vector", mex_map[0:3], "...", mex_map[-3:];
 
   # a map of the keys and Hungary's values
-  local hun_map = bundle(
-    bind(country, hun),
-    bundle(
-      bind(capital, bud),
-      bind(currency, huf)
-    )
-  ); 
+  tmp1 = bind(country, hun);
+  tmp2 = bind(capital, bud);
+  tmp3 = bind(currency, huf);
+  tmp4 = bundle(tmp1, tmp2);
+  local hun_map = bundle(tmp3, tmp4);
+
   print "hungary map vector", hun_map[0:3], "...", hun_map[-3:];
   print "";
 

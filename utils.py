@@ -10,7 +10,6 @@ def hdv(n=10_000):
 
 def clip(hdv, zeros=True):
   '''trims values to 1 or -1, optionally flips 0 randomly
-     clip is essentially a relu
   '''
   if zeros:
     return np.array([1 if x > 0 else -1 if x < 0 else 0 for x in hdv])
@@ -93,6 +92,7 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''
 
   # initialize
+  #  what happens if the selected centroids belong to the same group?
   centroid_indices = np.random.choice(len(data), size=k, replace=False)
   centroids = [data[i] for i in centroid_indices]
   prev_centroids = np.zeros_like(centroids)

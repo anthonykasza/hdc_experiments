@@ -67,4 +67,3 @@ print()
 
 print("hdv accuracy", kb_accuracy)
 print("kmeans accuracy", km_accuracy)
-

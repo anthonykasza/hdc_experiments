@@ -27,15 +27,9 @@ data = [
 ]
 targets = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, -1, -1]
 
-combined = list(zip(data, targets))
-random.shuffle(combined)
-data, targets = zip(*combined)
-data = list(data)
-targets = list(targets)
-
 bins = 10
 bin_symbols = make_bins(bins=bins)
-bin_ranges = discretize(0, 100, bins)
+bin_ranges = discretize(min_val=0, max_val=100, bins=bins)
 
 # for each (2) features make a symbol representing a key
 f1_key_symbol = hdv()
@@ -56,10 +50,21 @@ for idx in range(len(data)):
 
   # bundle all (2) the feature symbols together into a single symbol
   #  which represents the entire row of features
+  # what happens if f1 or f2 is not defined before this line is exec'd?
   sample_symbol = bundle(f1_symbol, f2_symbol)
   data_symbols.append(sample_symbol)
 
 
-predicted_labels, centroids, iterations = kbundles(data_symbols, k=3)
-print('predictions', predicted_labels)
-print('actual labels', targets)
+predicted_labels, centroids, iterations = kbundles(data, k=3)
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(data)
+kmeans = KMeans(n_clusters=3, random_state=42)
+kmeans.fit(X_scaled)
+kmeans.labels_
+
+print(f'targets, {targets}')
+print(f'hdv, {predicted_labels}')
+print(f'kmeans, {kmeans.labels_}')
