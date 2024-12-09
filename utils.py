@@ -103,20 +103,26 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
     # assign
     labels = []
     for sample_idx in range(len(data)):
+      sample = data[sample_idx]
+      highest_similarity = 0.0
+      best_centroid_idx = -1
       for centroid_idx in range(len(centroids)):
-        sample_centroid_sim = cossim(data[sample_idx], centroids[centroid_idx])
-        max_sim = 0.0
-        max_sim_idx = 0
-        if sample_centroid_sim > max_sim:
-          max_sim = sample_centroid_sim
-          max_sim_centroid_idx = centroid_idx
-        elif sample_centroid_sim == max_sim and np.random.choice([True, False]):
-          max_sim = sample_centroid_sim
-          max_sim_centroid_idx = centroid_idx
-      if max_sim == 0.0:
-        labels.append(np.random.choice(len(centroids)-1))
-      else:
-        labels.append(max_sim_centroid_idx)
+        centroid = centroids[centroid_idx]
+        similarity = cossim(sample, centroid)
+        # store the centroid with the highest similarity to the sample
+        if similarity > highest_similarity:
+          highest_similarity = similarity
+          best_centroid_idx = centroid_idx
+        # if the sample is equally similar to 2 centroids, randomly pick one
+        elif similarity == highest_similarity and np.random.choice([True, False]):
+          highest_similarity = similarity
+          best_centroid_idx = centroid_idx
+      # if we've compared the sample to all centroids and didn't set
+      #  highest_similarity or best_centroid_idx, randomly pick a centroid
+      if highest_similarity == 0.0 or best_centroid_idx == -1:
+        best_centroid_idx = np.random.choice(len(centroids)-1)
+      labels.append(best_centroid_idx)
+
 
     # update
     prev_centroids = copy.deepcopy(centroids)
@@ -126,7 +132,6 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
         if labels[sample_idx] == centroid_idx:
           samples.append(data[sample_idx])
       if len(samples) == 0:
-        print('returning because there are no samples to bundle')
         return labels, centroids, i
       centroids[centroid_idx] = bundle(*samples)
 
@@ -134,10 +139,8 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
     # halt check, all centroids are halting_sim similar to their previous vectors
     centroid_sims = [cossim(c1, c2) for c1,c2 in zip(centroids, prev_centroids)]
     if all(s > halting_sim for s in centroid_sims):
-      print(f'returning because sim halt, iterations {i}')
       return labels, centroids, i
 
   # the algo ran out of iterations
-  print('returning because exhaustion')
   return labels, centroids, max_iter
 

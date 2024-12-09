@@ -60,7 +60,7 @@ mapped_cluster_labels = np.array([cluster_to_label[label] for label in cluster_l
 correct_predictions = np.sum(mapped_cluster_labels == y)
 km_accuracy = correct_predictions / len(y) * 100
 
-print(f'hdv predictions \n{predicted_labels}')
+print(f'hdv predictions \n{np.array(predicted_labels)}')
 print(f'trad kmeans predictions \n{cluster_labels}')
 print(f'true labels \n{iris.target}')
 print()
