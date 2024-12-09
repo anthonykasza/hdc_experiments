@@ -81,14 +81,13 @@ def discretize(min_val, max_val, bins):
   ranges = []
   step = (max_val - min_val) / bins
   for i in range(bins):
-    # keep everything to 2 decimal places
-    start = round(min_val + (i * step), 2)
-    stop = round(min_val + ((i + 1) * step), 2)
+    start = min_val + (i * step)
+    stop = min_val + ((i + 1) * step)
     ranges.append((start, stop))
   return ranges
 
 
-def kbundles(data, k, max_iter=10, halting_sim=0.99):
+def kbundles(data, k, max_iter=10, halting_sim=0.999):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''
 
   # initialize
@@ -108,6 +107,9 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
       best_centroid_idx = -1
       for centroid_idx in range(len(centroids)):
         centroid = centroids[centroid_idx]
+        # do not score the sample against itself on the first iteration
+        if i == 0 and np.array_equal(centroid, sample):
+          continue
         similarity = cossim(sample, centroid)
         # store the centroid with the highest similarity to the sample
         if similarity > highest_similarity:
@@ -143,4 +145,14 @@ def kbundles(data, k, max_iter=10, halting_sim=0.99):
 
   # the algo ran out of iterations
   return labels, centroids, max_iter
+
+
+def hdbscan(data, min_cluster_size=2, other_stufffff=None):
+  labels = []
+  # TODO - transform the space
+  # TODO - build a minimum spanning tree of the weighted graph
+  # TODO - make cluster tree of connected components in graph
+  # TODO - collapse the tree based on min_cluster_size
+  # TODO - extract clusters from the tree
+  return labels
 
