@@ -1,14 +1,13 @@
-import random
 from utils import *
-
+import random
 
 data = [
   # cluster 0's points are near 0,0
+  [11, 7],
+  [2, 13],
   [7, 1],
   [4, 9],
   [3, 5],
-  [11, 7],
-  [2, 13],
 
   # cluster 1's points are near 100,100
   [86, 94],
@@ -16,14 +15,29 @@ data = [
   [90, 85],
   [99, 94],
   [91, 98],
+
+  # cluster 2's points are in the middle
+  [50, 50],
+  [51, 52],
+  [48, 54],
+
+  # noise
+  [25, 75],
+  [70, 30],
 ]
-random.shuffle(data)
-targets = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+targets = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, -1, -1]
+
+combined = list(zip(data, targets))
+random.shuffle(combined)
+data, targets = zip(*combined)
+data = list(data)
+targets = list(targets)
+
 bins = 10
 bin_symbols = make_bins(bins=bins)
 bin_ranges = discretize(0, 100, bins)
 
-# for each feature/column make a symbol
+# for each (2) features make a symbol representing a key
 f1_key_symbol = hdv()
 f2_key_symbol = hdv()
 
@@ -46,6 +60,6 @@ for idx in range(len(data)):
   data_symbols.append(sample_symbol)
 
 
-predicted_labels, centroids, iterations = kbundles(data_symbols, k=2)
+predicted_labels, centroids, iterations = kbundles(data_symbols, k=3)
 print('predictions', predicted_labels)
 print('actual labels', targets)
