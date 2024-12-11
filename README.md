@@ -63,11 +63,10 @@ Revisiting Dimensionality
   - each additional element (bit) of the vector increases the "space" exponentially
   - ensures randomly sampled vectors will be quasi-orthogonal
     - -100 is blue, 0 is green(yellow), 100 is red: what color is the number 2?
-    - is the number 2 green? no.
-    - is the number 2 pretty-much-basically-sort-kinda green? yeah, with a dash of red
-    - which color is the number 50? half-green and half-red.
-    - which color is the number 51 or 49? 
-
+      - is the number 2 green? no.
+      - is the number 2 pretty-much-basically-sort-kinda green? yeah, with a dash of red
+      - which color is the number 50? half-green and half-red.
+      - which color is the number 51 or 49? 
     - pick a number 1 through 10
       - someone guesses 1, 4, 8, and someone guesses 2.9
       - we just assume that person meant 3 because 2.9 is nearest to 3
@@ -133,7 +132,7 @@ Operations
   - cossim for reals
   - hamdis for bipolar
   - what happens if we were to introduce noise and flip a few random bits in a vector?
-    - what happens to a bloom filter? not much. some FPs indtroduced.
+    - what happens to a bloom filter? not much. some FPs introduced.
     - what happens to the similarity between 2 vectors? not much. some noise introduced.
 
 
