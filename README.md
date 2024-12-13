@@ -132,8 +132,11 @@ Operations
   - cossim for reals
   - hamdis for bipolar
   - what happens if we were to introduce noise and flip a few random bits in a vector?
-    - what happens to a bloom filter? not much. some FPs introduced.
-    - what happens to the similarity between 2 vectors? not much. some noise introduced.
+    - what happens to a bloom filter?
+      - FPs introduced for 0 bits changed to 1 bits
+      - FNs introduced for 1 bits changed to 0 bits
+    - what happens to the similarity between 2 hyperdimensional vectors?
+      - not much
 
 
 
@@ -160,8 +163,7 @@ Composing Data Structures
 Sequence Embedding
 ------------------
 - language
-  - text vectors if the symbols represent ngrams/sequences of letters
-  - language vectors if the symbols represent ngrams/sequences of words
+  - ngrams, where n can be letters, words, sentences, or any symbol
   - 't' = [101..111]
   - 'h' = [010..001]
   - 'e' = [101..110]
@@ -169,7 +171,7 @@ Sequence Embedding
   - 'thf' = bind( unbind('the', 'e'), 'f')
   - 'tfe' = bind( unbind('the', perm('h', 1)), perm('f', 1))
     - this means that it is trivial to compute ngrams of any size given the vectors of it's constituents
-  - Language/Text Vector = bundle('aaa' ... 'the', 'thf', ... 'zzz')
+  - tri_grams = bundle('aaa' ... 'the', 'thf', ... 'zzz')
   - trivial to answer the question: which language is this unlabeled text?
     - maintain a set of labeled Language Vectors
     - calculate the Text Vector for the unlabeled document
