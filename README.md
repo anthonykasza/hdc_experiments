@@ -183,5 +183,9 @@ Sequence Embedding
   - discretized timeseries can be converted to ngrams and then analyzed the same way as language
 - file similarity
   - encode byte-grams instead of letter-grams or word-grams
-
+  - the byte-alphabet is larger than the letter-alphabet: [a-zA-Z]
+  - most common 'letter' in english is "E", most common in files?
+    - my guess would be 0x00
+- genetics
+  - gene-alphabet is tiny (4) and that makes for poor suffix arrays
 
