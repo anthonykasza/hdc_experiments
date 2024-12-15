@@ -62,6 +62,9 @@ for sample_idx, sample in enumerate(iris.data):
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 X = iris.data
 y = iris.target
 
@@ -108,3 +111,14 @@ print("  accuracy", km_accuracy)
 print("  precision", km_precision)
 print("  recall", km_recall)
 print("  f1", km_f1)
+
+fig, axs = plt.subplots(1, 3, figsize=(20, 6))
+scatter1 = axs[0].scatter(X[:, 0], X[:, 1], c=predicted_labels, cmap='viridis', marker='o')
+axs[0].set_title("KBundles")
+scatter2 = axs[1].scatter(X[:, 0], X[:, 1], c=cluster_labels, cmap='viridis', marker='o')
+axs[1].set_title("KMeans")
+scatter3 = axs[2].scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', marker='o')
+axs[2].set_title("Ground Truth")
+
+plt.tight_layout()
+plt.show()
