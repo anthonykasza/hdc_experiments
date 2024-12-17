@@ -15,7 +15,7 @@ References
 - Vector Symbolic Architectures In Clojure (Carin Meier)
   - https://www.youtube.com/watch?v=j7ygjfbBJD0
 - Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens
-
+- GraphHD: Efficient graph classification using hyperdimensional computing
 
 
 Definitions
@@ -112,6 +112,7 @@ Operations
   - cos(A+B) == cos(B+A)
 - multiplication - multiplying two vectors into a single sector ensures all three has low similarity
   - distributes over add
+  - no binding problem in HDC, to bind is to multiply
   - multiplication "binds" multiple vectors into a single vector
     - things can be "unbound" from the resulting vector by multiplying it with a constituent's inverse
       - which is itself in binary/bipolar representations
@@ -146,6 +147,7 @@ Composing Data Structures
 - dicts (bind)
 - sequences (permute)
 - bins/ranges/levels (permute then bundle)
+- graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create grpahs)
 - bloom filters - a special case of VSA
   - a set is represented by a bit array (vector)
     - an empty set is all zeros
@@ -160,8 +162,8 @@ Composing Data Structures
     - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
 
 
-Sequence Embedding
-------------------
+VSA Uses
+--------
 - language
   - ngrams, where n can be letters, words, sentences, or any symbol
   - 't' = [101..111]
@@ -188,4 +190,3 @@ Sequence Embedding
     - my guess would be 0x00
 - genetics
   - gene-alphabet is tiny (4) and that makes for poor suffix arrays
-
