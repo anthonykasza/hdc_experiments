@@ -65,8 +65,8 @@ del edge_to_symbol2[("O", "P")]
 # The X-Y edge is removed in graph2
 del edge_to_symbol2[("X", "Y")]
 # The Z-D edge is added in graph2
-zd = bundle( vertex_to_symbol["Z"], vertex_to_symbol["D"] )
-edge_to_symbol2[("Z", "D")] = zd
+zd_edge = bind( vertex_to_symbol["Z"], vertex_to_symbol["D"] )
+edge_to_symbol2[("Z", "D")] = zd_edge
 
 edge_symbols2 = [edge_to_symbol2[(n1, n2)] for (n1, n2) in edge_to_symbol2]
 graph2 = bundle(*edge_symbols2)
