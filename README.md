@@ -16,6 +16,24 @@ References
   - https://www.youtube.com/watch?v=j7ygjfbBJD0
 - Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens
 - GraphHD: Efficient graph classification using hyperdimensional computing
+- Understanding Hyperdimensional Computing for Parallel Single-Pass Learn
+  - https://github.com/Cornell-RelaxML/Hyperdimensional-Computing
+- A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations
+  - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
+  - over 440 papers cited in the review. its a big field
+- Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
+- SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
+- Classification using Hyperdimensional Computing: A Review
+  - table 1 is interesting
+- Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
+- HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
+  - figure 1b is awesome!
+- Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
+- HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
+- VSAONLINE
+  - https://sites.google.com/view/hdvsaonline/home
+- Vector Symbolic Architectures, Luis El Srouji 
+  - https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2
 
 
 Definitions
@@ -24,10 +42,12 @@ Definitions
   - Vector - indexed lists
     - element types
       - binary
-      - bipolar/tripolar
-      - real
+      - bipolar/ternary
       - integers
+      - floats
       - imaginary
+      - "finite groups"
+        - binary is a special type of group VSA, with group of size 2
   - Symbols - representations of something else
     - e.g. emojis are symbols
       - what concept does 🍑 represent?
@@ -46,7 +66,9 @@ Definitions
     - e.g. x86/x64, ARM, Power(PC), RISC-V
   - VSA go by many names
     - distributed representations
+      - because information contained in the symbol is distributed amoung all of its elements
     - high/hyper-dimensional computing
+      - because it uses high (hyper) dimensional vectors as atomic/basis types
     - random indexing
     - projection
     - embeddings
@@ -97,10 +119,21 @@ Proposed Architectures
   - S
   - SEG
 - Holographic Reduced Representations
+  - "reduced" in that all HVs are fixed length
+  - "holographic" in that all elements represent information
   - Frequency
     - HRRF is measurably better than the rest in some cases
+    - each component is a random complex number, a phase angle (phasor) between 0 and 2pi
+    - magnitude only is used
+    - binding is Hadamard product
 - Vector Derived Binding
 - Matrix Binding of Additive Terms
+- Tensor Product Representation
+  - results in higher dimensional vectors
+  - TPR is arguably not HDC because HDC uses fixed length vectors
+  - TPR did, however, inspire HDC/VSA
+- sparse block codes
+  - HV is partitioned into blocks of equal size (so that the HV’s dimensionality is a multiple of the block size). In each block, there is only one nonzero component, i.e., the activity in each block is maximally sparse
 
 
 Operations 
@@ -116,6 +149,8 @@ Operations
   - multiplication "binds" multiple vectors into a single vector
     - things can be "unbound" from the resulting vector by multiplying it with a constituent's inverse
       - which is itself in binary/bipolar representations
+      - depending on the element complexity, unbinding is not always the reverse of binding
+        - if this is the case, a "cleanup" step is required after unbinding which searches memory for the nearest HV and replaces the unbound HV with its the most similar in memory
   - cos(A) !~ cos(B)
   - cos(B) !~ cos(A)
   - cos(A) !~ cos(A*B)
@@ -138,16 +173,34 @@ Operations
       - FNs introduced for 1 bits changed to 0 bits
     - what happens to the similarity between 2 hyperdimensional vectors?
       - not much
-
+- substitution
+  - HVs A and B are dissimilar
+  - elements of A are changed to match elements of B
+  - B remains unchanged, A becomes more similar to B
+  - I only read about this in 1 paper, not sure how useful it is
 
 
 Composing Data Structures
 -------------------------
 - sets (bundle)
-- dicts (bind)
+- maps (bind)
+  - aka "role-filler" binding
+  - dict/tuple/record/row/struct types are formed using maps
 - sequences (permute)
 - bins/ranges/levels (permute then bundle)
-- graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create grpahs)
+  - circular levels useful for modulus/cyclical calculations such as:
+    - seasons of the year
+    - hours of the day
+    - months of the year
+    - color spaces
+    - distributing web requests to a pool of servers (similar to rendezvous/hrw hashing)
+  - other types of levels could be created
+    - logarithmic
+    - elliptical
+- graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create graphs)
+  - to create directed graphs, permute one of the node HVs before creating the edge HV
+  - state machines
+  - HyperRec, using hdc to make a recommendation system by predicting edges in a directed graph
 - bloom filters - a special case of VSA
   - a set is represented by a bit array (vector)
     - an empty set is all zeros
@@ -165,7 +218,7 @@ Composing Data Structures
 VSA Uses
 --------
 - language
-  - ngrams, where n can be letters, words, sentences, or any symbol
+  - n-grams (aka k-mers), where n can be letters, words, sentences, or any symbol
   - 't' = [101..111]
   - 'h' = [010..001]
   - 'e' = [101..110]
@@ -190,3 +243,56 @@ VSA Uses
     - my guess would be 0x00
 - genetics
   - gene-alphabet is tiny (4) and that makes for poor suffix arrays
+- vsa can be used for spellcheck and finding optimal string alignment
+- hvs can be used for factorization thru resonator networks and the use of fractional power encoding
+
+
+
+Misc
+====
+- hdc accuracy can be improved by icreasing vector lengths or making elements more complex than binary e.g. floats or complex
+  - more complex numbers make for more complex hardware needs
+  - increasing complexity of each element is "better" than making the vectors longer
+- datasets mentioned in literature
+  - isolet
+  - ucihar
+  - mnist
+  - UCI Machine Learning Repository
+  - UCR Time Series Archive
+- Minkowski distance
+- when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
+  - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
+- fractional power encoding
+  - i don't fully understand what this is but...
+  - if you take a VSA symbol (vector) and raise it to an exponent, something magical happens.. something to do with kernels
+  - i think this is similar to "trajectory association"
+  - this only works if the bind op is NOT the inverse of itself
+- VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
+- how to encode a vector into a vector symbol? multiply it by a random matrix
+- there are methods of making a vector more/less dense
+- one of the big issues with HDC/VSA is that there is no standard method of encoding the application-specific data into vectors
+  - should i bind with multiplication or permuation?
+    - that depends on your use-case
+  - "the HV representations must be designed to capture the information that is important for solving the problem and presenting it in a form that can be exploited by the HDC/VSA"
+  - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
+    - turning a 2d image into a 1d vector simply by concatination is naive
+    - there is a need to incorporate both x and y axis data as well as pixel color value
+    - partial permutation can address this by creating a radius where similar colors will have similar hvs
+    - fractional power encoding can also be used
+      - generate role-filler HVs for x and y
+      - then raise the x vector to the exponent indicating the column of the pixel
+      - do the same for the y
+      - bind the pixel value HV with the exponentialized x and y HVs
+- HDC can be incorporated into NN to make both better
+  - NN frontend to generate HVs
+  - HDC frontend to generate vectors for NN
+- what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the HDV's range's max/min?
+- HDC is prommising for nano-scale tech and FPGAs
+- fix sized ternary vectors remind me of nPrint
+- multiple time-based signals can be quantized, then the signal at each timestep can be bundled together
+  - combining multiple signals into a single vector
+- "In general, DL’s [Deep Learning] strength is in learning a mapping from one space to another, given that these spaces are densely populated with examples. HDC, however, shines when there is a specific, known structure that one wishes to encode."
+- HDC models can be improved with adversarial mutated samples, just like other models
+  - mutate/alter the training data with some strategy (random noise, column/row permuation, etc)
+  - train/test on the mutated data
+  - inspired by fuzzing techniques
