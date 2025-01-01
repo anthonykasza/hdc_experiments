@@ -34,6 +34,8 @@ References
   - https://sites.google.com/view/hdvsaonline/home
 - Vector Symbolic Architectures, Luis El Srouji 
   - https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2
+- Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
+
 
 
 Definitions
@@ -123,8 +125,9 @@ Proposed Architectures
   - "holographic" in that all elements represent information
   - Frequency
     - HRRF is measurably better than the rest in some cases
-    - each component is a random complex number, a phase angle (phasor) between 0 and 2pi
+    - each component is a random complex number, a phase angle (phasor) between 0 and 2pi or between -pi and pi (centered around zed)
     - magnitude only is used
+      - this appears related to spiking networks architectures
     - binding is Hadamard product
 - Vector Derived Binding
 - Matrix Binding of Additive Terms
@@ -139,6 +142,7 @@ Proposed Architectures
 Operations 
 ----------
 - addition - summing two vectors into a single vector preserves information from both consituents
+  - in some architectures, addition in replaced with a majority vote
   - cos(A) !~ cos(B)
   - cos(A) ~ cos(A+B)
   - cos(B) ~ cos(A+B)
@@ -188,18 +192,35 @@ Composing Data Structures
   - dict/tuple/record/row/struct types are formed using maps
 - sequences (permute)
 - bins/ranges/levels (permute then bundle)
-  - circular levels useful for modulus/cyclical calculations such as:
-    - seasons of the year
-    - hours of the day
-    - months of the year
-    - color spaces
-    - distributing web requests to a pool of servers (similar to rendezvous/hrw hashing)
-  - other types of levels could be created
-    - logarithmic
-    - elliptical
+  - some leveling strategies
+    - incorporate a final step to ensure density is maintained after doing the random bit flips
+      - this is typically beneficial for HVs of low dimensionality
+    - ensure nearby levels are somewhat similar but levels which are a certain distance apart are considered MAXIMALLY dissimilar
+      - this reminds me of an image convolution kernel
+    - combine different strategies
+      - e.g. log then linear
+  - strategies, what sort of line would you like to draw?
+    - linear, for representing a continuous range as an evenly spaced buckets
+      - exact linear - hdDimensions / nBins = elementsPerBin
+        - range should be based on the task-at-hand and not from training data's max/min values
+          - e.g. PDUs typically have a maximum length defined by RFCs 
+      - approximate linear mapping - cheaper than exact linear mapping 
+        - "Approximate linear mapping [58] does not guarantee ideal linear characteristic of the mapping, but the overall decay of similarity between feature levels will be approximately linear"
+    - circular, useful for modulus/cyclical calculations such as:
+      - seasons of the year, hours of the day, months of the year
+      - color spaces
+      - distributing web requests to a pool of servers (similar to rendezvous/hrw hashing)
+    - elliptic, like a circle but longer
+    - logarithmic/exponential, shrink of shrink/growth of growth
+      - bell curves
+    - fibonacci (retracement)
 - graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create graphs)
   - to create directed graphs, permute one of the node HVs before creating the edge HV
   - state machines
+    - how to incorporate weight into edges?
+      - multiply the edge HVs by a constant random matrix
+      - create a discrete linear range HV large enough to support transition weight precision
+        - then multiply each edge HV by the range's bin's HV
   - HyperRec, using hdc to make a recommendation system by predicting edges in a directed graph
 - bloom filters - a special case of VSA
   - a set is represented by a bit array (vector)
@@ -262,13 +283,13 @@ Misc
 - Minkowski distance
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
+  - sparse vectors are more easily compressed, making them more memory efficient 
 - fractional power encoding
-  - i don't fully understand what this is but...
   - if you take a VSA symbol (vector) and raise it to an exponent, something magical happens.. something to do with kernels
-  - i think this is similar to "trajectory association"
+  - some literature refers to this as "trajectory association"
   - this only works if the bind op is NOT the inverse of itself
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
-- how to encode a vector into a vector symbol? multiply it by a random matrix
+- how to encode a vector into a vector symbol? multiply it by a constant random matrix (a projection/hat matrix)
 - there are methods of making a vector more/less dense
 - one of the big issues with HDC/VSA is that there is no standard method of encoding the application-specific data into vectors
   - should i bind with multiplication or permuation?
@@ -296,3 +317,6 @@ Misc
   - mutate/alter the training data with some strategy (random noise, column/row permuation, etc)
   - train/test on the mutated data
   - inspired by fuzzing techniques
+- HDC has capacity limits in the number of symbols
+  - you can have in working memory given the need for a cleanup step in retrieval
+  - you can bundle together before a centroid becomes as good as a random guess
