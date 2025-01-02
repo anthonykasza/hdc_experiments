@@ -7,8 +7,6 @@ export {
   global sim: function(hdv1: vector of int, hdv2: vector of int): double;
   global inverse: function(hdv: vector of int): vector of int;
   global dice_roll: function(): int;
-  global tie_break: vector of int &redef;
-  global percent_class: function(hdv: vector of int): double;
 }
 
 function inverse(hdv: vector of int): vector of int {
@@ -66,8 +64,6 @@ function hdv(n: count &default=100000): vector of int {
   }
   return v;
 }
-# as soon as hdv() is defined, define the HV that will break ties
-redef VSA::tie_break = hdv();
 
 
 function bundle(hdvs: vector of vector of int): vector of int {
@@ -75,11 +71,11 @@ function bundle(hdvs: vector of vector of int): vector of int {
   local v: vector of int = vector();
 
   for (element_idx in hdvs[0]) {
-    local total: int = 0;
+    # initialize to additive identity
+    v[element_idx] = 0;
     for (hv_idx in hdvs) {
-      total += hdvs[hv_idx][element_idx];
+      v[element_idx] += hdvs[hv_idx][element_idx];
     }
-    v[element_idx] = total;
   }
 
   return v;
