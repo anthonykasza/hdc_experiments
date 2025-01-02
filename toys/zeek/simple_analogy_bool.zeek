@@ -31,11 +31,11 @@ function inverse(hdv: vector of bool): vector of bool {
 }
 
 function sim(hdv1: vector of bool, hdv2: vector of bool): double {
-  local distance: double = 0.0;
+  local different: double = 0.0;
   for (idx in hdv1) {
-    if (hdv1[idx] != hdv2[idx]) { distance += 1; }
+    if (hdv1[idx] != hdv2[idx]) { different += 1.0; }
   }
-  return 1 - (distance / |hdv1|);
+  return different / |hdv1|;
 }
 
 function coin_toss(): bool {
@@ -90,16 +90,12 @@ function bind(hdvs: vector of vector of bool): vector of bool {
   local idx: count;
   local v: vector of bool = vector();
 
-  # we assume all vectors have the same legnth as the first vector, hdvs[0]
   for (element_idx in hdvs[0]) {
     v[element_idx] = T;
     for (hv_idx in hdvs) {
-      # if any of the elements are 0, then the result is 0,
-      #   this can result in sparse output vectors if dimensions are less than 10k
-      if (!hdvs[hv_idx][element_idx]) {
-        v[element_idx] = F;
-        break;
-      }
+      # This is XOR because v[element_idx] is true when
+      #    v[element_idx] and hdvs[hv_idx][element_idx] differ
+      v[element_idx] = v[element_idx] != hdvs[hv_idx][element_idx];
     }
   }
 
@@ -131,37 +127,23 @@ event zeek_init() {
                     bind(vector(capital, wdc)),
                     bind(vector(currency, usd))
                   ));
-  print "united states map vector", usa_map[0:4], "...", usa_map[-4:];
+  print "united states map vector", usa_map[0:3], "...", usa_map[-3:];
 
   local mex_map = bundle(vector(
                     bind(vector(country, mex)),
                     bind(vector(capital, mxc)),
                     bind(vector(currency, mxn))
                   ));
-  print "mexico map vector", mex_map[0:4], "...", mex_map[-4:];
+  print "mexico map vector", mex_map[0:3], "...", mex_map[-3:];
 
 
   local analogy = bind(vector(usa_map, mex_map));
-  local query = bind(vector(
-                  analogy,
-                  inverse(usd)
-                ));
-
-
-  print "NOTE: we won't get great results because sparsity gets out of hand";
-  print percent_true(usa_map);
-  print percent_true(mex_map);
-  print percent_true(analogy);
-  # by the time we construct a query, the hv has lost all information
-  print percent_true(query);
-
+  local query = bind(vector(analogy, inverse(usd)));
   print "what is the dollar of mexico?";
   print "how similar is the query to USD?", sim(query, usd);
-  print "how similar is the query to MXN?", sim(query, mxn);
+  print "how similar is the query to MXN?", sim(query, mxn); # hot damn!
   print "how similar is the query to WDC?", sim(query, wdc);
   print "how similar is the query to MXC?", sim(query, mxc);
   print "how similar is the query to USA?", sim(query, usa);
   print "how similar is the query to MEX?", sim(query, mex);
-  print "";
-  print "";
 }
