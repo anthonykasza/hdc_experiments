@@ -35,6 +35,8 @@ References
 - Vector Symbolic Architectures, Luis El Srouji 
   - https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2
 - Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
+- Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
+- EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
 
 
 
@@ -178,11 +180,10 @@ Operations
     - what happens to the similarity between 2 hyperdimensional vectors?
       - not much
 - substitution
+  - continous real-time windowing
   - HVs A and B are dissimilar
   - elements of A are changed to match elements of B
   - B remains unchanged, A becomes more similar to B
-  - I only read about this in 1 paper, not sure how useful it is
-
 
 Composing Data Structures
 -------------------------
@@ -257,6 +258,20 @@ VSA Uses
   - a single vector can represent constituent vectors which represent 1grams, 2grams, 3grams ... infi-grams
 - timeseries
   - discretized timeseries can be converted to ngrams and then analyzed the same way as language
+  - continuous (streaming) time can be constructed using a lookback window of correlated vectors
+    - eventHD
+      - see Figure 2.B for a pictoral representation of continuous-time hvs
+    - for a window of time +/- N
+      1. generate an hv
+      2. wait N steps (seconds)
+      3. generate a new hv
+      4. substitute 1/N bits of the hv from step 1 towards the hv in step 3, repeat N times until you have N "level" hvs ranging from step 1 hv to step 3 hv
+      5. goto 2
+      - this can be done indefinitely to represent the indefiniteness of time's passage
+        - there *must* be some limit to the number of timesteps we can/should hold in memory 
+      - bind the lookback-window hv (temporal information) with the signal hvs
+        - in the eventHD paper they use spatial data from a camera-like sensor
+- learning of centroids (class hv) is done by updating multiple centroids with each new sample
 - file similarity
   - encode byte-grams instead of letter-grams or word-grams
   - the byte-alphabet is larger than the letter-alphabet: [a-zA-Z]
