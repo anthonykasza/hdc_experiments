@@ -1,5 +1,4 @@
 import copy
-import sys; sys.path.insert(0, "../")
 from utils import hdv, bind, bundle, cossim
 
 

@@ -2,8 +2,6 @@ import time
 import copy
 import numpy as np
 
-import sys
-sys.path.insert(0, "../../")
 from utils import hdv, cossim, substitute
 
 

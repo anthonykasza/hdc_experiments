@@ -37,7 +37,9 @@ References
 - Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
 - Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
 - EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
-
+- Get to know SAR, Interferometry
+  - https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/
+- Generalized Holographic Reduced Representations
 
 
 Definitions
@@ -124,13 +126,25 @@ Proposed Architectures
   - SEG
 - Holographic Reduced Representations
   - "reduced" in that all HVs are fixed length
-  - "holographic" in that all elements represent information
+  - "holographic" in that all elements represent information equally
+    - a subset of bits from an HV represents the same object, just with less precision
+      - 10 bits from the HV represents the same symbol as all 10_000 bits
+      - this is akin to cutting a hologram into pieces
+    - what is a hologram?
+      - jó napot, Gabor úr
+      - holograms involve lasers and lightwave interference patterns
+        - scanning objects with interference patterns is called interferometry
+          - interferometry has a ton of applications
+            - JPL used it to measure surface topography changes after the 2014 Napa earthquake
+      - one can cut a hologram up into pieces and each piece still hold a view of the entire image
+        - search the inet for videos of holograms of microscopes which can be looked into
   - Frequency
-    - HRRF is measurably better than the rest in some cases
+    - FHRR/HRRF is measurably better than the rest in some cases
     - each component is a random complex number, a phase angle (phasor) between 0 and 2pi or between -pi and pi (centered around zed)
     - magnitude only is used
       - this appears related to spiking networks architectures
     - binding is Hadamard product
+      - GHHR is a generalization of FHRR
 - Vector Derived Binding
 - Matrix Binding of Additive Terms
 - Tensor Product Representation
@@ -335,3 +349,15 @@ Misc
 - HDC has capacity limits in the number of symbols
   - you can have in working memory given the need for a cleanup step in retrieval
   - you can bundle together before a centroid becomes as good as a random guess
+- Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing
+  - https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing
+  - i do not understand all the math discussed
+  - if you're working with spacial data and you don't encode spacial features in VSA, the results will not be great
+- Hyperdimensional Quantum Factorization
+  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
+    - search the entire memory of HVs for the most similar HV produced from unbinding
+    - replace the HV from unbinding with the most similar HV in memory
+    - noisy result HV is replaced with known, in-memory, HV
+  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
+    - this approach is better han resonator networks
+  - hardware does not currently exist to implement. womp womp.

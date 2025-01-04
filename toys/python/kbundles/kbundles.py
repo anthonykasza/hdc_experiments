@@ -1,5 +1,7 @@
 import numpy as np
 from sklearn import datasets
+
+import sys; sys.path.insert(0, "../")
 from utils import hdv, bind, bundle
 from utils import make_bins, discretize, kbundles
 

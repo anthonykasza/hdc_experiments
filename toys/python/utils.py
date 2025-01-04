@@ -3,8 +3,10 @@ import numpy as np
 from numpy.linalg import norm
 
 
-def hdv(n=10_000):
+def hdv(n=10_000, all=None):
   '''Return a new bipolar symbolic representation'''
+  if all is not None:
+    return np.full((1, n), all).flatten()
   return np.random.choice([1, -1], size=n)
 
 
