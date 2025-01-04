@@ -40,6 +40,8 @@ References
 - Get to know SAR, Interferometry
   - https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/
 - Generalized Holographic Reduced Representations
+- Recasting Self-Attention with Holographic Reduced Representations
+- Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 
 
 Definitions
@@ -291,6 +293,7 @@ VSA Uses
   - the byte-alphabet is larger than the letter-alphabet: [a-zA-Z]
   - most common 'letter' in english is "E", most common in files?
     - my guess would be 0x00
+  - hrrformer
 - genetics
   - gene-alphabet is tiny (4) and that makes for poor suffix arrays
 - vsa can be used for spellcheck and finding optimal string alignment
