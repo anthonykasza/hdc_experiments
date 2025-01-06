@@ -1,3 +1,4 @@
+import sys; sys.path.insert(0, '../')
 import random
 import copy
 from utils import hdv, bind, bundle, cossim, permute

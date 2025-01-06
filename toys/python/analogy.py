@@ -65,6 +65,7 @@ huf = hdv()
 usa_map = bundle(bind(country, usa), bind(capital, wdc), bind(currency, usd))
 mex_map = bundle(bind(country, mex), bind(capital, mxc), bind(currency, mxn))
 hun_map = bundle(bind(country, hun), bind(capital, bud), bind(currency, huf))
+
 print(f'united states map vector {usa_map[0:3]}...{usa_map[-3:]}')
 print(f'mexico map vector {mex_map[0:3]}...{mex_map[-3:]}')
 print(f'hungary map vector {hun_map[0:3]}...{hun_map[-3:]}')
