@@ -341,7 +341,12 @@ Misc
   - HDC frontend to generate vectors for NN
 - what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the HDV's range's max/min?
 - HDC is prommising for nano-scale tech and FPGAs
-- fix sized ternary vectors remind me of nPrint
+- fix sized ternary vectors remind me of
+  - nPrint
+    - concatenate all maximum length PDUs together to make a long sparse block vector
+  - Ramanujan's sum, namaste sir
+    - infinite sum of natural numbers equals -1/12
+    - one of the steps to solve the formula is to calculate 1/2 as the sum of the infinite series: 1 - 1 + 1 - 1 + 1 - ...
 - multiple time-based signals can be quantized, then the signal at each timestep can be bundled together
   - combining multiple signals into a single vector
 - "In general, DL’s [Deep Learning] strength is in learning a mapping from one space to another, given that these spaces are densely populated with examples. HDC, however, shines when there is a specific, known structure that one wishes to encode."
@@ -364,3 +369,16 @@ Misc
   - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
     - this approach is better han resonator networks
   - hardware does not currently exist to implement. womp womp.
+- Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
+  - probability
+    - 'binding encodes data'
+    - 'similarity computes probability'
+    - 'bundling updates beliefs'
+    - 'unbinding is analogous to conditioning'
+    - there is no mention of rotate/permute. what would a permuation of a prob density look like, visually? how would one rotate a bell curve?
+  - other operations
+    - 'marginalization' reads like leveling/binning
+    - 'sampling' i'm unable to understand
+      - since each element in a HV represents the same amount of information, sampling a symbol/object/concept is possible by sampling the HV's elements
+    - 'entropy' i'm unable to understand
+    - 'mutual information' i'm unable to understand
