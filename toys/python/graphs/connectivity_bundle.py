@@ -1,5 +1,5 @@
 import sys; sys.path.insert(0, '../')
-from utils import hdv, bind, bundle, cossim, unbind, permute
+from utils import hdv, bind, bundle, cossim, unbind, permute, unpermute
 
 '''
       A   B       N         U--V--W--X--Y
@@ -46,10 +46,12 @@ nodes = bundle(*nodes)
 
 srcs = {}
 dsts = {}
+nodes_back1 = unpermute(nodes)
+
 for letter in letters:
   hv = node_symbols[letter]
   is_this_node_a_src = cossim(nodes, hv)
-  is_this_node_a_dst = cossim(nodes, permute(hv))
+  is_this_node_a_dst = cossim(nodes_back1, hv)
   if is_this_node_a_src > 0.1:
     srcs[is_this_node_a_src] = letter
   if is_this_node_a_dst > 0.1:
