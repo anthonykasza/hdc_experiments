@@ -26,7 +26,7 @@ def random_walk(suffix, min_len=2):
          G--F---J       R   S
 '''
 
-# a vertex's centrality is it's edge count
+# bidirectional edges
 suffix = {
   'A': ('C'),
   'B': ('C'),
@@ -60,9 +60,13 @@ letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 vertex_symbols = {letter: hdv() for letter in letters}
 
 # Make a bundle which represents many random walks of the graph
-walk_count = 1_000
+edge_count = sum([len(k) * len(v) for k,v in suffix.items()])
+node_count = len(letters)
+walk_count = node_count * edge_count
+
 paths = []
 paths_hv = hdv(all=0) #bundle identity
+connectivity = hdv(all=0) #bundle identity
 
 for idx in range(walk_count):
   path = random_walk(suffix)
@@ -71,13 +75,55 @@ for idx in range(walk_count):
     path_hv = hdv(all=1) #bind identity
     for vertex_idx in range(len(path)):
       vertex = path[vertex_idx]
-      vertex_hv = permute(vertex_symbols[vertex], positions=[0,vertex_idx])
-      path_hv = bind(path_hv, vertex_hv)
+      path_hv = bind(
+        path_hv,
+        permute(
+          vertex_symbols[vertex],
+          positions=[0,vertex_idx]
+        )
+      )
+
+      # the first vertex in the path is only a src
+      if vertex_idx == 0:
+        connectivity = bundle(connectivity, vertex_symbols[vertex])
+      # the last vertex in the path is only a dst
+      elif vertex_idx == len(path)-1:
+        connectivity = bundle(connectivity, permute(vertex_symbols[vertex]))
+      # all other nodes in the path are both src and dst
+      else:
+        connectivity = bundle(connectivity, vertex_symbols[vertex])
+        connectivity = bundle(connectivity, permute(vertex_symbols[vertex]))
+
     paths_hv = bundle(paths_hv, path_hv)
 
 print(f'we iterated over the graph {walk_count} times')
 print(f'we found {len(paths)} unique random paths')
 print('we bundled those paths into a single HV', paths_hv[0:3], paths_hv[-3:])
+
+
+# the connectivity bundle starts to lose memory of nodes
+srcs = {}
+dsts = {}
+for letter in letters:
+  hv = vertex_symbols[letter]
+  is_this_node_a_src = cossim(connectivity, hv)
+  is_this_node_a_dst = cossim(connectivity, permute(hv))
+  if is_this_node_a_src > 0.1:
+    srcs[is_this_node_a_src] = letter
+  if is_this_node_a_dst > 0.1:
+    dsts[is_this_node_a_dst] = letter
+
+print("nodes with most outgoing edges")
+for sim in sorted(srcs.keys(), reverse=True):
+  letter = srcs[sim]
+  print(letter, sim)
+
+print("nodes with most incoming edges")
+for sim in sorted(dsts.keys(), reverse=True):
+  letter = dsts[sim]
+  print(letter, sim)
+
+
 
 
 # Make a bundle which represents the graph
@@ -114,6 +160,7 @@ graph = bundle(*edge_symbols)
 #    e.g. a random path A-B-C and B-C are considered different
 #    and both are bundled into the paths_hv
 
+print()
 print("we encoded the same graph in different ways and the results are not similar")
 print( cossim(graph, paths_hv) )
 

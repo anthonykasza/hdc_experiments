@@ -32,6 +32,8 @@ References
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
 - VSAONLINE
   - https://sites.google.com/view/hdvsaonline/home
+- MIDNIGHTVSA
+  - https://sites.google.com/ltu.se/midnightvsa
 - Vector Symbolic Architectures, Luis El Srouji 
   - https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2
 - Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
@@ -42,6 +44,8 @@ References
 - Generalized Holographic Reduced Representations
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
+- Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021
+  - https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/
 
 
 Definitions
@@ -378,7 +382,12 @@ Misc
     - there is no mention of rotate/permute. what would a permuation of a prob density look like, visually? how would one rotate a bell curve?
   - other operations
     - 'marginalization' reads like leveling/binning
-    - 'sampling' i'm unable to understand
-      - since each element in a HV represents the same amount of information, sampling a symbol/object/concept is possible by sampling the HV's elements
+    - 'sampling' - encoding a function (like a wavelet) as a HV
+      - quantize a function's X and Y ranges
+      - sample a function at X
+      - bind X and Y
+      - add the result to a bundle
+        - a bundle of 'trajectories'
+        - a bundle representing the sampled function
     - 'entropy' i'm unable to understand
     - 'mutual information' i'm unable to understand

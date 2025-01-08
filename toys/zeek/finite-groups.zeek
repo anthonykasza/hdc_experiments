@@ -37,7 +37,7 @@ function sim(hdv1: vector of int, hdv2: vector of int): double {
 
 function dice_roll(): int {
   local finite_group_size: count = 5;
-  switch rand(finite_group_size - 1) {
+  switch rand(finite_group_size) {
     case 0:
       return 2;
     case 1:
