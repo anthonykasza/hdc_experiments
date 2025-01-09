@@ -171,6 +171,7 @@ Operations
   - cos(A+B) == cos(B+A)
 - multiplication - multiplying two vectors into a single sector ensures all three has low similarity
   - distributes over add
+  - binding is is a tensor-product approximation with a fixed-dimension result
   - no binding problem in HDC, to bind is to multiply
   - multiplication "binds" multiple vectors into a single vector
     - things can be "unbound" from the resulting vector by multiplying it with a constituent's inverse
@@ -261,6 +262,11 @@ VSA Uses
 --------
 - language
   - n-grams (aka k-mers), where n can be letters, words, sentences, or any symbol
+    - most ngrams will not be present in a
+      - vector space
+        - aka language (letter sequence)
+        - aka graph (path)
+      - this means that these combinatoric spaces will have very sparse statistics
   - 't' = [101..111]
   - 'h' = [010..001]
   - 'e' = [101..110]
@@ -301,7 +307,47 @@ VSA Uses
 - genetics
   - gene-alphabet is tiny (4) and that makes for poor suffix arrays
 - vsa can be used for spellcheck and finding optimal string alignment
-- hvs can be used for factorization thru resonator networks and the use of fractional power encoding
+
+Resonator Networks
+==================
+- resonator networks search combined codebooks of bind() parameters more optimally than exhaustive search
+- even in the brain, we use factorization to ponder about shape,light,position of a visual scene
+  - scene decomposition
+    - bind properties to create object
+      - shape
+      - location
+      - color
+    - bundle all objects together to create a scene
+    - to understand the scene, you need to search the codebook for combinations of all atomic symbols for all properties
+      - this can be expensive, which is why selecting an efficient encoding method is important
+        - is it better to permute all items in a codebook (memory) and compare it with an HV?
+        - or, is it better to permute the HV and compare it with all items in a codebook?
+
+- given a bound HV, how do we figure out its constituents?
+  - how do we do division (factorization) in the VSA?
+  - bound_hv = hv1 * hv2 * hv3
+    - given bound_hv and all codebooks, how do we find hv parameters?
+    - assume there are 100 unique items in each parameter's codebook
+    - how quickly can we determine which items in the codebook map to h1, h2, h3?
+      - 100 possible items for hv1
+      - 100 possible items for hv2
+      - 100 possible items for hv3
+      - 100 * 100 * 100 items = 1_000_000 item combinations to check cossim with
+  - resonator networks
+    - aka hopfield network
+    - a method of doing something similar to gradient descent
+    - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
+    - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
+      - create 'estimate' vectors, these represent your initial guesses
+        - xhat, yhat, zhat = hdv(), hdv(), hdv()
+      - do something with the estimates
+      - update the estimates based on results of comparison to portions of the codebooks
+      - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
+      - iterates to find best
+        - z, with estimates of y and x
+        - y, with estimates of x and z
+        - z, with estimates of y and z
+
 
 
 
