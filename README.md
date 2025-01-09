@@ -308,6 +308,10 @@ VSA Uses
   - gene-alphabet is tiny (4) and that makes for poor suffix arrays
 - vsa can be used for spellcheck and finding optimal string alignment
 
+
+
+
+
 Resonator Networks
 ==================
 - resonator networks search combined codebooks of bind() parameters more optimally than exhaustive search

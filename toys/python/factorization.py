@@ -33,54 +33,62 @@ y_est_hv = bundle(*y_codebook)
 z_est_hv = bundle(*z_codebook)
 
 def find_best_est(codebook, est, param2, param3, bound_hv):
-  most_sim = cossim(est, bound_hv)
+  max_sim = cossim(est, bound_hv)
+  max_sim_idx = 0
   for idx in range(1, len(codebook)):
     hv = codebook[idx]
     est = bind(bound_hv, param2, param3)
     sim = cossim(hv, est)
-    if sim > most_sim:
-      most_sim_idx = idx
-      most_sim = sim
-  return (most_sim_idx, codebook[most_sim_idx])
+    if sim > max_sim:
+      max_sim_idx = idx
+      max_sim = sim
+  return (max_sim, max_sim_idx, codebook[max_sim_idx])
 
+x_max_sim = 0.0
+y_max_sim = 0.0
+z_max_sim = 0.0
+iters = 0
+while x_max_sim < 0.1 or \
+      y_max_sim < 0.1 or \
+      z_max_sim < 0.1:
+  iters += 1
+  print(iters)
 
-print()
+  # find x
+  (x_max_sim, x_max_sim_idx, x_est_hv) = find_best_est(
+    x_codebook,
+    x_est_hv, y_est_hv, z_est_hv,
+    bound_hv
+  )
 
-# find x
-(x_most_sim_idx, x_est_hv) = find_best_est(
-  x_codebook,
-  x_est_hv, y_est_hv, z_est_hv,
-  bound_hv
-)
+  # find y
+  (y_max_sim, y_max_sim_idx, y_est_hv) = find_best_est(
+    y_codebook,
+    y_est_hv, x_est_hv, z_est_hv,
+    bound_hv
+  )
 
-# find y
-(y_most_sim_idx, y_est_hv) = find_best_est(
-  y_codebook,
-  y_est_hv, x_est_hv, z_est_hv,
-  bound_hv
-)
-
-# find z
-(z_most_sim_idx, z_est_hv) = find_best_est(
-  z_codebook,
-  z_est_hv, x_est_hv, y_est_hv,
-  bound_hv
-)
+  # find z
+  (z_max_sim, z_max_sim_idx, z_est_hv) = find_best_est(
+    z_codebook,
+    z_est_hv, x_est_hv, y_est_hv,
+    bound_hv
+  )
 
 # shift to account for index starting at 1 instead of 0
-x_most_sim_idx += 1
-y_most_sim_idx += 1
-z_most_sim_idx += 1
+x_max_sim_idx += 1
+y_max_sim_idx += 1
+z_max_sim_idx += 1
 
 # the big reveal
 print()
 print(f'\t\tx * y * z = S')
 print(f'selected\t{x_idx} * {y_idx} * {z_idx} = {x_idx*y_idx*z_idx}')
-print(f'inferred\t{x_most_sim_idx} * {y_most_sim_idx} * {z_most_sim_idx} = {x_most_sim_idx*y_most_sim_idx*z_most_sim_idx}')
+print(f'inferred\t{x_max_sim_idx} * {y_max_sim_idx} * {z_max_sim_idx} = {x_max_sim_idx*y_max_sim_idx*z_max_sim_idx}')
 
 print('cossim(x_hv, x_est_hv)', cossim(x_hv, x_est_hv))
 print('cossim(y_hv, y_est_hv)', cossim(y_hv, y_est_hv))
 print('cossim(z_hv, z_est_hv)', cossim(z_hv, z_est_hv))
 
 est_bound_hv = bind(x_est_hv, y_est_hv, z_est_hv)
-print('bound_hv', cossim(bound_hv, est_bound_hv))
+print('cossim(bound_hv, est_bound_hv)', cossim(bound_hv, est_bound_hv))
