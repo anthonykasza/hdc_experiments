@@ -46,6 +46,7 @@ References
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 - Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021
   - https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/
+- Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 
 
 Definitions
@@ -66,10 +67,10 @@ Definitions
     - e.g. types in system languages are symbols
       - how are `int` types represented in memory in C?
         - 32 bits (4 bytes)
-          - min: 00000000 00000000 00000000 00000000
-          - max: 11111111 11111111 11111111 11111111
+          - min: `00000000 00000000 00000000 00000000`
+          - max: `11111111 11111111 11111111 11111111`
         - `int x = 3;`
-          - 00000000 00000000 00000000 00000011
+          - `00000000 00000000 00000000 00000011`
         - why 4 bytes? why not 4 MB?
           - C programmers would say that's a waste of bits (waste of memory)
             - VSA programmers would disagree - discussed more below
@@ -94,6 +95,7 @@ Revisiting Dimensionality
   - dimensionality is both a blessing and curse
     - redundancy in VSA vectors, more bits than needed to represent the data
     - dimensionality stays fixed under addition, multiplication, and permutation
+    - concentration of measure
   - each additional element (bit) of the vector increases the "space" exponentially
   - ensures randomly sampled vectors will be quasi-orthogonal
     - -100 is blue, 0 is green(yellow), 100 is red: what color is the number 2?
@@ -164,6 +166,7 @@ Proposed Architectures
 Operations 
 ----------
 - addition - summing two vectors into a single vector preserves information from both consituents
+  - aka summation, superposition, learning, accumulation
   - in some architectures, addition in replaced with a majority vote
   - cos(A) !~ cos(B)
   - cos(A) ~ cos(A+B)
@@ -171,6 +174,7 @@ Operations
   - cos(A+B) == cos(B+A)
 - multiplication - multiplying two vectors into a single sector ensures all three has low similarity
   - distributes over add
+  - aka XOR
   - binding is is a tensor-product approximation with a fixed-dimension result
   - no binding problem in HDC, to bind is to multiply
   - multiplication "binds" multiple vectors into a single vector
@@ -186,6 +190,7 @@ Operations
   - (A*B) * A == B
   - (A*B) * B == A
 - permutation - permutation "protects" the order of inputs to add/multiply
+   - aka shift
    - distributes over add and multiply
    - cos(A*B*C) == cos(B*C*A)
    - cos(A) !~ cos(permute(A))
@@ -228,6 +233,8 @@ Composing Data Structures
           - e.g. PDUs typically have a maximum length defined by RFCs 
       - approximate linear mapping - cheaper than exact linear mapping 
         - "Approximate linear mapping [58] does not guarantee ideal linear characteristic of the mapping, but the overall decay of similarity between feature levels will be approximately linear"
+        - only store the start and stop HVs instead of the entire hyperspace
+        - constrcut levels on the fly
     - circular, useful for modulus/cyclical calculations such as:
       - seasons of the year, hours of the day, months of the year
       - color spaces
@@ -236,6 +243,8 @@ Composing Data Structures
     - logarithmic/exponential, shrink of shrink/growth of growth
       - bell curves
     - fibonacci (retracement)
+    - random projection
+      - an intermediate state that is bound with another HV of significance
 - graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create graphs)
   - to create directed graphs, permute one of the node HVs before creating the edge HV
   - state machines
@@ -282,6 +291,17 @@ VSA Uses
     - whichever Language Vector is most similar is the text's label
     - 10_000 element vectors contain information from 14_348_907 pentagrams as easily as 19_683 trigrams
   - a single vector can represent constituent vectors which represent 1grams, 2grams, 3grams ... infi-grams
+- spatial navigation: agents/robots
+  - [N, S, E, W] [T, F]
+  - bind ngram/path with timestep 
+  - benefits to communicating with VSA protocols
+    - HVs are robust to noise
+      - physical environment could be unpredictably noisy, no problemo
+    - low power requirements
+      - physical environment could dictate energy consumption rate, no problemo
+  - drone swarms
+    - each agent is a node in a graph or a grid cell
+    - how would agents discover each other? how would the graph initialize or handle mutation of structure?
 - timeseries
   - discretized timeseries can be converted to ngrams and then analyzed the same way as language
   - continuous (streaming) time can be constructed using a lookback window of correlated vectors
@@ -366,6 +386,7 @@ Misc
   - mnist
   - UCI Machine Learning Repository
   - UCR Time Series Archive
+  - Numenta Anomaly Benchmark (NAB)
 - Minkowski distance
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
@@ -423,21 +444,57 @@ Misc
   - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
     - this approach is better han resonator networks
   - hardware does not currently exist to implement. womp womp.
-- Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
-  - probability
-    - 'binding encodes data'
-    - 'similarity computes probability'
-    - 'bundling updates beliefs'
-    - 'unbinding is analogous to conditioning'
-    - there is no mention of rotate/permute. what would a permuation of a prob density look like, visually? how would one rotate a bell curve?
-  - other operations
-    - 'marginalization' reads like leveling/binning
-    - 'sampling' - encoding a function (like a wavelet) as a HV
-      - quantize a function's X and Y ranges
-      - sample a function at X
-      - bind X and Y
-      - add the result to a bundle
-        - a bundle of 'trajectories'
-        - a bundle representing the sampled function
-    - 'entropy' i'm unable to understand
-    - 'mutual information' i'm unable to understand
+- LPE - locality preserving encoding (encoding scalars)
+  - thermometer code
+    - linearly discretized levels
+      - the first vector is hdv(all=0)
+      - the last vector is hdv(all=1)
+      - the hv grows its count of 1 values by flipping 0s to 1s by incrementing index
+    - bundle(hvs[2],hvs[2]) != bundle(hvs[1],hvs[3])
+      - if using integers: 2 + 2 != 1 + 3
+      - consider the linearly discritzed vector of hypervectors: hvs
+      - bundling/binding indices of the hyperspace do not behave as adding/multiplying integers would
+  - float code / sliding code
+    - simmilar to 1-hot but more like window-hot, where the window is centered around the element
+    - uses a fixed width window, slide across the all zeros vector, ensure bits in the window are 1s
+    - the window is slid across the all-zeros HV
+    - the start of the window is the HV's index in hypserspace
+    - more sparse compared to thermometer codes
+      - different similarity kernel
+  - scatter code
+    - no strict limitation on number of levels in a hyperspace
+    - hspace[0] = some random dense vector
+    - each level is created by randomly flipping a few elements in the previous unit
+  - fractional power encoding
+    - bind vector x times with itself, then the vector represents x
+      - raise each element to the exponent x
+      - only works if binding operation is not the inverse of itself 
+    - in FHRR, each element is a phasor
+      - phasor, a value between -pi and pi
+    - bind(z(x1), z(x2)) == z(x1 + x2)
+      - multiplying the same base is equal to adding their exopents
+    - variants on FPE
+      - FPE with hadamard binding (phasor)
+      - FPE with circular convolution binding (real valued)
+      - block local circular convolution (sparse)
+      - VFA, vector function architecture 
+        - FPE VSA plus a kernel function
+          - your task will dictate your kernel but it opens the door to using VSA for learning with kernel functions
+            - multidimensional kernels
+            - window/modulus/circular kernels
+            - periodic multidimensional kernels
+              - grid cells, hex pattern in mice neurons
+              - crystallography
+              - lattice-based crypto
+        - whittaker-shannon interpolation formula
+          - approximate a function with sinc
+        - binding a scalar to a vector (function) shifts the vector
+        - binding 2 vectors (functions) together is a convolution of functions
+          - functions are compositional
+        - calculate similarities between functions
+    - any FPE with uniformly sampled base vectors have a universal kernel
+      - sinc function
+        - normalized vs not
+        - well defined envelop
+        - crosses zero at the integers
+- a hyperdimensional vector could act as a crypto system's initialization vector
