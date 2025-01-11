@@ -51,335 +51,287 @@ References
 
 Definitions
 -----------
-- Vector Symbolic Architecture - computing architectures which utilize large vectors to represent symbols
-  - Vector - indexed lists
-    - element types
-      - binary
-      - bipolar/ternary
-      - integers
-      - floats
-      - imaginary
-      - "finite groups"
-        - binary is a special type of group VSA, with group of size 2
-  - Symbols - representations of something else
-    - e.g. emojis are symbols
-      - what concept does 🍑 represent?
-    - e.g. types in system languages are symbols
+- Vector Symbolic Architecture, computing architectures which utilize large vectors to represent symbols
+  - Vector, indexed lists
+    - types: binary, bipolar/ternary, integers, floats, imaginary, "finite groups"
+      - binary is a special type of group VSA, with group of size 2
+  - Symbols, representations of something else
+    - e.g. emjois are symbols. what concept does 🍑 represent?
+    - consider the following: in C, types are symbols
       - how are `int` types represented in memory in C?
         - 32 bits (4 bytes)
-          - min: `00000000 00000000 00000000 00000000`
-          - max: `11111111 11111111 11111111 11111111`
+          - min value: `00000000 00000000 00000000 00000000`
+          - max value: `11111111 11111111 11111111 11111111`
         - `int x = 3;`
-          - `00000000 00000000 00000000 00000011`
+          - 3 value: `00000000 00000000 00000000 00000011`
         - why 4 bytes? why not 4 MB?
-          - C programmers would say that's a waste of bits (waste of memory)
+          - those concerned with memory efficiency (C programmers) would say that's a waste of bits (waste of memory)
             - VSA programmers would disagree - discussed more below
-  - Architecture - the means of computation. how the computer does stuff.
+  - Architecture, the means of computation. how the computer does stuff.
     - operations, memory, data types
     - e.g. x86/x64, ARM, Power(PC), RISC-V
-  - VSA go by many names
-    - distributed representations
-      - because information contained in the symbol is distributed amoung all of its elements
-    - high/hyper-dimensional computing
-      - because it uses high (hyper) dimensional vectors as atomic/basis types
-    - random indexing
-    - projection
-    - embeddings
+
+- AKAs
+  - distributed representations, because information contained in the symbol is distributed amoung all of its elements
+  - high-dimensional computing and hyper-dimensional computing, because it uses high dimensional vectors as atomic/basis types (HDC)
+  - random indexing
+  - reduced representations
+  - spatter code and block codes
+  - projections
+  - embeddings
 
 
 
 Revisiting Dimensionality
 -------------------------
 - a return to the question "why 4 bytes? why not 4 MB?"
-  - this approach may seem wasteful in comparison to the memory efficiency of languages like C
-  - dimensionality is both a blessing and curse
-    - redundancy in VSA vectors, more bits than needed to represent the data
-    - dimensionality stays fixed under addition, multiplication, and permutation
-    - concentration of measure
-  - each additional element (bit) of the vector increases the "space" exponentially
-  - ensures randomly sampled vectors will be quasi-orthogonal
-    - -100 is blue, 0 is green(yellow), 100 is red: what color is the number 2?
-      - is the number 2 green? no.
-      - is the number 2 pretty-much-basically-sort-kinda green? yeah, with a dash of red
-      - which color is the number 50? half-green and half-red.
-      - which color is the number 51 or 49? 
-    - pick a number 1 through 10
-      - someone guesses 1, 4, 8, and someone guesses 2.9
-      - we just assume that person meant 3 because 2.9 is nearest to 3
-        - perhaps there was some noise in their guess?
+  - unnecessary dimensionality appears wasteful
+  - large dimensionality is both a blessing and curse
+    - redundancy, useful for error correction and noisy calculations
+    - dimensionality stays fixed through any operation
+    - concentration of measure ensures randomly intialized HVs are dissimilar
+  - each dimension (element) increases the vector space exponentially
   - projecting something onto a bigger surface is often useful
     - think about a screen projector, it makes small images easier to see
   - aligns well with the theory of "distributed representation" of the brain
     - the brain doesn't have a single neuron representing the word "desk"
-    - the brain probably has a set of neurons representing the concept of a desk
+    - the brain probably has a set of neurons representing the concept of "desk"
     - the set of neurons (symbol) for "desk" is likely similar (cossim) to the set of neurons (symbol) for "table"
 
+Approaches
+----------
+Tensor Product Representation
+- combination of role vectors (representing structure of data) and filler vectors (representing values of data)
+- resulting vector is longer than either input HV
+- TPR is arguably not HDC because HDC requires fixed length vectors
+- TPR did, however, inspire HDC
 
+Holographic Reduced Representations
+- "reduced", all HVs are fixed length
+- "holographic", all elements represent information equally
+  - a subset of bits from an HV represents the same object, just with less precision
+    - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
+    - this is akin to cutting a hologram into pieces
+  - what is a hologram?
+    - jó napot, Gabor úr
+    - holograms involve lasers and lightwave interference patterns
+      - scanning objects with interference patterns is called interferometry
+        - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
+- Frequency based HHR
+  - FHRR/HRRF is measurably better than other VSAs in some cases
+  - each element of a HV is a random phase angle (phasor) between -pi and pi
+  - magnitude only is used
+    - this appears related to spiking networks architectures
 
-Proposed Architectures
-----------------------
-- Multiply-Add-Permute (MAP)
-  - C, real (e.g. floats from -1 to 1)
-  - B, binary (e.g. 0/1 or -1/1)
-  - I, integers (e.g. range of values grows unless "clipped")
-  - MAP operations on hyperdimensional vectors resembles quantum superpositions
-    - operations on superposed vectors can occur
-      - in parallel
-      - originals HDV are recoverable post-operation
-    - results can be extracted with inverse operations
-- Binary Spatter Codes
-- Binary Sparse Distributed Representation
-  - CDT
-  - S
-  - SEG
-- Holographic Reduced Representations
-  - "reduced" in that all HVs are fixed length
-  - "holographic" in that all elements represent information equally
-    - a subset of bits from an HV represents the same object, just with less precision
-      - 10 bits from the HV represents the same symbol as all 10_000 bits
-      - this is akin to cutting a hologram into pieces
-    - what is a hologram?
-      - jó napot, Gabor úr
-      - holograms involve lasers and lightwave interference patterns
-        - scanning objects with interference patterns is called interferometry
-          - interferometry has a ton of applications
-            - JPL used it to measure surface topography changes after the 2014 Napa earthquake
-      - one can cut a hologram up into pieces and each piece still hold a view of the entire image
-        - search the inet for videos of holograms of microscopes which can be looked into
-  - Frequency
-    - FHRR/HRRF is measurably better than the rest in some cases
-    - each component is a random complex number, a phase angle (phasor) between 0 and 2pi or between -pi and pi (centered around zed)
-    - magnitude only is used
-      - this appears related to spiking networks architectures
-    - binding is Hadamard product
-      - GHHR is a generalization of FHRR
-- Vector Derived Binding
-- Matrix Binding of Additive Terms
-- Tensor Product Representation
-  - results in higher dimensional vectors
-  - TPR is arguably not HDC because HDC uses fixed length vectors
-  - TPR did, however, inspire HDC/VSA
-- sparse block codes
-  - HV is partitioned into blocks of equal size (so that the HV’s dimensionality is a multiple of the block size). In each block, there is only one nonzero component, i.e., the activity in each block is maximally sparse
+Block Codes
+- Spare Block Codes is one type
+- HV is partitioned into blocks (segments) of equal size 
+  - the HV’s dimensionality is a multiple of the block size
+- block-wise (segment-wise) operations
+  - ensure a specified sparsity
+  - permute the block
+  - combine blocks with other blocks or scalars
+    - bind, bundle, substitue, maybe further subdivide the block?
+      - block of block codes, hyperdimensional blocks
+
+Bloom filters, a special case of VSA
+- a set is represented by a binary vector
+  - an empty set is all zeros
+  - a single vector is more memory efficient than storing all samples
+- when adding an element to a bf, the item is hashed with several functions
+  - the functions result in an index which is flipped from 0 to 1
+- when checking inness, an element is hashed (using the same set of functions)
+  - the resulting indices of the bit vector are then checked for 1 values
+  - if indices are 0, the item is definitely not in the set
+  - hash collisions may cause FPs
+- no FNs, possible FPs
+  - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
+- what happens if we were to introduce noise and flip a few random bits in a vector?
+  - what happens to a bloom filter?
+    - FPs introduced for 0 bits changed to 1 bits
+    - FNs introduced for 1 bits changed to 0 bits
+  - what happens to the similarity between two HVs?
+    - not much
+
+Different approaches use different architectures. However, the primary differences focus on:
+- HV element types
+- the definition of the binding operation
+- handling of sparsity (which is related to kernels and signal sampling)
 
 
 Operations 
 ----------
-- addition - summing two vectors into a single vector preserves information from both consituents
-  - aka summation, superposition, learning, accumulation
-  - in some architectures, addition in replaced with a majority vote
-  - cos(A) !~ cos(B)
-  - cos(A) ~ cos(A+B)
-  - cos(B) ~ cos(A+B)
-  - cos(A+B) == cos(B+A)
-- multiplication - multiplying two vectors into a single sector ensures all three has low similarity
-  - distributes over add
-  - aka XOR
-  - binding is is a tensor-product approximation with a fixed-dimension result
-  - no binding problem in HDC, to bind is to multiply
-  - multiplication "binds" multiple vectors into a single vector
-    - things can be "unbound" from the resulting vector by multiplying it with a constituent's inverse
-      - which is itself in binary/bipolar representations
-      - depending on the element complexity, unbinding is not always the reverse of binding
-        - if this is the case, a "cleanup" step is required after unbinding which searches memory for the nearest HV and replaces the unbound HV with its the most similar in memory
-  - cos(A) !~ cos(B)
-  - cos(B) !~ cos(A)
-  - cos(A) !~ cos(A*B)
-  - cos(B) !~ cos(A*B)
-  - cos(A*B) == cos(B*A)
-  - (A*B) * A == B
-  - (A*B) * B == A
-- permutation - permutation "protects" the order of inputs to add/multiply
-   - aka shift
+- addition, summing two vectors into a single vector preserves information from both consituents
+  - aka: bundle, summation, superposition, learning, accumulation, majority vote
+- multiplication, multiplying two vectors into a single vector moves the relationship between the inputs to a new region of the hyperspace 
+  - aka: bind, compose
+    - XOR
+    - binding approximates TPR by because HDC requires fixed-dimensionality
+    - VSAs may have 99 problem, but The Binding Problem is not one, to bind is to multiply
+  - distributes over addition
+  - division, undo multiplication
+    - aka: unbind, factorization, decomposition
+    - multiply by the inverse
+    - in some VSA unbinding is imperfect and requires a second cleanup operation
+    - cleanup, replace an HV with its nearest neighbor in memory
+      - search the entire memory of HVs for the most similar HV produced from unbinding
+        - more on memory searching algorithms below
+      - replace the noisy HV from unbinding with the most similar HV in memory
+- permutation "protects" the order of HVs before being passed to BUNDLE or BIND
+   - aka: shift, rotate
    - distributes over add and multiply
-   - cos(A*B*C) == cos(B*C*A)
-   - cos(A) !~ cos(permute(A))
-- similarity - a measure applied to vector pairs
-  - how similar are two vectors? 
-    - which cluster does this unlabeled sample belong to? compare it to all centroid vectors
+- similarity, a measure applied to vectors pairwise
   - cossim for reals
-  - hamdis for bipolar
-  - what happens if we were to introduce noise and flip a few random bits in a vector?
-    - what happens to a bloom filter?
-      - FPs introduced for 0 bits changed to 1 bits
-      - FNs introduced for 1 bits changed to 0 bits
-    - what happens to the similarity between 2 hyperdimensional vectors?
-      - not much
-- substitution
+  - hamdis for bipolar/binary
+  - similarity is robust to noise
+- substitution, mutating an HV to become more similar to another HV
   - continous real-time windowing
-  - HVs A and B are dissimilar
-  - elements of A are changed to match elements of B
-  - B remains unchanged, A becomes more similar to B
+  - loop:
+    - elements of HV1 are altered to match elements of HV2
+    - HV2 remains unchanged
+    - HV1 becomes more similar to HV2
+- inverse, given a HV return the inverse of it
+  - this is highly dependant on the element type used by the VSA
 
-Composing Data Structures
--------------------------
+
+
+More on Memory Searchin Algorithms
+----------------------------------
+Consider the following: unbinding a "scene" of objects each with some set of properties
+- decompose the scene into its composed constituents
+  - objects in the scene have properties
+    - color
+    - shape
+    - location
+      - x
+      - y
+  - e.g. scene = bind(HV1, HV2, HV3)
+    - HV1 = bind(color_HV, shape_HV, bind(x, y))
+    - HV2 = bind(color_HV, shape_HV, bind(x, y))
+    - HV3 = bind(color_HV, shape_HV, bind(x, y))
+  - to understand the scene, you need to search the codebook for combinations of all atomic symbols for all properties
+    - this can be expensive, which is why selecting an efficient encoding method is important
+  - assume there are 100 unique items in each HV's codebook (lookup memory)
+    - 100 possible items for HV1
+    - 100 possible items for HV2
+    - 100 possible items for HV3
+    - worst case: 10 * 100 * 100 = 1_000_000 item combinations to check cossim with
+- Resonator Networks
+  - aka Hopfield Network
+  - similar to the result of gradient descent
+  - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
+  - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
+    - create 'estimate' vectors, these represent your initial guesses
+      - xhat, yhat, zhat = hdv(), hdv(), hdv()
+    - do something with the estimates
+    - update the estimates based on results of comparison to portions of the codebooks
+    - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
+    - iterates to find best
+      - z, with estimates of y and x
+      - y, with estimates of x and z
+      - z, with estimates of y and z
+- Hyperdimensional Quantum Factorization
+  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
+  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
+    - this approach is better than resonator networks
+  - hardware does not currently exist to implement. womp womp.
+
+
+Composing Structure with Vectors
+--------------------------------
 - sets (bundle)
 - maps (bind)
-  - aka "role-filler" binding
-  - dict/tuple/record/row/struct types are formed using maps
 - sequences (permute)
-- bins/ranges/levels (permute then bundle)
-  - some leveling strategies
-    - incorporate a final step to ensure density is maintained after doing the random bit flips
-      - this is typically beneficial for HVs of low dimensionality
-    - ensure nearby levels are somewhat similar but levels which are a certain distance apart are considered MAXIMALLY dissimilar
-      - this reminds me of an image convolution kernel
-    - combine different strategies
-      - e.g. log then linear
-  - strategies, what sort of line would you like to draw?
+  - graphs (bind nodes, bundle paths)
+    - paths and words are both ngrams
+      - bind(HV1, perm(HV2, 2), perm(HV3, 3)
+    - trees
+    - finite state automata
+- segmentation (of a single HV)
+  - aka: blocking, grouping, chunking, windowing
+  - e.g. block codes
+- leveling (of a HV space)
+  - aka: sampling, binning, discretization, quantization, bucketing
+  - useful for representing scalar values
+  - ensure nearby levels are somewhat similar but levels which are a certain distance apart are considered MAXIMALLY dissimilar
+    - this reminds me of an image convolution kernel
+  - strategies
     - linear, for representing a continuous range as an evenly spaced buckets
-      - exact linear - hdDimensions / nBins = elementsPerBin
-        - range should be based on the task-at-hand and not from training data's max/min values
-          - e.g. PDUs typically have a maximum length defined by RFCs 
+      - exact linear, dimensions / bins = elementsPerBin
       - approximate linear mapping - cheaper than exact linear mapping 
         - "Approximate linear mapping [58] does not guarantee ideal linear characteristic of the mapping, but the overall decay of similarity between feature levels will be approximately linear"
         - only store the start and stop HVs instead of the entire hyperspace
-        - constrcut levels on the fly
+        - construct levels on the fly
     - circular, useful for modulus/cyclical calculations such as:
-      - seasons of the year, hours of the day, months of the year
-      - color spaces
-      - distributing web requests to a pool of servers (similar to rendezvous/hrw hashing)
-    - elliptic, like a circle but longer
+      - seasons of the year, hours of the day, months of the year, color spaces, round-robin hashing (rendezvous/hrw)
     - logarithmic/exponential, shrink of shrink/growth of growth
-      - bell curves
     - fibonacci (retracement)
-    - random projection
-      - an intermediate state that is bound with another HV of significance
-- graphs (uniqly id vertices, bind vertices to create edges, then bundle edges to create graphs)
-  - to create directed graphs, permute one of the node HVs before creating the edge HV
-  - state machines
-    - how to incorporate weight into edges?
-      - multiply the edge HVs by a constant random matrix
-      - create a discrete linear range HV large enough to support transition weight precision
-        - then multiply each edge HV by the range's bin's HV
-  - HyperRec, using hdc to make a recommendation system by predicting edges in a directed graph
-- bloom filters - a special case of VSA
-  - a set is represented by a bit array (vector)
-    - an empty set is all zeros
-    - a bit array is more memory efficient than storing all samples in memory
-  - when adding an element to a bf, the item is hashed with several functions
-    - the functions result in an index which is flipped from 0 to 1
-  - when checking inness, an element is hashed (using the same set of functions)
-    - the resulting indices of the bit vector are then checked for 1 values
-    - if indices are 0, the item is definitely not in the set
-    - hash collisions may cause FPs
-  - no FNs, possible FPs
-    - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
+    - combine different leveling strategies to create a vector space with varying granularity
+      - e.g. log then linear
+      - elliptic, like a circle but longer on two of the sides
 
-
-VSA Uses
---------
-- language
-  - n-grams (aka k-mers), where n can be letters, words, sentences, or any symbol
-    - most ngrams will not be present in a
-      - vector space
-        - aka language (letter sequence)
-        - aka graph (path)
-      - this means that these combinatoric spaces will have very sparse statistics
-  - 't' = [101..111]
-  - 'h' = [010..001]
-  - 'e' = [101..110]
-  - 'the' = bind( perm('t',2), perm('h', 1), 'e')
-  - 'thf' = bind( unbind('the', 'e'), 'f')
-  - 'tfe' = bind( unbind('the', perm('h', 1)), perm('f', 1))
-    - this means that it is trivial to compute ngrams of any size given the vectors of it's constituents
-  - tri_grams = bundle('aaa' ... 'the', 'thf', ... 'zzz')
-  - trivial to answer the question: which language is this unlabeled text?
-    - maintain a set of labeled Language Vectors
-    - calculate the Text Vector for the unlabeled document
-    - compare the Text Vector to all known Language Vectors
-    - whichever Language Vector is most similar is the text's label
-    - 10_000 element vectors contain information from 14_348_907 pentagrams as easily as 19_683 trigrams
-  - a single vector can represent constituent vectors which represent 1grams, 2grams, 3grams ... infi-grams
-- spatial navigation: agents/robots
-  - [N, S, E, W] [T, F]
-  - bind ngram/path with timestep 
-  - benefits to communicating with VSA protocols
-    - HVs are robust to noise
-      - physical environment could be unpredictably noisy, no problemo
-    - low power requirements
-      - physical environment could dictate energy consumption rate, no problemo
-  - drone swarms
-    - each agent is a node in a graph or a grid cell
-    - how would agents discover each other? how would the graph initialize or handle mutation of structure?
-- timeseries
-  - discretized timeseries can be converted to ngrams and then analyzed the same way as language
-  - continuous (streaming) time can be constructed using a lookback window of correlated vectors
-    - eventHD
-      - see Figure 2.B for a pictoral representation of continuous-time hvs
-    - for a window of time +/- N
-      1. generate an hv
-      2. wait N steps (seconds)
-      3. generate a new hv
-      4. substitute 1/N bits of the hv from step 1 towards the hv in step 3, repeat N times until you have N "level" hvs ranging from step 1 hv to step 3 hv
-      5. goto 2
-      - this can be done indefinitely to represent the indefiniteness of time's passage
-        - there *must* be some limit to the number of timesteps we can/should hold in memory 
-      - bind the lookback-window hv (temporal information) with the signal hvs
-        - in the eventHD paper they use spatial data from a camera-like sensor
-- learning of centroids (class hv) is done by updating multiple centroids with each new sample
-- file similarity
-  - encode byte-grams instead of letter-grams or word-grams
-  - the byte-alphabet is larger than the letter-alphabet: [a-zA-Z]
-  - most common 'letter' in english is "E", most common in files?
-    - my guess would be 0x00
-  - hrrformer
-- genetics
-  - gene-alphabet is tiny (4) and that makes for poor suffix arrays
-- vsa can be used for spellcheck and finding optimal string alignment
-
-
-
-
-
-Resonator Networks
-==================
-- resonator networks search combined codebooks of bind() parameters more optimally than exhaustive search
-- even in the brain, we use factorization to ponder about shape,light,position of a visual scene
-  - scene decomposition
-    - bind properties to create object
-      - shape
-      - location
-      - color
-    - bundle all objects together to create a scene
-    - to understand the scene, you need to search the codebook for combinations of all atomic symbols for all properties
-      - this can be expensive, which is why selecting an efficient encoding method is important
-        - is it better to permute all items in a codebook (memory) and compare it with an HV?
-        - or, is it better to permute the HV and compare it with all items in a codebook?
-
-- given a bound HV, how do we figure out its constituents?
-  - how do we do division (factorization) in the VSA?
-  - bound_hv = hv1 * hv2 * hv3
-    - given bound_hv and all codebooks, how do we find hv parameters?
-    - assume there are 100 unique items in each parameter's codebook
-    - how quickly can we determine which items in the codebook map to h1, h2, h3?
-      - 100 possible items for hv1
-      - 100 possible items for hv2
-      - 100 possible items for hv3
-      - 100 * 100 * 100 items = 1_000_000 item combinations to check cossim with
-  - resonator networks
-    - aka hopfield network
-    - a method of doing something similar to gradient descent
-    - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
-    - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
-      - create 'estimate' vectors, these represent your initial guesses
-        - xhat, yhat, zhat = hdv(), hdv(), hdv()
-      - do something with the estimates
-      - update the estimates based on results of comparison to portions of the codebooks
-      - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
-      - iterates to find best
-        - z, with estimates of y and x
-        - y, with estimates of x and z
-        - z, with estimates of y and z
-
-
+  - locality preserving encoding (LPE)
+    - thermometer code
+      - linearly discretized levels
+        - the first vector is hdv(all=0)
+        - the last vector is hdv(all=1)
+        - the HV grows its count of 1 values by flipping 0s to 1s by incrementing index
+      - bundle(HVs[2],HVs[2]) != bundle(HVs[1],HVs[3])
+        - if using integers: 2 + 2 != 1 + 3
+        - consider the linearly discritized vector of hypervectors: HVs
+        - bundling/binding indices of the hyperspace do not behave as adding/multiplying integers would
+    - float code / sliding code
+      - simmilar to 1-hot but more like window-hot, where the window is centered around the element
+      - uses a fixed width window, slide across the all zeros vector, ensure bits in the window are 1s
+      - the window is slid across the all-zeros HV
+      - the start of the window is the HV's index in hypserspace
+      - more sparse compared to thermometer codes
+        - different similarity kernel
+    - scatter code
+      - no strict limitation on number of levels in a hyperspace
+      - hspace[0] = some random dense vector
+      - each level is created by randomly flipping a few elements in the previous unit
+    - fractional power encoding (FPE)
+      - aka: trajectory association
+      - bind vector x times with itself, then the vector represents x
+        - raise each element to the exponent x
+        - this only works if the bind op is NOT the inverse of itself
+      - in FHRR, each element is a phasor
+        - phasor, a value between -pi and pi
+      - bind(z(x1), z(x2)) == z(x1 + x2) 
+        - multiplying the same base is equal to adding their exopents
+      - variants on FPE
+        - FPE with hadamard binding (phasor)
+        - FPE with circular convolution binding (real valued)
+        - block local circular convolution (sparse)
+        - VFA, vector function architecture
+          - FPE VSA plus a kernel function
+            - your task will dictate your kernel but it opens the door to using VSA for learning with kernel functions
+              - multidimensional kernels
+              - window/modulus/circular kernels
+              - periodic multidimensional kernels
+                - grid cells, hex pattern in mice neurons
+                - crystallography
+                - lattice-based crypto
+          - "the distribution from which components of the base vector are sampled [how sparsity is sprinkled into the HVs] determines the shape of the FPE kernel, which in turn induces a VFA for computing with band-limited functions"
+          - any FPE with uniformly sampled base vectors have a universal kernel
+            - whittaker-shannon interpolation formula
+              - sinc function
+                - normalized vs not
+                - well defined envelop
+                - crosses zero at the integers
+          - binding a scalar to a vector (function) shifts the vector
+          - binding 2 vectors (functions) together is a convolution of functions
+             - functions are compositional
+          - calculate similarities between functions
 
 
 Misc
-====
-- hdc accuracy can be improved by icreasing vector lengths or making elements more complex than binary e.g. floats or complex
-  - more complex numbers make for more complex hardware needs
-  - increasing complexity of each element is "better" than making the vectors longer
+----
+- HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
+  - increasing complexity of each element is "better" at conveying information than making the vectors longer
+  - more complex element types make for more complex hardware needs
+- hrrformer
 - datasets mentioned in literature
   - isolet
   - ucihar
@@ -387,17 +339,11 @@ Misc
   - UCI Machine Learning Repository
   - UCR Time Series Archive
   - Numenta Anomaly Benchmark (NAB)
-- Minkowski distance
+- VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
   - sparse vectors are more easily compressed, making them more memory efficient 
-- fractional power encoding
-  - if you take a VSA symbol (vector) and raise it to an exponent, something magical happens.. something to do with kernels
-  - some literature refers to this as "trajectory association"
-  - this only works if the bind op is NOT the inverse of itself
-- VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - how to encode a vector into a vector symbol? multiply it by a constant random matrix (a projection/hat matrix)
-- there are methods of making a vector more/less dense
 - one of the big issues with HDC/VSA is that there is no standard method of encoding the application-specific data into vectors
   - should i bind with multiplication or permuation?
     - that depends on your use-case
@@ -405,7 +351,7 @@ Misc
   - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
     - turning a 2d image into a 1d vector simply by concatination is naive
     - there is a need to incorporate both x and y axis data as well as pixel color value
-    - partial permutation can address this by creating a radius where similar colors will have similar hvs
+    - partial permutation can address this by creating a radius where similar colors will have similar HVs
     - fractional power encoding can also be used
       - generate role-filler HVs for x and y
       - then raise the x vector to the exponent indicating the column of the pixel
@@ -415,7 +361,6 @@ Misc
   - NN frontend to generate HVs
   - HDC frontend to generate vectors for NN
 - what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the HDV's range's max/min?
-- HDC is prommising for nano-scale tech and FPGAs
 - fix sized ternary vectors remind me of
   - nPrint
     - concatenate all maximum length PDUs together to make a long sparse block vector
@@ -424,6 +369,7 @@ Misc
     - one of the steps to solve the formula is to calculate 1/2 as the sum of the infinite series: 1 - 1 + 1 - 1 + 1 - ...
 - multiple time-based signals can be quantized, then the signal at each timestep can be bundled together
   - combining multiple signals into a single vector
+  - this was done for seizure detection as well as gesture identification
 - "In general, DL’s [Deep Learning] strength is in learning a mapping from one space to another, given that these spaces are densely populated with examples. HDC, however, shines when there is a specific, known structure that one wishes to encode."
 - HDC models can be improved with adversarial mutated samples, just like other models
   - mutate/alter the training data with some strategy (random noise, column/row permuation, etc)
@@ -431,70 +377,9 @@ Misc
   - inspired by fuzzing techniques
 - HDC has capacity limits in the number of symbols
   - you can have in working memory given the need for a cleanup step in retrieval
-  - you can bundle together before a centroid becomes as good as a random guess
+  - you can bundle together before the resulting HV converge to random noise
+    - this causes results of bundling to "forget"
 - Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing
   - https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing
   - i do not understand all the math discussed
-  - if you're working with spacial data and you don't encode spacial features in VSA, the results will not be great
-- Hyperdimensional Quantum Factorization
-  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
-    - search the entire memory of HVs for the most similar HV produced from unbinding
-    - replace the HV from unbinding with the most similar HV in memory
-    - noisy result HV is replaced with known, in-memory, HV
-  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
-    - this approach is better han resonator networks
-  - hardware does not currently exist to implement. womp womp.
-- LPE - locality preserving encoding (encoding scalars)
-  - thermometer code
-    - linearly discretized levels
-      - the first vector is hdv(all=0)
-      - the last vector is hdv(all=1)
-      - the hv grows its count of 1 values by flipping 0s to 1s by incrementing index
-    - bundle(hvs[2],hvs[2]) != bundle(hvs[1],hvs[3])
-      - if using integers: 2 + 2 != 1 + 3
-      - consider the linearly discritzed vector of hypervectors: hvs
-      - bundling/binding indices of the hyperspace do not behave as adding/multiplying integers would
-  - float code / sliding code
-    - simmilar to 1-hot but more like window-hot, where the window is centered around the element
-    - uses a fixed width window, slide across the all zeros vector, ensure bits in the window are 1s
-    - the window is slid across the all-zeros HV
-    - the start of the window is the HV's index in hypserspace
-    - more sparse compared to thermometer codes
-      - different similarity kernel
-  - scatter code
-    - no strict limitation on number of levels in a hyperspace
-    - hspace[0] = some random dense vector
-    - each level is created by randomly flipping a few elements in the previous unit
-  - fractional power encoding
-    - bind vector x times with itself, then the vector represents x
-      - raise each element to the exponent x
-      - only works if binding operation is not the inverse of itself 
-    - in FHRR, each element is a phasor
-      - phasor, a value between -pi and pi
-    - bind(z(x1), z(x2)) == z(x1 + x2)
-      - multiplying the same base is equal to adding their exopents
-    - variants on FPE
-      - FPE with hadamard binding (phasor)
-      - FPE with circular convolution binding (real valued)
-      - block local circular convolution (sparse)
-      - VFA, vector function architecture 
-        - FPE VSA plus a kernel function
-          - your task will dictate your kernel but it opens the door to using VSA for learning with kernel functions
-            - multidimensional kernels
-            - window/modulus/circular kernels
-            - periodic multidimensional kernels
-              - grid cells, hex pattern in mice neurons
-              - crystallography
-              - lattice-based crypto
-        - whittaker-shannon interpolation formula
-          - approximate a function with sinc
-        - binding a scalar to a vector (function) shifts the vector
-        - binding 2 vectors (functions) together is a convolution of functions
-          - functions are compositional
-        - calculate similarities between functions
-    - any FPE with uniformly sampled base vectors have a universal kernel
-      - sinc function
-        - normalized vs not
-        - well defined envelop
-        - crosses zero at the integers
-- a hyperdimensional vector could act as a crypto system's initialization vector
+  - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
