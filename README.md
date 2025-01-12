@@ -64,9 +64,15 @@ Definitions
           - max value: `11111111 11111111 11111111 11111111`
         - `int x = 3;`
           - 3 value: `00000000 00000000 00000000 00000011`
+            - most/least significant bit
+            - values are positional encoded
         - why 4 bytes? why not 4 MB?
           - those concerned with memory efficiency (C programmers) would say that's a waste of bits (waste of memory)
             - VSA programmers would disagree - discussed more below
+      - how are all types represented in memory in VSA/HDC?
+        - 10_000 bits
+          - all bits hold the same amount of information
+          - there is no most/least significant bit, all bits are equally significant
   - Architecture, the means of computation. how the computer does stuff.
     - operations, memory, data types
     - e.g. x86/x64, ARM, Power(PC), RISC-V
@@ -98,13 +104,15 @@ Revisiting Dimensionality
     - the brain probably has a set of neurons representing the concept of "desk"
     - the set of neurons (symbol) for "desk" is likely similar (cossim) to the set of neurons (symbol) for "table"
 
-Approaches
-----------
+Architectures
+-------------
 Tensor Product Representation
 - combination of role vectors (representing structure of data) and filler vectors (representing values of data)
 - resulting vector is longer than either input HV
 - TPR is arguably not HDC because HDC requires fixed length vectors
 - TPR did, however, inspire HDC
+
+Multiply-Add-Permute (MAP)
 
 Holographic Reduced Representations
 - "reduced", all HVs are fixed length
@@ -117,14 +125,13 @@ Holographic Reduced Representations
     - holograms involve lasers and lightwave interference patterns
       - scanning objects with interference patterns is called interferometry
         - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
-- Frequency based HHR
+- Fourier HHR
   - FHRR/HRRF is measurably better than other VSAs in some cases
   - each element of a HV is a random phase angle (phasor) between -pi and pi
   - magnitude only is used
     - this appears related to spiking networks architectures
 
-Block Codes
-- Spare Block Codes is one type
+Sparse Block Codes
 - HV is partitioned into blocks (segments) of equal size 
   - the HV’s dimensionality is a multiple of the block size
 - block-wise (segment-wise) operations
@@ -133,6 +140,8 @@ Block Codes
   - combine blocks with other blocks or scalars
     - bind, bundle, substitue, maybe further subdivide the block?
       - block of block codes, hyperdimensional blocks
+
+Vector-derived Transformaion (VDT)
 
 Bloom filters, a special case of VSA
 - a set is represented by a binary vector
@@ -328,6 +337,7 @@ Composing Structure with Vectors
 
 Misc
 ----
+- torchhd
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
