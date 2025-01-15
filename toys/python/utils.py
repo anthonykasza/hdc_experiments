@@ -4,19 +4,19 @@ from numpy.linalg import norm
 
 
 def hdv(n=10_000, all=None):
-  '''Return a new bipolar symbolic representation'''
+  '''return a new bipolar symbolic representation using a normal distribution'''
   if all is not None:
     return np.full((1, n), all).flatten()
   return np.random.choice([1, -1], size=n)
 
 
 def clip(hdv, zeros=True):
-  '''trims values to 1 or -1, optionally flips 0 randomly
-  '''
+  '''trims values to 1 or -1, optionally flips 0 randomly'''
   if zeros:
-    return np.array([1 if x > 0 else -1 if x < 0 else 0 for x in hdv])
+    tmp = np.sign(hdv)
+    return np.where(tmp==0, np.random.choice([1, -1], size=1), tmp)
   else:
-    return np.array([1 if x > 0 else -1 if x < 0 else np.random.choice([1, -1]) for x in hdv])
+    return np.sign(hdv)
 
 
 def bundle(*args):
@@ -25,7 +25,7 @@ def bundle(*args):
 
 
 def unbundle(hdv1, hdv2):
-  '''element-wise unbundling should be subtraction but ...'''
+  '''element-wise unbundling should be subtraction but the brain doesn't unlearn things'''
   pass
 
 
@@ -35,7 +35,7 @@ def bind(*args):
 
 
 def unbind(*args):
-  '''bind is the inverse of itself'''
+  '''in a bipolar architecture, bind is the inverse of itself'''
   return bind(*args)
 
 
@@ -87,7 +87,6 @@ def discretize(min_val, max_val, bins):
     stop = min_val + ((i + 1) * step)
     ranges.append((start, stop))
   return ranges
-
 
 def kbundles(data, k, max_iter=10, halting_sim=0.999):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''

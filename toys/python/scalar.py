@@ -14,6 +14,6 @@ four = hyperspace[4]
 five = hyperspace[5]
 six = hyperspace[6]
 
-print(cossim( bundle(two, two), four ))
-print(cossim( bundle(two, three), five ))
-print(cossim( bind(two, three), six ))
+print(cossim( bundle(two, two), four ))   # 2 + 2 = 4, true
+print(cossim( bundle(two, three), five )) # 2 + 3 = 5, true
+print(cossim( bind(two, three), six ))    # 2 * 3 = 6, false

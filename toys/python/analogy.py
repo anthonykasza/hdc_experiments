@@ -1,45 +1,7 @@
 import numpy as np
 from numpy.linalg import norm
 
-
-def hdv(n=10_000):
-  '''Return a new symbolic representation'''
-  return np.random.choice([1, -1], size=n)
-
-def clip(hdv):
-  '''trims values to 1 or -1, optionally flips 0 randomly'''
-  return np.array([1 if x > 0 else -1 if x < 0 else 0 for x in hdv])
-
-def bundle(*args):
-  '''element-wise addition of vectors'''
-  return clip(np.sum([hdv for hdv in args], axis=0))
-
-def bind(*args):
-  '''element-wise multiplication of vectors'''
-  return np.prod([hdv for hdv in args], axis=0)
-
-def unbind(*args):
-  '''bind is the inverse of itself'''
-  return bind(*args)
-
-def permute(hdv, positions=1):
-  '''permute the values of a vector towards the tail'''
-  return np.roll(hdv, positions, axis=0)
-
-def unpermute(hdv, positions=1):
-  '''permute the values of a vector towards the head'''
-  return permute(hdv, positions * -1)
-
-def cossim(hdv1, hdv2):
-  '''find how similar 2 vectors are'''
-  if norm(hdv1) == 0 or norm(hdv2) == 0:
-    return 0
-  return np.dot(hdv1, hdv2) / (norm(hdv1) * norm(hdv2))
-
-def hamdis(hdv1, hdv2):
-  '''find how dissimilar 2 vectors are'''
-  return np.sum(hdv1 != hdv2) / len(hdv1)
-
+from utils import *
 
 # keys of the maps
 country = hdv()
