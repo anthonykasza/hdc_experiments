@@ -369,7 +369,7 @@ Composing Structure with Vectors
       - bind(HV1, perm(HV2, 2), perm(HV3, 3)
     - trees
     - finite state automata
-
+- stacks
 
 Misc
 ----
