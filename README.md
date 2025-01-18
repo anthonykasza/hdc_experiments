@@ -49,7 +49,8 @@ References
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 - HDC/VSA: Binary Sparse Distributed Representation with segments
   - https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj
-
+- Tutorial on Hyperdimensional Computing
+  - https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/
 
 
 Definitions
