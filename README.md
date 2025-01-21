@@ -32,6 +32,7 @@ References
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
 - VSAONLINE
   - https://sites.google.com/view/hdvsaonline/home
+  - https://groups.google.com/g/vsacommunity/about
 - MIDNIGHTVSA
   - https://sites.google.com/ltu.se/midnightvsa
 - Vector Symbolic Architectures, Luis El Srouji 
@@ -51,6 +52,8 @@ References
   - https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj
 - Tutorial on Hyperdimensional Computing
   - https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/
+- Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception
+- Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
 
 
 Definitions
@@ -374,7 +377,7 @@ Composing Structure with Vectors
 
 Misc
 ----
-- torchhd
+- torchhd and hrr python modules
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
@@ -386,6 +389,11 @@ Misc
   - UCI Machine Learning Repository
   - UCR Time Series Archive
   - Numenta Anomaly Benchmark (NAB)
+  - Long-Range Arena (LRA)
+  - malware
+    - Microsoft Malware Classification Challenge (Kaggle)
+    - The Drebin Dataset
+    - EMBER (Elastic Malware Benchmark for Empowering Researchers)
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
