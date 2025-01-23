@@ -1,4 +1,5 @@
 import copy
+import random
 import numpy as np
 from numpy.linalg import norm
 
@@ -155,16 +156,19 @@ def substitute(hv1, hv2, bins):
   substitution defines the start and stop HVs
   while make_bins() randomizes both
   '''
-
   bins_list = []
   bins_list.append(hv1)
+  altered_indices = set([])
   flips_per_iteration = len(hv1) // bins
 
-  # consider begining this sequence of flips from random indices
-  #  instead of begining at index 0 all the time
   for i in range(1, bins):
     next_level = copy.deepcopy(bins_list[i-1])
-    for j in range(flips_per_iteration):
-      next_level[(i * flips_per_iteration) + j] = hv2[(i * flips_per_iteration) + j]
+    # all the possible indices, except those in altered_indices
+    indexes_to_chose_from = set(range(len(next_level))).difference(altered_indices)
+    for j in random.sample(indexes_to_chose_from, flips_per_iteration):
+      altered_indices.add(j)
+      next_level[j] = hv2[j]
     bins_list.append(next_level)
+  bins_list.append(hv2)
   return bins_list
+
