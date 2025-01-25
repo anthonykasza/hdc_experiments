@@ -3,7 +3,7 @@ from sklearn import datasets
 
 import sys; sys.path.insert(0, "../")
 from utils import hdv, bind, bundle
-from utils import make_bins, discretize, kbundles
+from utils import make_levels, discretize, kbundles
 
 iris = datasets.load_iris()
 
@@ -18,7 +18,7 @@ bins_per_feature = [100] * len(iris.feature_names)
 for feature_idx, feature_name in enumerate(iris.feature_names):
   features_range_symbols[feature_idx] = {}
   bins_for_this_feature = bins_per_feature[feature_idx]
-  bin_symbols = make_bins(bins=bins_for_this_feature)
+  bin_symbols = make_levels(bins=bins_for_this_feature)
   bin_ranges = discretize(
     min_val=np.min(iris.data[:, feature_idx]),
     max_val=np.max(iris.data[:, feature_idx]),

@@ -1,4 +1,4 @@
-from utils import cossim, hdv, sub
+from utils import cossim, hdv, substitute
 
 
 dims = 20
@@ -9,7 +9,7 @@ print(a)
 print(b)
 print()
 
-levels = sub(a, b, dims//4)
+levels = substitute(a, b, dims//4)
 for level in levels:
   print(cossim(level, a), cossim(level, b))
   print(level)

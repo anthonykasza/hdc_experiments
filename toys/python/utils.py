@@ -25,11 +25,6 @@ def bundle(*args):
   return clip(np.sum([hdv for hdv in args], axis=0))
 
 
-def unbundle(hdv1, hdv2):
-  '''element-wise unbundling should be subtraction but the brain doesn't unlearn things'''
-  pass
-
-
 def bind(*args):
   '''element-wise multiplication of vectors'''
   return np.prod([hdv for hdv in args], axis=0)
@@ -66,15 +61,20 @@ def hamdis(hdv1, hdv2):
   return np.sum(hdv1 != hdv2) / len(hdv1)
 
 
-def make_bins(bins=1000, n=10_000):
+def make_levels(bins=1000, n=10_000):
   '''Return a list of HDVs representing linearly discretized histogram buckets'''
   bins_list = []
   bins_list.append(hdv(n))
+  altered_indices = set([])
   flips_per_iteration = n // bins
+
   for i in range(1, bins):
     next_level = copy.deepcopy(bins_list[i-1])
-    for j in range(flips_per_iteration):
-      next_level[(i * flips_per_iteration) + j] = next_level[(i * flips_per_iteration) + j] * -1
+    # all the possible indices, except those in altered_indices
+    indexes_to_chose_from = set(range(len(next_level))).difference(altered_indices)
+    for j in random.sample(indexes_to_chose_from, flips_per_iteration):
+      altered_indices.add(j)
+      next_level[j] = next_level[j] * -1
     bins_list.append(next_level)
   return bins_list
 
@@ -88,6 +88,7 @@ def discretize(min_val, max_val, bins):
     stop = min_val + ((i + 1) * step)
     ranges.append((start, stop))
   return ranges
+
 
 def kbundles(data, k, max_iter=10, halting_sim=0.999):
   '''A kmeans-style clustering algorithm inspired by HDCluster'''
@@ -152,9 +153,11 @@ def kbundles(data, k, max_iter=10, halting_sim=0.999):
 
 def substitute(hv1, hv2, bins):
   '''
-  this is conceptually similar to make_bins() except
+  this is conceptually similar to make_levels() except
   substitution defines the start and stop HVs
-  while make_bins() randomizes both
+  while make_levels() randomizes both
+
+  make_levels() returns a list that is 1 shroter than substitute
   '''
   bins_list = []
   bins_list.append(hv1)

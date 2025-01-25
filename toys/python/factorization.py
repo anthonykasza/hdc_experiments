@@ -5,15 +5,15 @@
 #  have an off-by-one bug somewhere
 
 import random
-from utils import hdv, bind, bundle, cossim, make_bins
+from utils import hdv, bind, bundle, cossim, make_levels
 
 
 # make codebooks for 3 variables: x, y, z
 # each codebook represents a contiguous vector field
 codebook_size = 100
-x_codebook = make_bins(bins=codebook_size, n=10_000)
-y_codebook = make_bins(bins=codebook_size, n=10_000)
-z_codebook = make_bins(bins=codebook_size, n=10_000)
+x_codebook = make_levels(bins=codebook_size, n=10_000)
+y_codebook = make_levels(bins=codebook_size, n=10_000)
+z_codebook = make_levels(bins=codebook_size, n=10_000)
 
 # select x, y, and z at random ensuring no zeros
 x_idx = random.randint(1, codebook_size)

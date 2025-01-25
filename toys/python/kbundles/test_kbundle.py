@@ -29,7 +29,7 @@ data = [
 targets = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, -1, -1]
 
 bins = 10
-bin_symbols = make_bins(bins=bins)
+bin_symbols = make_levels(bins=bins)
 bin_ranges = discretize(min_val=0, max_val=100, bins=bins)
 
 data_symbols = []

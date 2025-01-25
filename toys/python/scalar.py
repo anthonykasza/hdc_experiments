@@ -2,11 +2,11 @@
 #  multiply and add for integers?
 
 
-from utils import hdv, bundle, bind, make_bins, cossim
+from utils import hdv, bundle, bind, make_levels, cossim
 
 # a vector of hypervectors, a space, which
 #  preserves localilty
-hyperspace = make_bins(n=10_000, bins=100)
+hyperspace = make_levels(n=10_000, bins=100)
 one = hyperspace[1]
 two = hyperspace[2]
 three = hyperspace[3]
