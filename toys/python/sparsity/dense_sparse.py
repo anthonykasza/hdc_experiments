@@ -2,6 +2,7 @@
 #  a hv to make it more sparse
 
 import numpy as np
+import sys; sys.path.insert(0, "../")
 from utils import hdv, cossim
 
 
