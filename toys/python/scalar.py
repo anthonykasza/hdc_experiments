@@ -14,6 +14,15 @@ four = hyperspace[4]
 five = hyperspace[5]
 six = hyperspace[6]
 
-print(cossim( bundle(two, two), four ))   # 2 + 2 = 4, true
-print(cossim( bundle(two, three), five )) # 2 + 3 = 5, true
-print(cossim( bind(two, three), six ))    # 2 * 3 = 6, false
+# the following two seem to behave as scalar math but it's only
+#  because 2 is similar to 3 is simialr to 4
+print("2 + 2 = 4", cossim( bundle(two, two), four ))
+print("2 + 3 = 5", cossim( bundle(two, three), five ))
+
+# if we increase distance between symbols within the space
+#  then addition stops working
+print("2 + 97 = 99", cossim( bundle(hyperspace[2], hyperspace[97]), hyperspace[99]))
+
+# multiplying HVs does not behave as real numbers would neither
+print("2 * 3 = 6", cossim( bind(two, three), six ))
+
