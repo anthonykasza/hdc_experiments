@@ -60,8 +60,16 @@ export {
   const orig_hv = VSA::hdv();
   const resp_hv = VSA::hdv();
 
+  # counting stuff
+  global orig_byte_counter: count = 0;
+  global resp_byte_counter: count = 0;
+  global orig_write_counter: count = 0;
+  global resp_write_counter: count = 0;
+
   # bundles, one for each tls connections processed
   global tls_connection_hvs: vector of hypervector = vector();
+  global tls_connection_ids: vector of string = vector();
+
 }
 
 # A list of hypervectors, one representing each record
@@ -99,8 +107,12 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
   # bind the endpoint, length, and time hypervectors into one
   #   and append the result to the connection's vector of HV
   if (is_client) {
+    ::orig_byte_counter += length;
+    ::orig_write_counter += 1;
     c$ssl$sohv += VSA::bind(vector( orig_hv, len_hv, interval_hv ));
   } else {
+    ::resp_byte_counter += length;
+    ::resp_write_counter += 1;
     c$ssl$sohv += VSA::bind(vector( resp_hv, len_hv, interval_hv ));
   }
 }
@@ -108,13 +120,20 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
 event connection_state_remove(c: connection) {
   if (c?$ssl) {
     ::tls_connection_hvs += VSA::bundle(c$ssl$sohv);
+    ::tls_connection_ids += c$uid;
   }
 }
 
-
+# inefficiently find tls connections which are likely related or duplicates
 event zeek_done() {
-  local all_tls_connections: hypervector = VSA::bundle(::tls_connection_hvs);
-
-  print "orig", VSA::sim(orig_hv, VSA::bind(vector( orig_hv, all_tls_connections ) ));
-  print "resp", VSA::sim(resp_hv, VSA::bind(vector( resp_hv, all_tls_connections ) ));
+  for (i in ::tls_connection_hvs) {
+    for (j in ::tls_connection_hvs) {
+      if (i == j) { next; }
+      local sim = VSA::sim(::tls_connection_hvs[i], ::tls_connection_hvs[j]);
+      if (sim > 0.8) {
+        # i would wager that pairs with sim >0.8 have similar fingerprints or are destined for the same SNI
+        print ::tls_connection_ids[i], ::tls_connection_ids[j], sim;
+      }
+    }
+  }
 }

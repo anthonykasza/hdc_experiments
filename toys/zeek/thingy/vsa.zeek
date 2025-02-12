@@ -14,11 +14,11 @@ export {
   option dimensions: count = 1000 * 10;
 
   global dice_roll: function(): int;
-  global hdv: function(n: count): hypervector;
+  global hdv: function(n: count, all_zeros: bool): hypervector;
   global bundle: function(hdvs: vector of hypervector): hypervector;
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hdv1: hypervector, hdv2: hypervector): double;
-  global inverse: function(hdv: hypervector): hypervector;
+  global additive_inverse: function(hdv: hypervector): hypervector;
 
   global make_levels_linear: function(num_of_levels: count, hdv1: hypervector, hdv2: hypervector): vector of hypervector;
   global discritize_linear: function(r: Range, bins: count): vector of Range;
@@ -59,17 +59,21 @@ function dice_roll(): int {
   }
 }
 
-function hdv(n: count &default=VSA::dimensions): hypervector {
+function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hypervector {
   local v: vector of int = vector();
   local j = 0;
   while (n > 0) {
-    v[j] = dice_roll();
+    if (all_zeros) {
+      v[j] = 0;
+    } else {
+      v[j] = dice_roll();
+    }
     n -= 1;
     j += 1;
   }
   return v;
 }
-redef resp_hv = hdv();
+redef orig_hv = hdv();
 redef resp_hv = hdv();
 redef record_len_hv = hdv();
 
@@ -126,7 +130,7 @@ function make_levels_linear(
   return levels;
 }
 
-function inverse(hdv: hypervector): hypervector {
+function additive_inverse(hdv: hypervector): hypervector {
   local v: hypervector = vector();
   for (idx in hdv) {
     # values from dice_roll are symmetrically wrapped around zero
@@ -153,16 +157,24 @@ function sim(hdv1: hypervector, hdv2: hypervector): double {
   return dot / (m1 * m2);
 }
 
-
 function bundle(hdvs: vector of hypervector): hypervector {
-  local idx: count;
-  local v: hypervector = vector();
+  if (|hdvs| == 0) { return hdv(VSA::dimensions, T); }
 
-  for (element_idx in hdvs[0]) {
-    # initialize to additive identity
-    v[element_idx] = 0;
-    for (hv_idx in hdvs) {
-      v[element_idx] += hdvs[hv_idx][element_idx];
+  local v: hypervector = vector();
+  local tmp_hv: hypervector;
+
+  for (hv_idx in hdvs) {
+    tmp_hv = hdvs[hv_idx];
+
+    # make v all zeros
+    if (|v| == 0) {
+      for (element_idx in tmp_hv) {
+        v += 0;
+      }
+    }
+
+    for (element_idx in tmp_hv) {
+      v[element_idx] = v[element_idx] + tmp_hv[element_idx];
     }
   }
 
@@ -170,14 +182,21 @@ function bundle(hdvs: vector of hypervector): hypervector {
 }
 
 function bind(hdvs: vector of hypervector): hypervector {
-  local idx: count;
   local v: hypervector = vector();
+  local tmp_hv: hypervector;
 
-  for (element_idx in hdvs[0]) {
-    # initialize to multiplicative identity
-    v[element_idx] = 1;
-    for (hv_idx in hdvs) {
-      v[element_idx] = v[element_idx] * hdvs[hv_idx][element_idx];
+  for (hv_idx in hdvs) {
+    tmp_hv = hdvs[hv_idx];
+
+    # make v all 1s
+    if (|v| == 0) {
+      for (element_idx in tmp_hv) {
+        v += 1;
+      }
+    }
+
+    for (element_idx in tmp_hv) {
+      v[element_idx] = v[element_idx] * tmp_hv[element_idx];
     }
   }
 
