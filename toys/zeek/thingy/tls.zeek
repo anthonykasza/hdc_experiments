@@ -1,7 +1,5 @@
 
-
 export {
-
   global length_codebook: table[Range] of hypervector = {
     # By 32, with jitter
     [Range($start=0, $stop=29)] = VSA::hdv(),
@@ -69,12 +67,19 @@ export {
   # bundles, one for each tls connections processed
   global tls_connection_hvs: vector of hypervector = vector();
   global tls_connection_ids: vector of string = vector();
-
 }
 
-# A list of hypervectors, one representing each record
 redef record SSL::Info += {
-  sohv: vector of hypervector &default = vector();
+  # each element is a roll-filler binding hv of: bind(endpoint, length, interval)
+  roll_filler_hyperspace: vector of hypervector &default=vector();
+
+  # each element is a length n-gram binding of: bind( perm(l[0],0), perm(l[1],1), perm(l[2],2) ) 
+  client_len_trigram_hyperspace: vector of hypervector &default=vector();
+  server_len_trigram_hyperspace: vector of hypervector &default=vector();
+
+  # each element is an interval n-gram binding of: bind( perm(i[0],0), perm(i[1],1), perm(i[2],2) ) 
+  client_ival_trigram_hyperspace: vector of hypervector &default=vector();
+  server_ival_trigram_hyperspace: vector of hypervector &default=vector();
 };
 
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
@@ -109,18 +114,26 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
   if (is_client) {
     ::orig_byte_counter += length;
     ::orig_write_counter += 1;
-    c$ssl$sohv += VSA::bind(vector( orig_hv, len_hv, interval_hv ));
+    c$ssl$roll_filler_hyperspace += VSA::bind(vector( orig_hv, len_hv, interval_hv ));
   } else {
     ::resp_byte_counter += length;
     ::resp_write_counter += 1;
-    c$ssl$sohv += VSA::bind(vector( resp_hv, len_hv, interval_hv ));
+    c$ssl$roll_filler_hyperspace += VSA::bind(vector( resp_hv, len_hv, interval_hv ));
   }
+
+  # TODO - accumulate endpoint len and ival vectors
 }
 
 event connection_state_remove(c: connection) {
   if (c?$ssl) {
-    ::tls_connection_hvs += VSA::bundle(c$ssl$sohv);
+    ::tls_connection_hvs += VSA::bundle(c$ssl$roll_filler_hyperspace);
     ::tls_connection_ids += c$uid;
+
+    # TODO - embed endpoint len and ival ngrams, then bundle
+    #   VSA::bundle(c$ssl$client_len_trigram_hyperspace)
+    #   VSA::bundle(c$ssl$server_len_trigram_hyperspace)
+    #   VSA::bundle(c$ssl$client_ival_trigram_hyperspace)
+    #   VSA::bundle(c$ssl$server_ival_trigram_hyperspace)
   }
 }
 

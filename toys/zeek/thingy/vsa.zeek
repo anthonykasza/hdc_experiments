@@ -18,15 +18,33 @@ export {
   global bundle: function(hdvs: vector of hypervector): hypervector;
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hdv1: hypervector, hdv2: hypervector): double;
+  global perm: function(hv: hypervector, positions: int): hypervector;
+  global ngram: function(v: vector of int, n: count): vector of vector of int;
   global additive_inverse: function(hdv: hypervector): hypervector;
 
   global make_levels_linear: function(num_of_levels: count, hdv1: hypervector, hdv2: hypervector): vector of hypervector;
   global discritize_linear: function(r: Range, bins: count): vector of Range;
-
-  const resp_hv: hypervector = vector() &redef;
-  const orig_hv: hypervector = vector() &redef;
-  const record_len_hv: hypervector = vector() &redef;
 }
+
+function ngram(v: vector of int, n: count): vector of vector of int {
+  local result: vector of vector of int = vector();
+  local tmp: vector of int;
+  local j: count;
+
+  for (idx in v) {
+    j = 0;
+    tmp = vector();
+    while (j < n) {
+      if (idx + j >= |v|) { return result; }
+      tmp += v[idx+j];
+      j += 1;
+    }
+    result += tmp;
+  }
+
+  return result;
+}
+
 
 function discritize_linear(r: Range, bins: count): vector of Range {
   local start = r$start;
@@ -73,10 +91,6 @@ function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hyp
   }
   return v;
 }
-redef orig_hv = hdv();
-redef resp_hv = hdv();
-redef record_len_hv = hdv();
-
 
 # linearly discritize_linear the space between two hyper vectors
 # num_of_levels = number of levels between hdv1 and hdv2
@@ -202,3 +216,36 @@ function bind(hdvs: vector of hypervector): hypervector {
 
   return v;
 }
+
+function perm(hv: hypervector, positions: int &default=1): hypervector {
+  local n = |hv|;
+  local v: hypervector = hdv(n, T);
+  positions = positions % n;
+
+  local element_idx: count;
+  local v_idx: count;
+
+  # towards the tail
+  if (positions > 0) {
+    # forwards iterate the elements
+    for (element_idx in hv) {
+      v_idx = int_to_count((element_idx + positions) % n);
+      v[v_idx] = hv[element_idx];
+    }
+
+  # towards the head
+  } else {
+    # backwards iterate the elements
+    element_idx = n;
+    while (element_idx > 0) {
+      element_idx -= 1;
+      local i: int = (element_idx + positions) % n;
+      if (i < 0) { i = n + i; } 
+      v_idx = int_to_count(i);
+      v[v_idx] = hv[element_idx];
+    }
+  }
+
+  return v;
+}
+
