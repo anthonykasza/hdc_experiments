@@ -19,16 +19,16 @@ export {
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hdv1: hypervector, hdv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
-  global ngram: function(v: vector of int, n: count): vector of vector of int;
+  global ngram: function(v: vector of hypervector, n: count): vector of vector of hypervector;
   global additive_inverse: function(hdv: hypervector): hypervector;
 
   global make_levels_linear: function(num_of_levels: count, hdv1: hypervector, hdv2: hypervector): vector of hypervector;
   global discritize_linear: function(r: Range, bins: count): vector of Range;
 }
 
-function ngram(v: vector of int, n: count): vector of vector of int {
-  local result: vector of vector of int = vector();
-  local tmp: vector of int;
+function ngram(v: vector of hypervector, n: count): vector of vector of hypervector {
+  local result: vector of vector of hypervector = vector();
+  local tmp: vector of hypervector;
   local j: count;
 
   for (idx in v) {
@@ -218,6 +218,8 @@ function bind(hdvs: vector of hypervector): hypervector {
 }
 
 function perm(hv: hypervector, positions: int &default=1): hypervector {
+  if (positions == 0) { return hv; }
+
   local n = |hv|;
   local v: hypervector = hdv(n, T);
   positions = positions % n;

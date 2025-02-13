@@ -55,31 +55,34 @@ export {
   } &ordered;
 
   # constant hypervectors representing which endpont wrote the record
-  const orig_hv = VSA::hdv();
-  const resp_hv = VSA::hdv();
+  const client_hv = VSA::hdv();
+  const server_hv = VSA::hdv();
+
+  # ngram size
+  option tls_record_ngram_size: count = 3;
 
   # counting stuff
-  global orig_byte_counter: count = 0;
-  global resp_byte_counter: count = 0;
-  global orig_write_counter: count = 0;
-  global resp_write_counter: count = 0;
+  global client_byte_counter: count = 0;
+  global server_byte_counter: count = 0;
 
-  # bundles, one for each tls connections processed
-  global tls_connection_hvs: vector of hypervector = vector();
-  global tls_connection_ids: vector of string = vector();
+  global conns_as_client_len_bundles: vector of hypervector = vector();
+  global conns_as_server_len_bundles: vector of hypervector = vector();
+  global conns_as_client_ival_bundles: vector of hypervector = vector();
+  global conns_as_server_ival_bundles: vector of hypervector = vector();
+
+  global conns_as_roll_filler_bundles: vector of hypervector = vector();
+  global conns_as_uids: vector of string = vector();
 }
 
 redef record SSL::Info += {
   # each element is a roll-filler binding hv of: bind(endpoint, length, interval)
-  roll_filler_hyperspace: vector of hypervector &default=vector();
+  roll_filler_hvs: vector of hypervector &default=vector();
 
-  # each element is a length n-gram binding of: bind( perm(l[0],0), perm(l[1],1), perm(l[2],2) ) 
-  client_len_trigram_hyperspace: vector of hypervector &default=vector();
-  server_len_trigram_hyperspace: vector of hypervector &default=vector();
+  client_len_hvs: vector of hypervector &default=vector();
+  server_len_hvs: vector of hypervector &default=vector();
 
-  # each element is an interval n-gram binding of: bind( perm(i[0],0), perm(i[1],1), perm(i[2],2) ) 
-  client_ival_trigram_hyperspace: vector of hypervector &default=vector();
-  server_ival_trigram_hyperspace: vector of hypervector &default=vector();
+  client_ival_hvs: vector of hypervector &default=vector();
+  server_ival_hvs: vector of hypervector &default=vector();
 };
 
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
@@ -108,45 +111,95 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
       break;
     }
   }
+  # NOTE: interval_hv is the interval since the previous record, regardless
+  #       if it was written by the client or the server
+  #       this will influence ...
 
   # bind the endpoint, length, and time hypervectors into one
   #   and append the result to the connection's vector of HV
   if (is_client) {
-    ::orig_byte_counter += length;
-    ::orig_write_counter += 1;
-    c$ssl$roll_filler_hyperspace += VSA::bind(vector( orig_hv, len_hv, interval_hv ));
+    ::client_byte_counter += length;
+    c$ssl$client_len_hvs[|c$ssl$client_len_hvs|] = len_hv;
+    c$ssl$client_ival_hvs[|c$ssl$client_ival_hvs|] = interval_hv;
+    c$ssl$roll_filler_hvs[|c$ssl$roll_filler_hvs|] = VSA::bind(vector( client_hv, len_hv, interval_hv ));
   } else {
-    ::resp_byte_counter += length;
-    ::resp_write_counter += 1;
-    c$ssl$roll_filler_hyperspace += VSA::bind(vector( resp_hv, len_hv, interval_hv ));
+    ::server_byte_counter += length;
+    c$ssl$server_len_hvs[|c$ssl$server_len_hvs|] = len_hv;
+    # ... the interval value here. the interval could be since the previous client or server record
+    c$ssl$server_ival_hvs[|c$ssl$server_ival_hvs|] = interval_hv;
+    c$ssl$roll_filler_hvs[|c$ssl$roll_filler_hvs|] = VSA::bind(vector( server_hv, len_hv, interval_hv ));
   }
-
-  # TODO - accumulate endpoint len and ival vectors
 }
 
 event connection_state_remove(c: connection) {
-  if (c?$ssl) {
-    ::tls_connection_hvs += VSA::bundle(c$ssl$roll_filler_hyperspace);
-    ::tls_connection_ids += c$uid;
+  if (! c?$ssl) { return; }
 
-    # TODO - embed endpoint len and ival ngrams, then bundle
-    #   VSA::bundle(c$ssl$client_len_trigram_hyperspace)
-    #   VSA::bundle(c$ssl$server_len_trigram_hyperspace)
-    #   VSA::bundle(c$ssl$client_ival_trigram_hyperspace)
-    #   VSA::bundle(c$ssl$server_ival_trigram_hyperspace)
+  local groups: vector of vector of hypervector;
+  local group: vector of hypervector;
+  local tmp: vector of hypervector;
+  local ngram_hv: hypervector;
+  local ngram_accumulator_hv: hypervector;
+
+  ngram_accumulator_hv = VSA::hdv(VSA::dimensions, T);
+  groups = VSA::ngram(c$ssl$client_len_hvs, tls_record_ngram_size);
+  for (group_idx in groups) {
+    group = groups[group_idx];
+    tmp = vector();
+    # permute
+    for (hv_idx in group) {
+      tmp[|tmp|] = VSA::perm(group[hv_idx], hv_idx);
+    }
+    # bind the permuted hvs
+    ngram_hv = VSA::bind(tmp);
+    # bundle the ngram_hv into the ngram_accumulator_hv
+    ngram_accumulator_hv = VSA::bundle(vector( ngram_accumulator_hv, ngram_hv ));
   }
+  ::conns_as_client_len_bundles[|::conns_as_client_len_bundles|] = ngram_accumulator_hv;
+
+# TODO - do the same block as above but for each of the following:
+#    ::conns_as_server_len_bundles[||] = VSA::bundle(c$ssl$server_len_hvs);
+#    ::conns_as_client_ival_bundles[||] = VSA::bundle(c$ssl$client_ival_hvs);
+#    ::conns_as_server_ival_bundles[||] = VSA::bundle(c$ssl$server_ival_hvs);
+
+    ::conns_as_roll_filler_bundles[|::conns_as_roll_filler_bundles|] = VSA::bundle(c$ssl$roll_filler_hvs);
+    ::conns_as_uids[|::conns_as_uids|] = c$uid;
 }
 
 # inefficiently find tls connections which are likely related or duplicates
 event zeek_done() {
-  for (i in ::tls_connection_hvs) {
-    for (j in ::tls_connection_hvs) {
+  for (i in ::conns_as_uids) {
+    for (j in ::conns_as_uids) {
       if (i == j) { next; }
-      local sim = VSA::sim(::tls_connection_hvs[i], ::tls_connection_hvs[j]);
-      if (sim > 0.8) {
-        # i would wager that pairs with sim >0.8 have similar fingerprints or are destined for the same SNI
-        print ::tls_connection_ids[i], ::tls_connection_ids[j], sim;
+
+      # role fillers
+      local rf_sim = VSA::sim(::conns_as_roll_filler_bundles[i], ::conns_as_roll_filler_bundles[j]);
+      if (rf_sim > 0.88) {
+        print "rolefiller sim", ::conns_as_uids[i], ::conns_as_uids[j], rf_sim;
       }
+
+      # client lengths
+      local cl_sim = VSA::sim(::conns_as_client_len_bundles[i], ::conns_as_client_len_bundles[j]);
+      if (cl_sim > 0.88) {
+        print "client len sim", ::conns_as_uids[i], ::conns_as_uids[j], cl_sim;
+      }
+
+#      # server lengths
+#      local sl_sim = VSA::sim(::conns_as_server_len_bundles[i], ::conns_as_server_len_bundles[j]);
+#      if (sl_sim > 0.88) {
+#        print "server len sim", ::conns_as_uids[i], ::conns_as_uids[j], sl_sim;
+#      }
+
+#      # client intervals
+#      local ci_sim = VSA::sim(::conns_as_client_ival_bundles[i], ::conns_as_client_ival_bundles[j]);
+#      if (ci_sim > 0.88) {
+#        print "client ival sim", ::conns_as_uids[i], ::conns_as_uids[j], ci_sim;
+#      }
+
+#      # server intervals
+#      local si_sim = VSA::sim(::conns_as_server_ival_bundles[i], ::conns_as_server_ival_bundles[j]);
+#      if (si_sim > 0.88) {
+#        print "server ival sim", ::conns_as_uids[i], ::conns_as_uids[j], si_sim;
+#      }
     }
   }
 }
