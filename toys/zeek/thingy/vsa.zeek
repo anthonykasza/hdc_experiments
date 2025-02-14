@@ -17,12 +17,14 @@ export {
   global hdv: function(n: count, all_zeros: bool): hypervector;
   global bundle: function(hdvs: vector of hypervector): hypervector;
   global bind: function(hdvs: vector of hypervector): hypervector;
-  global sim: function(hdv1: hypervector, hdv2: hypervector): double;
+  global sim: function(hv1: hypervector, hv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
   global ngram: function(v: vector of hypervector, n: count): vector of vector of hypervector;
   global additive_inverse: function(hdv: hypervector): hypervector;
 
-  global make_levels_linear: function(num_of_levels: count, hdv1: hypervector, hdv2: hypervector): vector of hypervector;
+  global symbol_lookup: function(value: double, codebook: table[Range] of hypervector): hypervector;
+
+  global make_levels_linear: function(num_of_levels: count, hv1: hypervector, hv2: hypervector): vector of hypervector;
   global discretize_linear: function(r: Range, bins: count): vector of Range;
 }
 
@@ -92,55 +94,32 @@ function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hyp
   return v;
 }
 
-# linearly discretize_linear the space between two hyper vectors
-# num_of_levels = number of levels between hdv1 and hdv2
 function make_levels_linear(
   num_of_levels: count,
-  hdv1: hypervector &default=hdv(),
-  hdv2: hypervector &default=hdv()
+  hv1: hypervector &default=hdv(),
+  hv2: hypervector &default=hdv()
 ): vector of hypervector {
   if (num_of_levels < 1 || num_of_levels > VSA::dimensions) {
-    return vector(hdv1, hdv2);
+    return vector(hv1, hv2);
   }
 
-  local changes_per_iteration: count = VSA::dimensions / num_of_levels;
   local levels: vector of hypervector = vector();
-  levels += hdv1;
-  local level_idx = 1;
-  local unchanged_idx: set[count] = set();
-  for (idx in hdv1) {
-    add unchanged_idx[idx];
+  levels[0] = copy(hv1);
+  local level_idx: count = |levels|;
+
+  local disc_ranges = discretize_linear([$start=0.0, $stop=|hv1|+0.0], num_of_levels+1);
+  for (range_idx in disc_ranges) {
+    local r = disc_ranges[range_idx];
+    local start = double_to_count(r$start);
+    local stop = double_to_count(r$stop);
+  
+    # copy the previous level into this level
+    levels[|levels|] = copy(levels[|levels|-1]);
+
+    # then copy slices of hv2[start:stop] into hv1[start:stop]
+    levels[|levels|-1][start:stop] = hv2[start:stop];
   }
 
-  while (level_idx <= num_of_levels) {
-    # deep copy the previous level into the next level
-    local next_level: hypervector = vector();
-    local prev_level = levels[level_idx-1];
-    for (deepcopy_idx in prev_level) {
-      next_level[deepcopy_idx] = prev_level[deepcopy_idx];
-    }
-
-    # while there exist unaltered elements
-    local change_counter = 0;
-    while (change_counter <= changes_per_iteration) {
-      if (|unchanged_idx| > 0) {
-        # pick one randomly and mark it as altered
-        local random_idx = rand(|unchanged_idx|);
-        delete unchanged_idx[random_idx];
-        # then change next_level to be more like hdv2
-        next_level[random_idx] = hdv2[random_idx];
-      } else {
-        # if we've altered all the elements then,
-        #  levels[0] = hdv1 and levels[-1] = hdv2
-        return levels;
-      }
-      change_counter += 1;
-    }
-    levels += next_level;
-    level_idx += 1;
-  }
-
-  levels += hdv2;
   return levels;
 }
 
@@ -153,16 +132,16 @@ function additive_inverse(hdv: hypervector): hypervector {
   return v;
 }
 
-function sim(hdv1: hypervector, hdv2: hypervector): double {
+function sim(hv1: hypervector, hv2: hypervector): double {
   local dot: double = 0.0;
   local mag1: double = 0.0;
   local mag2: double = 0.0;
   local idx: count;
 
-  for (idx in hdv1) {
-    dot += hdv1[idx] * hdv2[idx];
-    mag1 += hdv1[idx] * hdv1[idx];
-    mag2 += hdv2[idx] * hdv2[idx];
+  for (idx in hv1) {
+    dot += hv1[idx] * hv2[idx];
+    mag1 += hv1[idx] * hv1[idx];
+    mag2 += hv2[idx] * hv2[idx];
   }
 
   local m1 = sqrt(mag1);
@@ -251,3 +230,18 @@ function perm(hv: hypervector, positions: int &default=1): hypervector {
   return v;
 }
 
+function symbol_lookup(value: double, codebook: table[Range] of hypervector): hypervector {
+  local start: double;
+  local stop: double;
+
+  for (r, hv in codebook) {
+    start = r$start;
+    stop = r$stop;
+    if (value >= start && value <= stop) {
+      return hv;
+    }
+  }
+
+  # if value is not in the codebook, return an all zeros hv
+  return VSA::hdv(VSA::dimensions, T);
+}

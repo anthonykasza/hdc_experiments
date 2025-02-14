@@ -16,31 +16,10 @@ redef record SSL::Info += {
 };
 
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
-  local start: double;
-  local stop: double;
+  local len_hv = VSA::symbol_lookup(length, ::length_codebook);
 
-  # find the proper length HV
-  local len_hv: hypervector;
-  for (r, hv in ::length_codebook) {
-    start = r$start;
-    stop = r$stop;
-    if (length >= start && length <= stop) {
-      len_hv = hv;
-      break;
-    }
-  }
-
-  # find the proper time HV  
-  local interval_hv: hypervector;
   local duration = interval_to_double(network_time() - c$start_time);
-  for (r, hv in ::interval_codebook) {
-    start = r$start;
-    stop = r$stop;
-    if (duration >= start && duration <= stop) {
-      interval_hv = hv;
-      break;
-    }
-  }
+  local interval_hv = VSA::symbol_lookup(duration, ::interval_codebook);
 
   # bind the endpoint, length, and time hypervectors into one
   #  and append the result to the connection's vector of HV
