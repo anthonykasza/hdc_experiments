@@ -23,7 +23,7 @@ export {
   global additive_inverse: function(hdv: hypervector): hypervector;
 
   global make_levels_linear: function(num_of_levels: count, hdv1: hypervector, hdv2: hypervector): vector of hypervector;
-  global discritize_linear: function(r: Range, bins: count): vector of Range;
+  global discretize_linear: function(r: Range, bins: count): vector of Range;
 }
 
 function ngram(v: vector of hypervector, n: count): vector of vector of hypervector {
@@ -46,7 +46,7 @@ function ngram(v: vector of hypervector, n: count): vector of vector of hypervec
 }
 
 
-function discritize_linear(r: Range, bins: count): vector of Range {
+function discretize_linear(r: Range, bins: count): vector of Range {
   local start = r$start;
   local stop = r$stop;
   local ranges: vector of Range = vector();
@@ -92,7 +92,7 @@ function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hyp
   return v;
 }
 
-# linearly discritize_linear the space between two hyper vectors
+# linearly discretize_linear the space between two hyper vectors
 # num_of_levels = number of levels between hdv1 and hdv2
 function make_levels_linear(
   num_of_levels: count,
