@@ -20,15 +20,14 @@ export {
   global sim: function(hv1: hypervector, hv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
   global ngram: function(v: vector of hypervector, n: count): vector of vector of hypervector;
-  global additive_inverse: function(hdv: hypervector): hypervector;
-
   global symbol_lookup: function(value: double, codebook: table[Range] of hypervector): hypervector;
-
   global make_levels_linear: function(num_of_levels: count, hv1: hypervector, hv2: hypervector): vector of hypervector;
   global discretize_linear: function(r: Range, bins: count): vector of Range;
 }
 
 function ngram(v: vector of hypervector, n: count): vector of vector of hypervector {
+  if (n > |v|) { return vector(v); }
+
   local result: vector of vector of hypervector = vector();
   local tmp: vector of hypervector;
   local j: count;
@@ -49,6 +48,8 @@ function ngram(v: vector of hypervector, n: count): vector of vector of hypervec
 
 
 function discretize_linear(r: Range, bins: count): vector of Range {
+  if (bins == 0) { return vector(); }
+
   local start = r$start;
   local stop = r$stop;
   local ranges: vector of Range = vector();
@@ -105,7 +106,6 @@ function make_levels_linear(
 
   local levels: vector of hypervector = vector();
   levels[0] = copy(hv1);
-  local level_idx: count = |levels|;
 
   local disc_ranges = discretize_linear([$start=0.0, $stop=|hv1|+0.0], num_of_levels+1);
   for (range_idx in disc_ranges) {
@@ -116,20 +116,11 @@ function make_levels_linear(
     # copy the previous level into this level
     levels[|levels|] = copy(levels[|levels|-1]);
 
-    # then copy slices of hv2[start:stop] into hv1[start:stop]
+    # then copy slices of hv2[start:stop] into this level[start:stop]
     levels[|levels|-1][start:stop] = hv2[start:stop];
   }
 
   return levels;
-}
-
-function additive_inverse(hdv: hypervector): hypervector {
-  local v: hypervector = vector();
-  for (idx in hdv) {
-    # values from dice_roll are symmetrically wrapped around zero
-    v[idx] = hdv[idx] * -1;
-  }
-  return v;
 }
 
 function sim(hv1: hypervector, hv2: hypervector): double {

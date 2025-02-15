@@ -2,8 +2,8 @@
 
 event zeek_init() {
 
-  local v1 = VSA::hdv(3);
-  local v2 = VSA::hdv(3);
+  local v1 = hypervector(2, -1, 1);
+  local v2 = hypervector(0, 1, 2);
   print v1;
   print v2;
   print "";
@@ -17,7 +17,7 @@ event zeek_init() {
   print "bind", hv;
   print "";
 
-  v1 = {1,2,3};
+  v1 = hypervector(1,2,3);
   print "hv", v1;
   print "perm 1", VSA::perm(v1, 1);
   print "perm -1", VSA::perm(v1, -1);

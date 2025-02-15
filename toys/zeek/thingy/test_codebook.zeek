@@ -1,5 +1,5 @@
 @load ./vsa
-@load ./ranges
+@load ./codebooks
 
 event zeek_init() {
   print "10 to 11", VSA::sim(
