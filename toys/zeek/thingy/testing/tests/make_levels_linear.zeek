@@ -1,5 +1,5 @@
-@load ./vsa
-
+# @TEST-EXEC: zeek $PACKAGE %INPUT >> output 2>&1
+# @TEST-EXEC: btest-diff output
 
 
 # num_of_levels = 0, changes_per_iteration = 9

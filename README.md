@@ -8,19 +8,14 @@ References
 - Holographic Reduced Representations (Plate)
 - HDCluster: An Accurate Clustering Using Brain-Inspired High-Dimensional Computing
 - A comparison of vector symbolic architectures
-- Computing with High-Dimensional Vectors (Kanerva) 
+- [Computing with High-Dimensional Vectors](https://www.youtube.com/watch?v=zUCoxhExe0o) (Kanerva) 
   - Stanford University Colloquium on Computer Systems EE380 Spring 2023
-  - https://www.youtube.com/watch?v=zUCoxhExe0o
 - Learning with Holographic Reduced Representations
-- Vector Symbolic Architectures In Clojure (Carin Meier)
-  - https://www.youtube.com/watch?v=j7ygjfbBJD0
+- [Vector Symbolic Architectures In Clojure](https://www.youtube.com/watch?v=j7ygjfbBJD0) (Carin Meier)
 - Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens
 - GraphHD: Efficient graph classification using hyperdimensional computing
-- Understanding Hyperdimensional Computing for Parallel Single-Pass Learn
-  - https://github.com/Cornell-RelaxML/Hyperdimensional-Computing
-- A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations
-  - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
-  - over 440 papers cited in the review. its a big field
+- [Understanding Hyperdimensional Computing for Parallel Single-Pass Learning](https://github.com/Cornell-RelaxML/Hyperdimensional-Computing)
+- A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
 - SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
 - Classification using Hyperdimensional Computing: A Review
@@ -30,157 +25,100 @@ References
   - figure 1b is awesome!
 - Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
-- VSAONLINE
-  - https://sites.google.com/view/hdvsaonline/home
-  - https://groups.google.com/g/vsacommunity/about
-- MIDNIGHTVSA
-  - https://sites.google.com/ltu.se/midnightvsa
-- Vector Symbolic Architectures, Luis El Srouji 
-  - https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2
+- [VSAONLINE](https://sites.google.com/view/hdvsaonline/home) and its [GGroup](https://groups.google.com/g/vsacommunity/about)
+- [MIDNIGHTVSA](https://sites.google.com/ltu.se/midnightvsa)
+- [Vector Symbolic Architectures](https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2) (Luis El Srouji)
 - Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
 - Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
 - EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
-- Get to know SAR, Interferometry
-  - https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/
+- [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
 - Generalized Holographic Reduced Representations
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
-- Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021
-  - https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/
+- [Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021](https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/)
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
-- HDC/VSA: Binary Sparse Distributed Representation with segments
-  - https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj
-- Tutorial on Hyperdimensional Computing
-  - https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/
+- [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
 - Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
 
+Summary
+-------
+What is Hyperdimensional computing?
+See a [Tutorial on Hyperdimensional Computing](https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/).
 
-Definitions
------------
-- Vector Symbolic Architecture, computing architectures which utilize large vectors to represent symbols
-  - Vector, lists
-  - Symbols, representations of something else
-    - e.g. emjois are symbols. what concept does 🍑 represent?
-  - Architecture, the means of computation. how the computer does stuff.
-    - operations, memory, data types
-    - e.g. x86/x64, ARM, Power(PC), RISC-V
+What makes a Vector Symbolic Architecture?
+- concepts are high, but fixed, dimension random vectors. structure is built up from randomness
+- holographic elements / distributed information
+- operatorations: multiply, add, permute, similarity, ...
 
-- What makes a VSA?
-  - random initialization of elements
-    - however, the distributions can vary between VSA
-  - fixed dimension vector operatations
-    - consider the following: in C, types are symbols
-      - how are `int` types represented in memory in C?
-        - 32 bits (4 bytes)
-          - min value: `00000000 00000000 00000000 00000000`
-          - max value: `11111111 11111111 11111111 11111111`
-        - `int x = 3;`
-          - 3 value: `00000000 00000000 00000000 00000011`
-            - most/least significant bit
-            - values are positional encoded
-        - why 4 bytes? why not 4 MB?
-          - those concerned with memory efficiency (C programmers) would say that's a waste of bits (waste of memory)
-            - unnecessary dimensionality appears wasteful
-      - how are types represented in memory in VSA/HDC?
-        - everything is a list of elements
-          - all elements hold the same amount of information
-          - there is no most/least significant bit, all bits are equally significant
+What are the differences between VSAs?
+- Denis Kleyko provides a great [Overview of different HD Computing/VSA models](https://redwood.berkeley.edu/wp-content/uploads/2021/08/Module2_VSA_models_slides.pdf)
+- [A comparison of Vector Symbolic Architectures](https://arxiv.org/abs/2001.11797) provides a comprehensive taxonomy of architectures
 
-    - large dimensionality is both a blessing and curse
-      - redundancy, useful for error correction and noisy calculations
-      - dimensionality stays fixed through any operation
-      - concentration of measure ensures randomly intialized HVs are dissimilar
-      - each dimension (element) increases the vector space exponentially
-      - projecting something onto a bigger surface is often useful
-        - think about a screen projector, it makes small images easier to see
-    - aligns well with the theory of "distributed representation" of the brain
-      - the brain doesn't have a single neuron representing the word "desk"
-      - the brain probably has a set of neurons representing the concept of "desk"
-      - the set of neurons (symbol) for "desk" is likely similar (cossim) to the set of neurons (symbol) for "table"
+Why use HDC?
+- HDC is inspired by the Tensor Product Representation
+- supports probabilistic calculations
+- supports online/streaming learning
+- it aligns well with the theory of "distributed representation" aka "assemblies of neurons" theory of the brain
+- learned results are not a blackbox but are instead interpretable
+- by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
 
 
-- VSA goes by many names
-  - distributed representations, because information contained in the symbol is distributed amoung all of its elements
-  - high-dimensional computing and hyper-dimensional computing, because it uses high dimensional vectors as atomic/basis types (HDC)
-  - random indexing
-  - reduced representations
-  - spatter code and block codes
-  - projections
-  - embeddings
+Notable VSAs
+------------
+Holographic Reduced Representations
+- "reduced", all HVs are fixed length
+- "holographic", all elements represent information equally
+  - a subset of bits from an HV represents the same object, just with less precision
+    - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
+    - this is akin to cutting a hologram into pieces
+  - what is a hologram?
+    - jó napot, Gabor úr
+    - holograms involve lasers and lightwave interference patterns
+      - scanning objects with interference patterns is called interferometry
+        - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
+- fourier HHR
+  - FHRR/HRRF is measurably better than other VSAs in some cases
+  - i think this is because the more information a single element can hold (the more complex the number) the more effective the VSA can be
+    - the more complex the element type the greater the hardware requirements
+  - each element of a HV is a random phase angle (phasor) between -pi and pi
+  - magnitude only is used
+    - this appears related to spiking networks architectures
 
-  Tensor Product Representation
-  - combination of role vectors (representing structure of data) and filler vectors (representing values of data)
-  - resulting vector is longer than either input HV
-  - TPR is arguably not HDC because HDC requires fixed length vectors
-  - TPR did, however, inspire HDC
+Sparse Block Codes, Binary and Generic
+- HV is partitioned into blocks (segments) of equal size 
+  - the HV’s dimensionality is a multiple of the block size
+- block-wise (segment-wise) operations
+  - ensure a specified sparsity
+  - permute the block
+  - combine blocks with other blocks or scalars
+    - bind, bundle, substitue, maybe further subdivide the block?
+      - block of block codes, hyperdimensional blocks
 
-  Multiply-Add-Permute (MAP)
-
-  Holographic Reduced Representations
-  - "reduced", all HVs are fixed length
-  - "holographic", all elements represent information equally
-    - a subset of bits from an HV represents the same object, just with less precision
-      - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
-      - this is akin to cutting a hologram into pieces
-    - what is a hologram?
-      - jó napot, Gabor úr
-      - holograms involve lasers and lightwave interference patterns
-        - scanning objects with interference patterns is called interferometry
-          - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
-  - Fourier HHR
-    - FHRR/HRRF is measurably better than other VSAs in some cases
-    - each element of a HV is a random phase angle (phasor) between -pi and pi
-    - magnitude only is used
-      - this appears related to spiking networks architectures
-
-  Sparse Block Codes
-  - HV is partitioned into blocks (segments) of equal size 
-    - the HV’s dimensionality is a multiple of the block size
-  - block-wise (segment-wise) operations
-    - ensure a specified sparsity
-    - permute the block
-    - combine blocks with other blocks or scalars
-      - bind, bundle, substitue, maybe further subdivide the block?
-        - block of block codes, hyperdimensional blocks
-
-  Bloom filters, a special case of VSA
-  - a set is represented by a binary vector
-    - an empty set is all zeros
-    - a single vector is more memory efficient than storing all samples
-  - when adding an element to a bf, the item is hashed with several functions
-    - the functions result in an index which is flipped from 0 to 1
-  - when checking inness, an element is hashed (using the same set of functions)
-    - the resulting indices of the bit vector are then checked for 1 values
-    - if indices are 0, the item is definitely not in the set
-    - hash collisions may cause FPs
-  - no FNs, possible FPs
-    - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
-  - what happens if we were to introduce noise and flip a few random bits in a vector?
-    - what happens to a bloom filter?
-      - FPs introduced for 0 bits changed to 1 bits
-      - FNs introduced for 1 bits changed to 0 bits
-    - what happens to the similarity between two HVs?
-      - not much
+Bloom filters, a special case of VSA
+- a set is represented by a binary vector
+  - an empty set is all zeros
+  - a single vector is more memory efficient than storing all samples
+- when adding an element to a bf, the item is hashed with several functions
+  - the functions result in an index which is flipped from 0 to 1
+- when checking inness, an element is hashed (using the same set of functions)
+  - the resulting indices of the bit vector are then checked for 1 values
+  - if indices are 0, the item is definitely not in the set
+  - hash collisions may cause FPs
+- no FNs, possible FPs
+  - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
+- what happens if we were to introduce noise and flip a few random bits in a vector?
+  - what happens to a bloom filter?
+    - FPs introduced for 0 bits changed to 1 bits
+    - FNs introduced for 1 bits changed to 0 bits
+  - what happens to the similarity between two HVs?
+    - not much
 
 
 
-Architectures
--------------
-- Denis Kleyko provides a great 'Overview of different HD Computing/VSA models'
-  - https://redwood.berkeley.edu/wp-content/uploads/2021/08/Module2_VSA_models_slides.pdf
-- A comparison of Vector Symbolic Architectures provides a comprehensive taxonomy of architectures
-  - https://arxiv.org/abs/2001.11797
-
-
-
-
-
-Operations 
-----------
+VSA Operations 
+--------------
 not all operations are applicable to all architectures.
-in my opinion, the most imporant operatation is binding followed by similarity.
-
 operations can be conceptualize with 3 abstraction levels:
 - elements operations which result in blocks or vectors
 - blocks operations which result in blocks or vectors
@@ -199,7 +137,6 @@ implementations of operations need to consider:
   - multiplying sparse vectors increase sparsity
 - precision of results
   - cleanup step
-
 
 operations include:
 - addition, summing two vectors into a single vector preserves information from both consituents
@@ -443,3 +380,8 @@ Misc
   - blocks are a special case of vector which carry with them a:
     - source vector
     - contextual mapping into their source vector
+- there is no least significant bit in a hyper vector. all the elements hold th same amount of information
+- concentration of measure ensures randomly intialized HVs are dissimilar
+- each dimension (element) of an HV increases the vector space exponentially
+  - projecting something onto a bigger surface is often useful
+    - think about a screen projector, it makes small images easier to see

@@ -1,6 +1,5 @@
-@load ./vsa
-@load ./codebooks
-@load ./tls
+# @TEST-EXEC: zeek $PACKAGE %INPUT >> output 2>&1
+# @TEST-EXEC: btest-diff output
 
 event zeek_init() {
   local a: vector of hypervector = vector();

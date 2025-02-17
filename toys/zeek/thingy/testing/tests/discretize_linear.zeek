@@ -1,4 +1,5 @@
-@load ./vsa
+# @TEST-EXEC: zeek $PACKAGE %INPUT >> output 2>&1
+# @TEST-EXEC: btest-diff output
 
 event zeek_init() {
   local ranges: vector of Range;
