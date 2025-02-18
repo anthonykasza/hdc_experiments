@@ -64,6 +64,8 @@ event connection_state_remove(c: connection) {
 event zeek_done() {
   local already_did_it: set[string] = set();
 
+  # TODO use dbscan to cluster TLS connections by their ngram_bundle
+
   for (i in ::conns_as_uids) {
     for (j in ::conns_as_uids) {
       if (i == j || cat(j,i) in already_did_it || cat(i,j) in already_did_it) { next; }
