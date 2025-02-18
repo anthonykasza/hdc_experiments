@@ -12,16 +12,33 @@ redef record SSL::Info += {
   role_filler_hvs: vector of hypervector &default=vector();
 };
 
-# bind the endpoint, length, and time hypervectors into one
-#  and append the result to the connection's vector of HV
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
+  # TODO - find the equivalent event in the QUIC analyzer and mke this work for QUIC too
+
   local len_hv = VSA::symbol_lookup(length, ::length_codebook);
   local interval_hv = VSA::symbol_lookup(interval_to_double(network_time() - c$start_time), ::interval_codebook);
+
+  # bind the endpoint, length, and time hypervectors into one
+  #  and append the result to the connection's vector of HV
   c$ssl$role_filler_hvs[|c$ssl$role_filler_hvs|] = VSA::bind(vector(
     is_client ? client_hv : server_hv,
     len_hv,
     interval_hv
   ));
+
+  # TODO - make everything streaming instead of batch. this likely means
+  #  replacing make_ngram_bundle() with something else
+  #     if (|c$ssl$ngrams_hvs| >= ngram_size) {
+  #       new_ngram_hv = make_ngram(c$ssl$ngrams_hvs);
+  #       # c$ssl$ngrams_hvs is now 1 item larger than ngram_size
+  #       c$ssl$ngrams_hvs[|c$ssl$ngrams_hvs|] = new_ngram_hv;
+  #       # pop the head off of c$ssl$ngrams_hvs
+  #       c$ssl$ngrams_hvs[0:ngram_size-1] = c$ssl$ngrams_hvs[1:ngram_size];
+  #       del c$ssl$ngrams_hvs[|ngram_size|];
+  #       # incorporate new_ngram_hv into the conn's ngram_bundle
+  #       c$ssl$ngram_bundle = VSA::bundle(vector( c$ssl$ngram_bundle, new_ngram_hv ));
+  #     }
+
 }
 
 # given a list of ordered hvs, return a single hv representing all ngrams bundled together
@@ -59,19 +76,3 @@ event connection_state_remove(c: connection) {
   ::conns_as_uids[|::conns_as_uids|] = c$uid;
 }
 
-
-# calculate a pairwise similarity for all observed TLS connections
-event zeek_done() {
-  local already_did_it: set[string] = set();
-
-  # TODO use dbscan to cluster TLS connections by their ngram_bundle
-
-  for (i in ::conns_as_uids) {
-    for (j in ::conns_as_uids) {
-      if (i == j || cat(j,i) in already_did_it || cat(i,j) in already_did_it) { next; }
-      add already_did_it[cat(i,j)];
-      local sim = VSA::sim(::conns_as_ngram_bundle[i], ::conns_as_ngram_bundle[j]);
-      print sim, ::conns_as_uids[i], ::conns_as_uids[j];
-    }
-  }
-}
