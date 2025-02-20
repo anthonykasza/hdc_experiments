@@ -10,13 +10,17 @@ export {
 redef record SSL::Info += {
   # vector of ordered role-filler hvs: bind(endpoint, length, interval)
   role_filler_hvs: vector of hypervector &default=vector();
+
+  # the time the previous record was written, regardless of which endpoint wrote it
+  previous_record_ts: time &optional;
 };
 
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
-  # TODO - find the equivalent event in the QUIC analyzer and mke this work for QUIC too
+  # for the first tls record, use the start of the connection as the previous_record_ts
+  if (!c$ssl?$previous_record_ts) { c$ssl$previous_record_ts = c$start_time; }
 
   local len_hv = VSA::symbol_lookup(length, ::length_codebook);
-  local interval_hv = VSA::symbol_lookup(interval_to_double(network_time() - c$start_time), ::interval_codebook);
+  local interval_hv = VSA::symbol_lookup(interval_to_double(network_time() - c$ssl$previous_record_ts), ::interval_codebook);
 
   # bind the endpoint, length, and time hypervectors into one
   #  and append the result to the connection's vector of HV
@@ -26,18 +30,15 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
     interval_hv
   ));
 
-  # TODO - make everything streaming instead of batch. this likely means
-  #  replacing make_ngram_bundle() with something else
-  #     if (|c$ssl$ngrams_hvs| >= ngram_size) {
-  #       new_ngram_hv = make_ngram(c$ssl$ngrams_hvs);
-  #       # c$ssl$ngrams_hvs is now 1 item larger than ngram_size
-  #       c$ssl$ngrams_hvs[|c$ssl$ngrams_hvs|] = new_ngram_hv;
-  #       # pop the head off of c$ssl$ngrams_hvs
-  #       c$ssl$ngrams_hvs[0:ngram_size-1] = c$ssl$ngrams_hvs[1:ngram_size];
-  #       del c$ssl$ngrams_hvs[|ngram_size|];
-  #       # incorporate new_ngram_hv into the conn's ngram_bundle
-  #       c$ssl$ngram_bundle = VSA::bundle(vector( c$ssl$ngram_bundle, new_ngram_hv ));
-  #     }
+  # TODO - online ngrams instead of batch at connection expiration.
+  #        instead of storing the same number of hv as records in the connection,
+  #        only store a max of ngram_size hv per connection
+  #   store ngram_size-1 ngram hvs in c$ssl
+  #   store nram_bundle_hv in c$ssl
+  #   if |ngram_hvs| > ngram_size-1
+  #     cut a new ngram hv
+  #     bundle the new ngram hv into c$ssl$ngram_bundle
+  #     repalce the oldest ngram hv with the newly cut ngram hv in c$ssl
 
 }
 
@@ -52,7 +53,7 @@ function make_ngram_bundle(hvs: vector of hypervector, ngram_size: count &defaul
   local ngram_accumulator_hv: hypervector;
 
   ngram_accumulator_hv = VSA::hdv(|hvs[0]|, T);
-  groups = VSA::ngram(hvs, ngram_size);
+  groups = VSA::make_groups(hvs, ngram_size);
   for (group_idx in groups) {
     group = groups[group_idx];
     tmp = vector();

@@ -19,13 +19,13 @@ export {
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hv1: hypervector, hv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
-  global ngram: function(v: vector of hypervector, n: count): vector of vector of hypervector;
+  global make_groups: function(v: vector of hypervector, n: count): vector of vector of hypervector;
   global symbol_lookup: function(value: double, codebook: table[Range] of hypervector): hypervector;
   global make_levels_linear: function(num_of_levels: count, hv1: hypervector, hv2: hypervector): vector of hypervector;
   global discretize_linear: function(r: Range, bins: count): vector of Range;
 }
 
-function ngram(v: vector of hypervector, n: count): vector of vector of hypervector {
+function make_groups(v: vector of hypervector, n: count): vector of vector of hypervector {
   if (n > |v|) { return vector(v); }
 
   local result: vector of vector of hypervector = vector();
