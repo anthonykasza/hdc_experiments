@@ -11,7 +11,7 @@ event zeek_done() {
 
   print "noise";
   for (noise_idx in result$noise) {
-    print ::conns_as_uids[noise_idx];
+    print ::conns_as_uids[noise_idx] + "/" + ::conns_as_snis[noise_idx];
   }
   print "";
 
@@ -19,8 +19,8 @@ event zeek_done() {
   for (cluster in result$clusters) {
     local tmp: string = "";
     for (idx in cluster) {
-      tmp += ::conns_as_uids[idx];
-      tmp += ", ";
+      tmp = tmp + ::conns_as_uids[idx] + "/" + ::conns_as_snis[idx];
+      tmp = tmp + ", ";
     }
     print tmp;
   }
