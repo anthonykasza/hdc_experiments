@@ -18,6 +18,8 @@ redef record SSL::Info += {
   previous_record_ts: time &optional;
 };
 
+# TODO - consider making len_hv and interval_hv bundles
+#        for example, len_hv could be a bundle of all the previous lengths up to this observation. lengths from records too far in the past will be "forgetten" due to the capacity of the bundling operation
 event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, content_type: count, length: count) {
   # for the first tls record, use the connection's start time as the previous_record_ts
   if (!c$ssl?$previous_record_ts) { c$ssl$previous_record_ts = c$start_time; }

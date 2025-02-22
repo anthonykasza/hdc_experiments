@@ -138,7 +138,7 @@ function sim(hv1: hypervector, hv2: hypervector): double {
   local m1 = sqrt(mag1);
   local m2 = sqrt(mag2);
   if (m1 == 0 || m2 == 0) { return 0.0; }
-  return dot / (m1 * m2);
+  return |dot / (m1 * m2)|;
 }
 
 function bundle(hdvs: vector of hypervector): hypervector {

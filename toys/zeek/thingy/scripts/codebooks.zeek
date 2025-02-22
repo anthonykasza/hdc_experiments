@@ -13,6 +13,8 @@ export {
   global interval_codebook: table[Range] of hypervector = table() &ordered;
 }
 
+# TODO - fix this. the ranges of codebooks are not properly correlated for some reason
+#        see the codebook btest for examples of what's happening
 function generate_codebook(space: vector of double, steps: vector of count): table[Range] of hypervector {
   # 1. make the vector of HVs
   local levels: count = 0;
@@ -56,4 +58,3 @@ event zeek_init() {
   local ival_steps: vector of count = vector(2,2,2,2,2,2,2,2,2,2,2);
   ::interval_codebook = generate_codebook(ival_space, ival_steps);
 }
-
