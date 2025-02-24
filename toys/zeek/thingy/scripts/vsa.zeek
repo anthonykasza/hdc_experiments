@@ -15,6 +15,7 @@ export {
 
   global dice_roll: function(): int;
   global hdv: function(n: count, all_zeros: bool): hypervector;
+  global hdv_all1: function(n: count): hypervector;
   global bundle: function(hdvs: vector of hypervector): hypervector;
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hv1: hypervector, hv2: hypervector): double;
@@ -78,6 +79,17 @@ function dice_roll(): int {
     case 4:
       return -2;
   }
+}
+
+function hdv_all1(n: count &default=VSA::dimensions): hypervector {
+  local v: vector of int = vector();
+  local j = 0;
+  while (n > 0) {
+    v[j] = 1; # all 1s
+    n -= 1;
+    j += 1;
+  }
+  return v;
 }
 
 function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hypervector {

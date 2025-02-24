@@ -53,7 +53,7 @@ def cossim(hdv1, hdv2):
   '''find how similar 2 vectors are'''
   if norm(hdv1) == 0 or norm(hdv2) == 0:
     return 0
-  return np.dot(hdv1, hdv2) / (norm(hdv1) * norm(hdv2))
+  return abs(np.dot(hdv1, hdv2) / (norm(hdv1) * norm(hdv2)))
 
 
 def hamdis(hdv1, hdv2):
@@ -175,3 +175,6 @@ def substitute(hv1, hv2, bins):
   bins_list.append(hv2)
   return bins_list
 
+def sub(hv1, hv2, bins):
+  '''shorter alias for bad typists'''
+  return substitute(hv1, hv2, bins)

@@ -2,16 +2,16 @@ import time
 import copy
 import numpy as np
 
+import sys; sys.path.insert(0, "../")
 from utils import hdv, cossim, substitute
 
 
 memory_max_size = 10
-dimensions = 20
-
 memory = []
+
 now = time.time()
 start = now
-now_symbol = hdv(dimensions)
+now_symbol = hdv()
 memory.append(now_symbol)
 
 while (True):
@@ -22,7 +22,7 @@ while (True):
   prev = now
   prev_symbol = memory[-1]
   now = time.time()
-  now_symbol = hdv(dimensions)
+  now_symbol = hdv()
 
   for level_symbol in substitute(prev_symbol, now_symbol, int(now-prev)):
     memory.append(level_symbol)
