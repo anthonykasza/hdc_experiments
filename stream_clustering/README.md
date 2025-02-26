@@ -61,7 +61,6 @@ References
 - Data Stream Clustering Algorithms: A Review
   - 2.4 Density-based methods
     - grid-based clustering is nice because partitions can be calculated upfront 
-    - TODO - read more about MR-Stream, DSCLU, and OPCluStream, 
 
 - Knowledge Discovery in Databases II [Lecture 8: Velocity: Data Streams: Clustering](https://www.dbs.ifi.lmu.de/Lehre/KDD_II/WS1516/skript/KDD2-4-DataStreamsClustering.pdf)?
   - slide 22: A taxonomy of stream clustering approaches
@@ -149,8 +148,12 @@ References
 
 - A Framework for Clustering Evolving Data Streams
   - CluStream
-  - uses weighted kmeans, so it cannot support arbirary number of clusters :(
-  - often forms spherical cluster, not arbitrary shaped ones :(
+  - uses kmeans
+    - supports weighted clusters :)
+    - uses a radius around a centroid
+      - cannot arbitrary shaped clusters :(
+    - cannot support arbirary number of clusters :(
+    - cannot support outliers/noise :(
 
 - Density-Based Clustering over an Evolving Data Stream with Noise
   - "DenStream, an effective and efficient method for clustering an evolving data stream"
@@ -169,51 +172,193 @@ References
 
 - Density-Based Clustering for Real-Time Stream Data
   - D-Stream
-  - grid based
-  - "As a density-based approach, D-stream is flexible in detect- ing nonspherical clusters. However, the grid partitioning remains constant over time, although the underlying stream might evolve in different ways"
-  - adjacent dense grids are merged during final clustering step
+  - grid-density based
+    - "As a density-based approach, D-stream is flexible in detecting nonspherical clusters. However, the grid partitioning remains constant over time, although the underlying stream might evolve in different ways"
+      - can detect arbitrary sized clusters :)
+      - grid "layout" cannot be adjusted during runtime :(
+    - most grids are sparse. perhaps this would be a good candidate for a style of sparse block code VSA?
+    - i think the `codebooks` in thingy/scripts/ sound very similar to a "grid" 
+    - it only considers density and not connectivity of adjacent grid cells. d-stream is measurably better than clustream but still kind of meh
+  - online:
+    - each grid is tracked as a tuple `(last_updated: count, last_removed_as_noise: count, grid_density: double, status: {SPORADIC, NORMAL})`
+    - a global `sample_step_count` will need to be kept for comparing to `last_updated` and `last_removed_as_noise`
+    - map incoming samples into a predertermined static grid
+    - each grid cell has a last_updated time decay and a grid_density decay which allow for drift
+    - outliers will appear as grid cells of low density and long last_updated times
+  - offline:
+    - `cluster()` can be called at any and all timesteps 
+    - adjacent grid "cells" are merged based on their density
+    - neighboring grids
+    - grid groups
+    - inside and outside grids
+    - grid cluster
 
 
 - Density-based clustering of data streams at multiple resolutions
   - MR-Stream
+  - "we assume that the input stream data has n dimensions and forms an dimensional space S."
+    - `n = 10_000`, `hyperspace: vector of hypervector;`
+  - "partition the space S into well-defined partitions"
+    - scripts in toys/ call this make_level_linear or smear
+  - "We use a tree-like data structure to mirror the space partitioning so that each tree node corresponds to a cell"
+    - a quadtree is used for "dynamically creating grids at multiple resolutions"
+      - different grids(cubes) of a field(space) may require different sampling rates
+    - could one use a bundle, or a bundle of bundles, instead of a tree-like structure?
+  - "We assign a weight value to each record of the data stream. This weight value decreases over time if the record do not appear again frequent enough in the stream."
+    - could one use a bundle to weight/fade/reinforce incoming data records?
   - adjacent dense grids are merged during final clustering step
-  - a quadtree is used for "dynamically creating grids at multiple resolutions"
-    - different grids(cubes) of a field(space) may require different sampling rates
-
 
 
 - An EM-Based Algorithm for Clustering Data Streams in Sliding Windows
   - SWEM
+  - sliding window
+  - "We develop splitting and merging operations in order to discretely redistribute components in the entire data space"
+    - this reminds me of what i was attempting to accomplish in `redistribute_time()`
+      - if we moved a centroid we need to incorporate it into the timebundle and some forget the old centroid from the timebundle... how?
+  - SWEM is measurably better than clustream but still kind of meh
+    - it's also 15 years old
+
 
 - Clustering Stream Data by Exploring the Evolution of Density Mountain
   - EDMStream
+  - "experimental results on synthetic and real datasets show that, comparing to the state-of-the-art stream clustering algorithms, e.g., D-Stream, DenStream, DBSTREAM and MR-Stream, our algorithm is able to response to a cluster update much faster"
+  - assumptions:
+    - cluster centers are surrounded by neighbors of lower local density (dense centers surrounded by a less dense perimeter)
+    - cluster centers are far from other points of higher density
+  - the paper uses the term "cluster-cell" but it sounds similar to a micro-cluster
+  - the paper uses a dependency-tree to represent density mountains
+  - "it can dynamically adjust the cluster separation strategy". does this mean it uses a dynamic grid instead of a static one (like D-Stream)?
+  - density peaks (DP)
+    - local density
+    - distance from more dense regions
+    - fgure 3 reminds me of leader clustering
+    - figure 4 compares DBSCAN to DPclustering
+      - both use reachability but DBSCAN uses connectivity and DP uses traceability
+        - traceability is non-symmetric
+        - DBSCAN is an undirected graph
+        - DP is a directed graph
+      - when would the direction of the red arrow between A and B switch?
+      - when a new cluster emerges, how would the start/stop points of the red arrows change?
+      - do cluster density peaks (centroids) move around? by how much? how frequently do centroids move a meaningful amount?
+  - since density mountain peaks are tracked using a tree (representing a grid), i wonder if an HDC-based tree structure could be used.
+
 
 - A Clustering Algorithm for Evolving Data Streams Using Temporal Spatial Hyper Cube
   - BOCEDS TSHC
+  - "Temporal Spatial Hyper Cube (TSHC) The hyper-cube is a quantization level that is supposed to map various values to one value in each coordinate to reduce the resolution of data storing and eliminate the effect of slight changes that do not influence the meaning of the data (type of filtering)"
+  - grids are great but static grids are such a drag
+    - "change the values of the quantization or the cube granularities every time new data arrived in the buffer to enable an adaptive cube"
+      - so the quantization/leveling grid adjusts as new observations arrive
+      - let's say we have a living thing, a single cell, under a microscope. as the cell divides and grows, we will need to adjust the magnification of the microscope to see the thing
+        - when would we need to decrease the magnification of the microscope? as time progresses and densities fade?
+  - figure 1. i like that they included a flow chart of how they conducted their research
+  - i count 2 typos in figure 3. i'm glad to know i'm not the only one that makes typing mistakes.
+  - parameters which users must specify
+    - a decay factor (batch size)
+    - minPts in a cluster
+    - how far micro-clusters can be from each other
+
 
 - FISHDBC: Flexible, Incremental, Scalable, Hierarchical Density-Based Clustering for Arbitrary Data and Distance
-  - FISHDBC
-  - https://github.com/matteodellamico/flexible-clustering/blob/master/flexible_clustering/fishdbc.py
+  - [FISHDBC](https://github.com/matteodellamico/flexible-clustering)
+  - influenced by [HDBSCAN](https://github.com/scikit-learn-contrib/hdbscan) and [HNSW](https://github.com/nmslib/hnswlib)
+    - "[HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world) is a key method for approximate nearest neighbor search in high-dimensional vector databases, for example in the context of embeddings"
+      - HNSW sounds like a cleanup memory for hypervectors
 
-- [rivers stream clustering ](https://github.com/online-ml/river/tree/main/river/cluster)
 
+- Online Clustering for Evolving Data Streams with Online Anomaly Detection
+  - considers temporal proximity as well as spacial proximity of observations
+  - data stream clustering approaches:
+    - data summarization
+      - create sumstats of observations with help of a sliding window
+      - cluster labels are not available in real-time, but instead are done in an offline step
+      - stream density clustering (DenStream, D-Stream) is located in this group because they use a 2-step online + offline strategy
+    - real-time clustering (online). clusters are updated as data arrives
+      - sequential k-means
+        - competitive neural networks
+      - this is where the paper contribution is located
+    - time-series clustering. observations near in time are usually near in value
+      - observations arrive in time order
+
+- [river's stream clustering](https://github.com/online-ml/river/tree/main/river/cluster)
+- [Du-Team's algorithms](https://github.com/Du-Team)
 - MOA: Massive Online Analysis
   - [CapyMOA](https://github.com/adaptive-machine-learning/CapyMOA)
 
 
-
 - HDC clustering papers
+  - there are quite a few papers which make contributions to FPGA/hardware but not many which utilize HDC/VSA to improve the clustering algorithms
   - HDCluster: An Accurate Clustering Using Brain-Inspired High-Dimensional Computing
-  - TODO 
+  - Robust Clustering using Hyperdimensional Computing
+    - HDCluster's "performance is dependent on the selection of the initial hypervector". i found this to be true with my implementation of kbundles, too. the accuracy depended on the intial point selected for each centroid.
+    - makes hdcluster more robust by initializing in a more better way
+    - 3 algos which tweak k-means
+    - 1 algo which is affinity propagation
+      - the VSA's similarity metric is fed into the traditional AP algo
+    - does not address streaming data
+    - in some cases, projecting samples into HDC causes worse clustering results
+    - i like that the authors tried different VSA (binary/non-binary) and different encoding methods (records and ngrams) in their comparison 
+      - HDC is HIGHLY dependant on the encodings
+  - *Trajectory clustering of road traffic in urban environments using incremental machine learning in combination with hyperdimensional computing*
+    - "a novel unsupervised incremental learning approach for road traffic congestion detection and profiling, dynamically over time"
+    - this seems pretty neat for real-time car/truck routing. i imagine it would work for packet routing too.
+    - this is a very excellent paper
+    - *DOES address streaming data*
+      - incrementally outside of HDC/VSA using IKASL
+      - "This example shows the capability of the proposed technique to incrementally learn from a trajectory dataset and automatically self-structure into more granular pathways at different time-widows based on the patterns in the data"
+    - how
+      - embed variable-length commuter trip trajectories with a VSA. they use ternary
+        - put bluetooth scanners around town and count cars. tire TPMSs could probably be used to track unique vehicles.
+        - each intersection is assigned an atomic hypervector
+        - each trajectory subsequence is an ngram of intersections passed. `trigram = bind( perm(hv0, 0), perm(hv1, 1), perm(hv2, 2) )`
+        - ngrams are bundled to form a "bag of ngrams" bundle `Tro = bundle( trigram0, trigram1, trigram2 ... )`
+        - they DO NOT encode time into their hypervectors. instead they use "Incremental knowledge acquisition and self learning" to handle temporal intervals between embeddings
+          - perhaps encoding tls record intervals in thingy/ isn't a great approach
+          - perhaps instead, encode length ngrams only and timestamp their embedding before passing to a streaming/incremental clustering algo
+      - transforms hypervectors into feature vectors for Incremental Knowledge Acquiring Self-Learning (IKASL)
+      - permit shifts of popularity of ngrams over time to reflect changing traffic conditions
+      - they even consider weekend and rushhour traffic patterns
+  - HyperSpec: Ultrafast Mass Spectra Clustering in Hyperdimensional Space
+    - 2 hyperspaces (bucketing/leveling):
+      - peak m/z locality
+      - peak m/z intensity
+    - `bind(locality_level_hv, intensity_level_hv)`
+    - they "pack" bits because systems' smallest data type is usually a byte
+      - dimensions / 32 bits = number of `int`s needed to store 1 hypervector
+      - i ran into this issue, too, while implementing a binary VSA in Zeek's scripting language. zeek's `bool` is the same number of bits as its `int`
+    - clustering options are: dbscan and hierarchical
+      - shows that other algos can operate on hypervectors, not just kmeans
+      - does not address streaming data
 
 
 
-Open Questions
-==============
-- what is soft/fuzzy clustering? can it be incremental? since it operates on probabilities, can we emulate it with HDC?
-- can we utilize a minimum spanning tree for merging microclusters?
-- since we are using a VSA, are there any codebook searching tricks we can utilize to improve performance?
-- for what reasons is R*-tree a good way to implement DBSCAN?
-  - how can R*-tree strcutures take advantage of HDC properties?
-
+Open Questions and Thoughts
+===========================
+- lots of papers use this term, "evolving data stream", to describe hwo their algorithm operates
+  - types of cluster _evolutions_
+    - emerge: birth
+    - disappear: death
+    - split: from one to many
+    - merge: from many to one
+    - adjust: drift/move/shift, change of outlier influence
+- 2-step schemes:
+  1. online summary statistics about the observed samples
+  2. (offline) at any timestep clusters can be generated from the summary statistics in 1
+- window types
+  - sliding, one in one out. all have equal weights
+  - landmark, all data between two landmarks is emptied when processed
+  - dampened, unequally weighted samples. old data eventually decays away
+- concept drift types
+  - sudden
+  - gradual
+  - incremental
+  - recurring
+- anomaly detection in streams, very similar to timeseries
+  - statistical
+  - distance
+  - density
+  - clustering
+- dynamic time warp
+- discrete wavelet transform
+- longest common subsequence
 

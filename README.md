@@ -40,6 +40,9 @@ References
 - [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
 - Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
+- Configurable Hardware Acceleration for Hyperdimensional Computing Extension on RISC-V
+  - hyperdimensional coprocessor unit - push HDC tasks into hardware
+
 
 Summary
 -------
