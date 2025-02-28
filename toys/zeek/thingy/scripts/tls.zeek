@@ -45,6 +45,12 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
   #     cut a new ngram hv
   #     bundle the new ngram hv into c$ssl$ngram_bundle
   #     repalce the oldest ngram hv with the newly cut ngram hv in c$ssl
+  #
+  # The ngrams could then be "streamed" to an incremental or online 
+  #  learning algorithm as was done in the paper,
+  #  "Trajectory clustering of road traffic in urban environments using incremental machine learning in combination with hyperdimensional computing"
+  #  NOTE - the paper does not bind interarrival times into their ngrams
+  #         and instead uses an IKASL algo
 
 }
 

@@ -310,7 +310,9 @@ References
       - embed variable-length commuter trip trajectories with a VSA. they use ternary
         - put bluetooth scanners around town and count cars. tire TPMSs could probably be used to track unique vehicles.
         - each intersection is assigned an atomic hypervector
-        - each trajectory subsequence is an ngram of intersections passed. `trigram = bind( perm(hv0, 0), perm(hv1, 1), perm(hv2, 2) )`
+        - each trajectory subsequence is an ngram of a graph walk
+          - each intersection the vehicles passed
+          - `bind( perm(isectn0, 0), perm(isectn1, 1), perm(isectn2, 2) )`
         - ngrams are bundled to form a "bag of ngrams" bundle `Tro = bundle( trigram0, trigram1, trigram2 ... )`
         - they DO NOT encode time into their hypervectors. instead they use "Incremental knowledge acquisition and self learning" to handle temporal intervals between embeddings
           - perhaps encoding tls record intervals in thingy/ isn't a great approach
@@ -329,6 +331,23 @@ References
     - clustering options are: dbscan and hierarchical
       - shows that other algos can operate on hypervectors, not just kmeans
       - does not address streaming data
+  - OnlineHD: Robust, Efficient, and Single-Pass Online Learning Using Hyperdimensional System
+    - single-pass training
+      - the online step of clustering is also single-pass
+      - training is classification, not clustering
+    - https://gitlab.com/biaslab/onlinehd
+    - if a new sample adds only a tiny (or none) amount to any of the class bundles, it is ignored and not incorporated into the class_bundle so as to avoid over saturation.
+    - when new_observation arrives
+      - if the data is far from the class center, then the class center shifts towards the new data a litte bit
+      - if the data is near to the class center, then the class center shifts towards the new data a big bit
+    - OnlineHD essentially sounds like a weighted bundling operation where the weight is the similarity between the new data and the class center
+
+
+- other papers
+  - Accurate Decentralized Application Identification via Encrypted Traffic Analysis Using Graph Neural Networks
+    - traffic interaction graphs (TGI) could also be used to represent a bidirectional flow
+      - figure 2 is beautiful
+  - TrafficHD: Efficient Hyperdimensional Computing for Real-Time Network Traffic Analytics
 
 
 
@@ -361,4 +380,4 @@ Open Questions and Thoughts
 - dynamic time warp
 - discrete wavelet transform
 - longest common subsequence
-
+- clustering is the task of finding structure in data, HDC embeds a known structure into fixed sized vectors

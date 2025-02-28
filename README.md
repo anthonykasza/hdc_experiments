@@ -42,6 +42,12 @@ References
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
 - Configurable Hardware Acceleration for Hyperdimensional Computing Extension on RISC-V
   - hyperdimensional coprocessor unit - push HDC tasks into hardware
+- Orthogonal Matrices for MBAT Vector Symbolic Architectures, and a “Soft” VSA Representation for JSON
+  - represent JSON objects as hypervectors for ML on JSON. very cool.
+    - i wonder if nosql databases do something like this
+    - in 8 pages, he makes it look very simple. but, one would need a global view of the data to represent the various strings, words, and numbers as atomic hv...
+  - bindings can be typed by introducing a common signal (a random matrix) in grouped symbols, this is how nested structures can be created
+  - "VSAs in general, can be viewed as similarity-preserving hash codes for complex structures, where resulting hashes are amenable to machine learning and to searching for nearest neighbors"
 
 
 Summary
@@ -334,6 +340,12 @@ Misc
     - Microsoft Malware Classification Challenge (Kaggle)
     - The Drebin Dataset
     - EMBER (Elastic Malware Benchmark for Empowering Researchers)
+  - eTraM : Event-based Traffic Monitoring Dataset
+    - FREE event data from a DVS camera
+    - https://github.com/eventbasedvision/eTraM
+    - https://eventbasedvision.github.io/eTraM/
+  - [CICIDS2017](https://www.unb.ca/cic/datasets/ids-2017.html)
+  - [Car-Hacking](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset)
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
@@ -376,7 +388,7 @@ Misc
 - Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing
   - https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing
   - i do not understand all the math discussed
-  - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
+ - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
 - a block can be thought of and operated on like a 'sampled' (or 'reduced') version of its source vector
   - all HV symbols are conceptually sampled versions of larger, and more precise, vector
     - the tensor product is the Platonic Form

@@ -1,3 +1,5 @@
+# TODO - read about DeepWalk
+
 import sys; sys.path.insert(0, '../')
 import random
 import copy
