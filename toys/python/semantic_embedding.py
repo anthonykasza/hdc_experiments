@@ -18,3 +18,11 @@ print(cossim( woman, bind(queen, royalty_swap)))
 print(cossim( man, bind(queen, sex_swap, royalty_swap)))
 print(cossim( man, bind(princess, sex_swap, royalty_swap, child_swap) ))
 print(cossim( princess, bind(woman, child_swap, royalty_swap) ))
+
+
+# this is a fun trick but it isn't really a semantic embedding
+#  because we can't get from man->boy unless we bind through
+#  other points in the hyperspace
+print("...")
+print(cossim( boy, bind(man, child_swap) ))
+print(cossim( man, bind(boy, child_swap) ))

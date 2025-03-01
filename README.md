@@ -45,9 +45,12 @@ References
 - Orthogonal Matrices for MBAT Vector Symbolic Architectures, and a “Soft” VSA Representation for JSON
   - represent JSON objects as hypervectors for ML on JSON. very cool.
     - i wonder if nosql databases do something like this
-    - in 8 pages, he makes it look very simple. but, one would need a global view of the data to represent the various strings, words, and numbers as atomic hv...
   - bindings can be typed by introducing a common signal (a random matrix) in grouped symbols, this is how nested structures can be created
   - "VSAs in general, can be viewed as similarity-preserving hash codes for complex structures, where resulting hashes are amenable to machine learning and to searching for nearest neighbors"
+- Efficient Host Intrusion Detection using Hyperdimensional Computing
+  - they can find attack in Sysflow data by embedding provence graphs and ATT&CK TTPs into hypervectors and then mathing on them
+  - "We adopted the method to work with an arbitrary length of paths within the graph, enhancing the capability of our framework to efficiently identify attack patterns of any length within provenance graphs"
+- Audio Fingerprinting with Holographic Reduced Representations
 
 
 Summary
@@ -346,6 +349,8 @@ Misc
     - https://eventbasedvision.github.io/eTraM/
   - [CICIDS2017](https://www.unb.ca/cic/datasets/ids-2017.html)
   - [Car-Hacking](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset)
+  - NWPU-RESISC45 - REmote Sensing Image Scene Classification
+  - FMA: A Dataset For Music Analysis
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
@@ -400,3 +405,4 @@ Misc
 - each dimension (element) of an HV increases the vector space exponentially
   - projecting something onto a bigger surface is often useful
     - think about a screen projector, it makes small images easier to see
+- [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
