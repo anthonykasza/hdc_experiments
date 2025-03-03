@@ -58,7 +58,7 @@ for idx in range(len(labels))[:train_size]:
 learned_spam_class = bundle(*spam_samples)
 learned_ham_class = bundle(*ham_samples)
 
-# After training on the first k samples, we test on the remaining sample
+# After training on the first k samples, we test on the remaining samples
 for test_idx in range(train_size, len(labels)):
   test_label = labels[test_idx]
   test_message = messages[test_idx]
@@ -68,19 +68,20 @@ for test_idx in range(train_size, len(labels)):
 
   # print stuff if the class bundles predicted incorrectly
   if test_label == 'ham' and test_is_ham < test_is_spam:
-    print(f'{test_idx+train_size} ham predicted as spam')
+    print(f'{test_idx+train_size} ham {test_is_ham} predicted as spam {test_is_spam}')
     print(test_message)
     print()
   elif test_label == 'spam' and test_is_ham > test_is_spam:
-    print(f'{test_idx+train_size} spam predicted as ham')
+    print(f'{test_idx+train_size} spam {test_is_spam} predicted as ham {test_is_ham}')
     print(test_message)
     print()
   elif test_is_ham == test_is_spam:
-    print(f'{test_idx+train_size} undetermined')
+    print(f'{test_idx+train_size} undetermined spam {test_is_spam}, ham {{test_is_ham}}')
     print(test_message)
     print()
 
 
 # I didn't do much robust testing but from eyeballing it,
-#  it looks like we can easily get 90% accuracy on testing
-#  with only 100 training examples and ngrams of up to size 10
+#  it looks like we can easily get 90% accuracy
+#  with only 100 training examples: 17 spam, 83 ham.
+#  while using ngrams of lengths 1-10
