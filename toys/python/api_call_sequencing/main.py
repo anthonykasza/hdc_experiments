@@ -9,7 +9,7 @@ from collections import deque
 
 
 def new_ngram(hvs):
-  ngram = hdv(all=1)
+  ngram = hdv(100000, all=1)
   for idx in range(len(hvs)):
     ngram = bind(ngram, permute(hvs[idx], [0,idx]))
   return ngram
@@ -23,6 +23,7 @@ def make_sequence(iterations, n, store=False):
   name_deque = deque([])
   process_call_sequence = []
   process_call_sequence_ngram_bundle = hdv(all=0)
+  ngrams = []
 
   for i in range(iterations):
 
@@ -34,7 +35,7 @@ def make_sequence(iterations, n, store=False):
 
     if len(gram_deque) >= n:
       ngram = new_ngram(gram_deque)
-      process_call_sequence_ngram_bundle = bundle(process_call_sequence_ngram_bundle, ngram)
+      ngrams.append(ngram)
       if store:
         store_a_ngram_hv = ngram
         store_a_ngram_name = '/'.join(name_deque)
@@ -42,6 +43,7 @@ def make_sequence(iterations, n, store=False):
       name_deque.pop()
 
     process_call_sequence.append(f_name)
+    process_call_sequence_ngram_bundle = bundle(*ngrams)
 
   return process_call_sequence, process_call_sequence_ngram_bundle
 
@@ -49,7 +51,7 @@ def make_sequence(iterations, n, store=False):
 store_a_ngram_hv = ''
 store_a_ngram_name = ''
 n = 4
-i = 9999
+i = 100 # consider the capacity of your bundle!
 learned_pcs, learned_pcsnb = make_sequence(i, n, store=True)
 sample_pcs, sample_pcsnb = make_sequence(n, n)
 

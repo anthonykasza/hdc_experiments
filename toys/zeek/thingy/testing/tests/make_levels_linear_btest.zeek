@@ -60,7 +60,7 @@ event zeek_init() {
   local v2: vector of int = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 
-  local hyperspace = VSA::make_levels_linear(3, v1, v2);
+  local hyperspace = VSA::make_levels(3, v1, v2);
   for (idx in hyperspace) {
     print idx, hyperspace[idx];
     if (idx == 0) { next; }
@@ -69,7 +69,7 @@ event zeek_init() {
   print VSA::sim(hyperspace[0], hyperspace[|hyperspace|-1]);
   print "";
 
-  hyperspace = VSA::make_levels_linear(2, v1, v2);
+  hyperspace = VSA::make_levels(2, v1, v2);
   for (idx in hyperspace) {
     print idx, hyperspace[idx];
     if (idx == 0) { next; }
@@ -78,7 +78,7 @@ event zeek_init() {
   print VSA::sim(hyperspace[0], hyperspace[|hyperspace|-1]);
   print "";
 
-  hyperspace = VSA::make_levels_linear(1, v1, v2);
+  hyperspace = VSA::make_levels(1, v1, v2);
   for (idx in hyperspace) {
     print idx, hyperspace[idx];
     if (idx == 0) { next; }
@@ -87,7 +87,7 @@ event zeek_init() {
   print VSA::sim(hyperspace[0], hyperspace[|hyperspace|-1]);
   print "";
 
-  hyperspace = VSA::make_levels_linear(0, v1, v2);
+  hyperspace = VSA::make_levels(0, v1, v2);
   for (idx in hyperspace) {
     print idx, hyperspace[idx];
     if (idx == 0) { next; }

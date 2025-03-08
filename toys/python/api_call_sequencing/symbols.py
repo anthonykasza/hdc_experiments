@@ -28,4 +28,4 @@ function_names = [
   "schedule"
 ]
 
-function_symbols = [hdv() for name in function_names]
+function_symbols = [hdv(100000) for name in function_names]
