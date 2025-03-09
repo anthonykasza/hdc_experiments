@@ -78,5 +78,7 @@ event connection_state_remove(c: connection) {
   ::conns_as_uids[|::conns_as_uids|] = c$uid;
   ::conns_as_snis[|::conns_as_snis|] = c$ssl?$server_name ? c$ssl$server_name : "";
 }
-
+# In a cluster setting, the results of make_ngram_bundle()
+#  would need to be sent from the worker processing the conenction
+#  to the proxy/manager where the stream-clustering of hv occurs
 

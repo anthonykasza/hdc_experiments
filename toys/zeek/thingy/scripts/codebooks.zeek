@@ -11,8 +11,10 @@ export {
   # 5 mins at 1/10th of a second granularity
   option interval_max = 5 * 60 * 10;
 
-  # lengeth and interval symbols
+  # length and interval symbols
   global length_codebook: vector of hypervector = VSA::make_levels(length_max);
   global interval_codebook: vector of hypervector = VSA::make_levels(interval_max);
+  # TODO - support non linear binning of length and time ranges.
+  #        port non-linear-leveling.py into vsa.zeek
 }
 

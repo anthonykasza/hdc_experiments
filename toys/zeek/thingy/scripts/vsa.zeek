@@ -96,6 +96,10 @@ function make_levels(num_of_levels: count, hv1: hypervector &default=VSA::hdv(),
   local start: count = 0;
   local stop: count = |hv1|;
   local step: count = double_to_count((stop - start) / num_of_levels);
+  # TODO - support a way of adjusting the step. Instead of a single
+  #        static step per iteration of the following loop, a dynamic
+  #        step would allow for arbitrary correlation 'resolutions' e.g.
+  #        exponential, fractal, mixed-linear
 
   while (level_counter <= num_of_levels) {
     # copy the previous level into this level
