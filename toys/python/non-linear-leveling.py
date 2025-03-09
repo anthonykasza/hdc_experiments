@@ -25,43 +25,21 @@ def make_levels(steps, hv1=hdv(), hv2=hdv()):
 
 
 steps = [
-  # 0-16
-  16,
-  # 16-32
-  16,
-  # 32-48
-  16,
-  # 48-64
-  16,
-  # 64-128
-  64,
-  # 128-192
-  64,
-  # 192-256
-  64,
-  # 256-356
-  100,
-  # 356-456
-  100,
-  # 456-556
-  100,
-  # 556-1100
-  500,
-  # 1100-1600
-  500,
-  # 1600-2500
-  1000,
-  # 2500-4000
-  1500,
-  # 4000-6000
+  # small things are very similar
+  16, 16, 16, 16,
+  64, 64, 64,
+  100, 100, 100,
+
+  # medium things are medium far-away
+  1000, 1000,
   2000,
-  # 6000-9000
-  3000,
-  # 9000-12000
-  3000,
-  # 12000-16385
-  4500
+  3000, 3000,
+  4000,
+
+  # the last 2k are approximately maximally distant
+  500, 500, 500, 500
 ]
+
 levels = make_levels(steps)
 prev_level = levels[0]
 print(len(steps) == len(levels))
