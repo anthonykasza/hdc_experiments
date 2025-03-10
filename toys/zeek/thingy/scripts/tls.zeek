@@ -22,18 +22,11 @@ event ssl_encrypted_data(c: connection, is_client: bool, record_version: count, 
 
   # 1. find the interval hv
   if (!c$ssl?$previous_record_ts) { c$ssl$previous_record_ts = c$start_time; }
-  # TODO - stop using magic numbers
-  local interval_hv = ::interval_codebook[
-    double_to_count(
-      interval_to_double(
-        network_time() - c$ssl$previous_record_ts
-      ) * 10
-    )];
+  local interval_hv = ::interval_lookup(interval_to_double(network_time() - c$ssl$previous_record_ts));
   c$ssl$previous_record_ts = network_time();
 
   # 2. find the length hv
-  # TODO - stop using magic numbers
-  local len_hv = ::length_codebook[length / 4];
+  local len_hv = ::length_lookup(length);
 
   # 3. bind everything and append into connection context
   c$ssl$role_filler_hvs[|c$ssl$role_filler_hvs|] = VSA::bind(vector(

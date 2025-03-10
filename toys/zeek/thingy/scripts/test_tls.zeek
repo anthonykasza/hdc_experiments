@@ -5,7 +5,7 @@
 event zeek_done() {
   local result = ::dbscan([
     $data=::conns_as_ngram_bundle,
-    $min_sim=0.8,
+    $min_sim=0.9,
     $min_size=3
   ]);
 

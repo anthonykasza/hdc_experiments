@@ -6,7 +6,6 @@ export {
 
 module VSA;
 export {
-  # 65536 / 4 ish
   option dimensions: count = 17000;
 
   global dice_roll: function(): int;
@@ -17,7 +16,7 @@ export {
   global sim: function(hv1: hypervector, hv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
   global make_groups: function(v: vector of hypervector, n: count): vector of vector of hypervector;
-  global make_levels: function(num_of_levels: count, hv1: hypervector, hv2: hypervector): vector of hypervector;
+  global make_levels: function(steps: vector of count, hv1: hypervector, hv2: hypervector): vector of hypervector;
 }
 
 function make_groups(v: vector of hypervector, n: count): vector of vector of hypervector {
@@ -84,32 +83,29 @@ function hdv(n: count &default=VSA::dimensions, all_zeros: bool &default=F): hyp
   return v;
 }
 
-function make_levels(num_of_levels: count, hv1: hypervector &default=VSA::hdv(), hv2: hypervector &default=VSA::hdv()): vector of hypervector {
-  if (num_of_levels < 2 || num_of_levels > VSA::dimensions) {
+function make_levels(steps: vector of count, hv1: hypervector &default=VSA::hdv(), hv2: hypervector &default=VSA::hdv()): vector of hypervector {
+  local size = |steps|;
+  if (size < 2 || size > VSA::dimensions) {
     return vector(hv1, hv2);
+  }
+
+  local step_sum: count = 0;
+  for (idx in steps) {
+    local step = steps[idx];
+    step_sum = step_sum + step;
   }
 
   local levels: vector of hypervector = vector();
   levels[0] = hv1;
-  local level_counter: count = 1;
-
+  local step_counter: count = 0;
   local start: count = 0;
-  local stop: count = |hv1|;
-  local step: count = double_to_count((stop - start) / num_of_levels);
-  # TODO - support a way of adjusting the step. Instead of a single
-  #        static step per iteration of the following loop, a dynamic
-  #        step would allow for arbitrary correlation 'resolutions' e.g.
-  #        exponential, fractal, mixed-linear
 
-  while (level_counter <= num_of_levels) {
-    # copy the previous level into this level
+  while (step_counter < |steps|) {
     levels[|levels|] = copy(levels[|levels|-1]);
-
-    # copy slices of hv2 into this level
-    levels[|levels|-1][start:start+step] = hv2[start:start+step];
-
-    start = start + step;
-    level_counter = level_counter + 1;
+    local elements = double_to_count(steps[step_counter] * (|hv1| / step_sum));
+    levels[|levels|-1][start:start+elements] = hv2[start:start+elements];
+    start = start + elements;
+    step_counter = step_counter + 1;
   }
 
   return levels;
