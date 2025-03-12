@@ -74,4 +74,3 @@ event connection_state_remove(c: connection) {
 # In a cluster setting, the results of make_ngram_bundle()
 #  would need to be sent from the worker processing the conenction
 #  to the proxy/manager where the stream-clustering of hv occurs
-

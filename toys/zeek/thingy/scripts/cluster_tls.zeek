@@ -1,20 +1,22 @@
 @load .
 
-# NOTE - this script needs some TLS traffic to chew on
-
 event zeek_done() {
+
+  # TODO - expose clustering params as user-friendly exported options
   local result = ::dbscan([
     $data=::conns_as_ngram_bundle,
     $min_sim=0.9,
     $min_size=3
   ]);
 
+  # TODO - use logging framework instead of prunting to scfreen
   print "noise";
   for (noise_idx in result$noise) {
     print ::conns_as_uids[noise_idx] + "/" + ::conns_as_snis[noise_idx];
   }
   print "";
 
+  # TODO - use logging framework instead of prunting to scfreen
   print "clusters";
   for (cluster in result$clusters) {
     local tmp: string = "";
@@ -25,4 +27,5 @@ event zeek_done() {
     print tmp;
   }
   print "";
+
 }
