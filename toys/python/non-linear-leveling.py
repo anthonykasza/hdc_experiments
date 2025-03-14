@@ -1,3 +1,10 @@
+# This was inspired by grid-based clustering. Adaptive meshes are neat too.
+# In many domains, there will be regions of the discretized feature space
+#  where it will be beneficial to have more/less granularity of leveling
+# In comparing network packet lengths, the difference between 8 and 32 may
+# be meaningful yet the difference between 1448 and 1480 is not as meaningful
+
+
 import copy
 from utils import hdv, cossim
 

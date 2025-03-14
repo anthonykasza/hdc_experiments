@@ -22,7 +22,12 @@ References
   - table 1 is interesting
 - Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
 - HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
-  - figure 1b is awesome!
+  - figure 1b is awesome! and is similar to Figure 1 of Modular Composite Representation
+- Modular Composite Representation (MCR)
+  - Thank you to the University of Memphis for making the research paper EASY to locate on the interwebs and FREE, as ,in beer, to download
+    - hurray! open science!
+  - figure 4 reminds me of Gilbert Strang's [The Big Picture of Linear Algebra](https://youtu.be/rwLOfdfc4dw?t=284)
+    - orthogonality around a circle
 - Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
 - [VSAONLINE](https://sites.google.com/view/hdvsaonline/home) and its [GGroup](https://groups.google.com/g/vsacommunity/about)

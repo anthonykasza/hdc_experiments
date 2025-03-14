@@ -1,3 +1,23 @@
+# After reading about Modular Composite Representations,
+# it's clear that using a bounded range in hdv() is totally
+# useful and what other smarter people do too. However, MCR
+# requires different bundle, bind, clip implementations as what's currently
+# in utils.py
+# And, it needs to use manhatten distance instead of cossim or hamdis.
+#
+# Sampling uniformly from the range is good too so long as the range
+# size is even and goes from zero to some number. The paper uses 16 as an
+# example. This seems to go against the fact that bipolar HVs are great.
+# Although, bipolar HV are the same as binary HVs... so, do we really need
+# even-sized ranges? The paper uses quite a bit of math formulas but does
+# mention, in written language, the importance of symmetry in the choice
+# of range.
+#
+# The paper calls out specifically that
+# majority vote will make a poor bundling operation in MCR VSA.
+# Perhaps thingy/ should switch to bipolar or mcr?
+
+
 import copy
 import random
 import numpy as np
