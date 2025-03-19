@@ -1,8 +1,3 @@
-# Thank yous
-#   SpamHD: Memory-Efficient Text Spam Detection using Brain-Inspired Hyperdimensional Computing
-#   https://github.com/AikawaMafuyu/HamHD
-#   https://www.kaggle.com/datasets/uciml/sms-spam-collection-dataset
-
 import sys; sys.path.insert(0, '../')
 from utils import bind, bundle, hdv, permute, cossim
 
