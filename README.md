@@ -43,7 +43,7 @@ References
 - [Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021](https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/)
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 - [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
-- Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception
+- [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
 - Configurable Hardware Acceleration for Hyperdimensional Computing Extension on RISC-V
   - hyperdimensional coprocessor unit - push HDC tasks into hardware
@@ -56,6 +56,38 @@ References
   - they can find attack in Sysflow data by embedding provence graphs and ATT&CK TTPs into hypervectors and then mathing on them
   - "We adopted the method to work with an arbitrary length of paths within the graph, enhancing the capability of our framework to efficiently identify attack patterns of any length within provenance graphs"
 - Audio Fingerprinting with Holographic Reduced Representations
+- HyperCam: Low-Power Onboard Computer Vision for IoT Cameras
+  - HDC vision using COTS hardware. bravo!
+    - DVS are neat but they aren't cheap
+  - naive encoding method
+    - pixel position codebook uses randomized leveling
+      - there will be no correlation between levels?
+    - pixel value codebook uses linear leveling
+      - the paper randomizes which bits they flip but all the bits hold the same amount of information so it doesn't matter
+    - pixels are encoded as bind(Row, Col, Val)
+    - images are encoded as bundle(pixel_binding0, pixel_binding1, ...)
+  - rewrite 1
+    - utilize permutation operation instead of position codebook to save memory
+      - still no correlation between row1,col1 and row2,col1?
+  - rewrite 2
+    - another codebook reduction to save memory
+    - pixels are treated as 1d?
+  - rewrite 3
+    - introduced weighted bundling operation to ensure pixel values that occur more often are considered more important
+      - this sort of reminds me of adjusting the contrast on a b/w image
+        - up the black and white values so the mid-tones become less important
+  - rewrite 4
+    - the sparse bundling operation:
+      - randomly select some percent of the elements and bundle those only
+      - use a CountSketch or BloomFilter backend
+    - they merged the binding operation and generation of value HVs into a single pass for more better performance
+  - remaining thoughts
+    - i don't understand how BF and CS are used
+    - i really like the idea of a partial bundling operation
+      - it seems related to leveling strategies (replace, average, inc/dev)
+      - how would other other operation modifications be useful? partial permutation?
+    - they are very concerned with performance. why not reduce HV dimensions? this would have made all operations more efficient (and less accurate)
+    - they don't address the fact that neighboring pixels are often very near in value
 
 
 Summary
@@ -376,7 +408,7 @@ Misc
 - HDC can be incorporated into NN to make both better
   - NN frontend to generate HVs
   - HDC frontend to generate vectors for NN
-- what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the HDV's range's max/min?
+- what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the levels' range's max/min?
 - fix sized ternary vectors remind me of
   - nPrint
     - concatenate all maximum length PDUs together to make a long sparse block vector
