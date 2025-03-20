@@ -29,7 +29,7 @@ def make_message_bundle(msg, n, character_symbols):
 
 # one symbol per byte as latin-1 is a 1 byte encoding
 character_symbols = [hdv() for x in range(256)]
-df = pd.read_csv('spam.csv', encoding='latin-1')
+df = pd.read_csv('uniq.csv', encoding='latin-1')
 labels = np.array(df['v1'], dtype='str')
 messages = np.array(df['v2'], dtype='str')
 
@@ -44,8 +44,6 @@ else:
   n = 10
   message_embeddings = []
   for idx in range(len(labels)):
-    if idx % 15 == 0:
-      print(f'embedding {idx}')
     label = labels[idx]
     message = messages[idx]
     message_embeddings.append(make_message_bundle(message, n, character_symbols))
