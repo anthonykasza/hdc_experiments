@@ -4,7 +4,7 @@
 # In comparing network packet lengths, the difference between 8 and 32 may
 # be meaningful yet the difference between 1448 and 1480 is not as meaningful
 
-
+import sys; sys.path.insert(0, "../")
 import copy
 from utils import hdv, cossim
 

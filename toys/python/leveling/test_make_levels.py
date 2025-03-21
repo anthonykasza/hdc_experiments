@@ -1,5 +1,6 @@
 import random
 import copy
+import sys; sys.path.insert(0, "../")
 from utils import cossim, hdv, bind, bundle
 
 

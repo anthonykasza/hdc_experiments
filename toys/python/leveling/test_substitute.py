@@ -1,3 +1,4 @@
+import sys; sys.path.insert(0, "../")
 from utils import cossim, hdv, substitute
 
 

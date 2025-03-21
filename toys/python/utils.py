@@ -178,3 +178,8 @@ def substitute(hv1, hv2, bins):
 def sub(hv1, hv2, bins):
   '''shorter alias for bad typists'''
   return substitute(hv1, hv2, bins)
+
+
+def inverse(hv):
+  '''Inverse the elements'''
+  return np.array([x * -1 for x in hv])
