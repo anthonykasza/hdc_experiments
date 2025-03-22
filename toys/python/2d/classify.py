@@ -1,6 +1,6 @@
-# 8x8 pixel images
-# values are b/w, 0 through 16
-# each image is 1 of 10 categories, 0 through 9
+# Comparing the results of non-deterministic code
+#  is a real point in the (grand) wazoo. You can't test
+#  for values you must test for ranges.
 
 
 import sys; sys.path.insert(0, '../')
@@ -9,24 +9,55 @@ from utils import bind, bundle, cossim, sub, hdv
 from collections import defaultdict
 from sklearn import datasets
 import numpy as np
+import copy
+
+
+def make_levels(steps, hv1=hdv(), hv2=hdv()):
+  '''Make non-linear levels'''
+  levels = []
+  levels.append(hv1)
+  step_counter = 0
+  start = 0
+  total_changed_elements = 0
+
+  while step_counter < len(steps):
+    levels.append( copy.deepcopy(levels[len(levels)-1]) )
+
+    elements = int(steps[step_counter] * (len(hv1) / sum(steps)))
+    total_changed_elements = total_changed_elements + elements
+
+    levels[len(levels)-1][start:start+elements] = hv2[start:start+elements]
+    start = start + elements;
+    step_counter = step_counter + 1
+
+  return levels
+
+
+def value_lookup(value, codebook, steps):
+  start = 0
+  for idx in range(len(steps)):
+    step = steps[idx]
+    stop = start + step
+    if value > start and value <= stop:
+      return codebook[idx]
+    start = start + step
+  return codebook[-1]
 
 
 def embed_image_into_hv(pixels):
   '''Bundle pixel bindings to make an image HV'''
   pixel_hvs = []
   for idx, pixel in enumerate(pixels):
-
-    # this could very easily be expanded to
-    #  support RBG values as well as more
-    #  dimensions than 2. CT scans would be neat to try
-
-    value = int(pixel)
     x = int(idx / 8)
     y = idx % 8
+    value = int(pixel)
 
-    pixel_value_hv = pixel_value_codebook[value]
     pixel_x_hv = pixel_x_codebook[x]
     pixel_y_hv = pixel_y_codebook[y]
+    pixel_value_hv = pixel_value_codebook[value]
+
+    # uncomment to test with non-linear leveling
+    '''pixel_value_hv = value_lookup(value, pixel_value_codebook, pixel_value_steps)'''
 
     pixel_binding = bind(pixel_x_hv, pixel_y_hv, pixel_value_hv)
     pixel_hvs.append(pixel_binding)
@@ -41,27 +72,40 @@ def split_data(data, train_size):
   return train_idx, test_idx
 
 
-# there's likely a sweet spot for this
 dims = 10000
 
-# Why do random uncorrelated codebooks produce better
-#  results than leveled codebooks?
-# TODO - try non linear leveling for the pixel_value_codebook
+# Leveled Codebooks, these don't work as well as uncorrelated codebooks
+'''
+pixel_value_codebook = sub(hdv(dims), hdv(dims), 17-1)
+pixel_x_codebook = sub(hdv(dims), hdv(dims), 8-1)
+pixel_y_codebook = sub(hdv(dims), hdv(dims), 8-1)
+'''
 
-# Leveled Codebooks
-#pixel_value_codebook = sub(hdv(dims), hdv(dims), 17-1)
-#pixel_x_codebook = sub(hdv(dims), hdv(dims), 8-1)
-#pixel_y_codebook = sub(hdv(dims), hdv(dims), 8-1)
+# Non-linear Leveled Codebooks, these increase the range of the
+#  predictions (confidence) but they still don't perform as well as
+#  uncorrelated.
+# i played with a few different step strategies but they all seemed
+#  worse than random codebooks
+'''
+pixel_value_steps = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+pixel_value_steps = [500, 500, 500, 500, 500]
+pixel_value_steps = [8, 1, 8]
+pixel_value_steps = [10, 5, 10]
+pixel_value_steps = [1, 3, 2, 1, 1, 2, 3, 1]
+pixel_value_steps = [1, 3, 10, 3, 1]
+pixel_value_codebook = make_levels(pixel_value_steps)
+'''
 
 # Random Uncorrelated Codebooks
 pixel_value_codebook = [hdv(dims) for x in range(17)]
 pixel_x_codebook = [hdv(dims) for x in range(8)]
 pixel_y_codebook = [hdv(dims) for x in range(8)]
 
-
+# Load data
 digits = datasets.load_digits()
 images = digits.data
 labels = digits.target
+# TODO - try different train/test ratios
 train_indices, test_indices = split_data(images, train_size=0.8)
 
 # train
@@ -72,8 +116,9 @@ for idx in train_indices:
   label = int(labels[idx])
   image_hv = embed_image_into_hv(image)
 
-  # TODO - consider retraining with an image_hv based on its
-  #        cossim to incorrect class bundles
+  # TODO - retrain on a sample until it's similarity to
+  #        incorrect class centroid HVs decreases to an
+  #        acceptable ratio
   examples_per_class[label].append(image_hv)
   example_count_per_class[label] += 1
 
@@ -96,7 +141,7 @@ for idx in test_indices:
   farthest_fit = min(predictions, key=predictions.get)
 
   # why are the prediction ranges so tight? i would think
-  #  they should have a much larger difference
+  #  they should have a much larger range
   r = abs(predictions[closest_fit] - predictions[farthest_fit])
 
   if closest_fit != label:
@@ -108,7 +153,7 @@ for idx in test_indices:
   else:
     correct_per_class[label] += 1
 
-# These are pretty awful results
+# These are pretty awful results :(
 print(f'trained {dict(sorted(example_count_per_class.items()))}')
 print(f'correct {dict(sorted(correct_per_class.items()))}')
 print(f'wrong {dict(sorted(wrong_per_class.items()))}')
