@@ -88,7 +88,58 @@ References
       - how would other other operation modifications be useful? partial permutation?
     - they are very concerned with performance. why not reduce HV dimensions? this would have made all operations more efficient (and less accurate)
     - they don't address the fact that neighboring pixels are often very near in value
-
+- Detecting COVID-19 Related Pneumonia on CT Scans using Hyperdimensional Computing
+  - this is awesome because it's theoretical AND tangible
+    - wow, expert radiologists are only 70% accurate!
+  - the use of opencv to adjust contrast prior to encoding reminds me of HyperCam's weighting added in rewrite 3
+    - they use b/w images and pixel values of 0-255
+  - "For creating the hypervectors, we use orthogonal or uncorrelated encoding [13]–[15] to represent the position of each pixel and linear or correlated encoding [17] to represent the pixel intensity."
+    - similar to HyperCam, this paper uses uncorrelated positional encoding of pixels
+    - using orthogonal encoding for pixels reminds me of using categorical encoding for integer values
+    - dataset 3 having different image sizes than datasets 1 and 2 complicates things
+      - i dunno if this will work but... use a single codebook of size 512 (the largest feature range) for all features
+        - for 200x300 pixel images, flip some percent of the HV's elements to 0
+          - `x_hv = zero_flip(levels[pixel_x], 312/512)`
+          - `y_hv = zero_flip(levels[pixel_y], 212/512)`
+          - `value_hv = zero_flip(levels[pixel_val], 256/512)`
+        - for 512x512 pixel images, don't flip anything for positional variables
+          - `x_hv = levels[pixel_x]`
+          - `y_hv = levels[pixel_y]`
+          - `value_hv = zero_flip(levels[pixel_val], 256/512)`
+        - then `pixel_binding0 = bind(x_hv, y_hv, value_hv)`
+        - then `image_bundle = bundle(pixel_binding0, pixel_binding1 ... pixel_bindingN)`
+  - "Future research needs to be done to discover an encoding that is not dependent upon pixel position and that could be implemented to three-dimensional images"
+- [A Brain-Inspired Hyperdimensional Computing Approach for Classifying Massive DNA Methylation Data of Cancer](https://github.com/cumbof/chopin2)
+  - they, too, use uncorrelated levels to encode a range of numberical values. why?
+    - i tried MNIST classification with leveled codebooks and it didn't work as well as randomized codebooks. i don't understand why
+  - this is very cool: during training, if the wrong class is predicted, they subtract the sample_hv from all incorrect class prototypes
+    - then they continually bundle the sample_hv into the correct class prototype HV until the accuracy reaches some threshold 
+  - they also demonstrate that more dimensions and more levels doesn't mean better accuracy. table 4 shows that there's a sweet-spot for the datasets they use
+- HDC-MiniROCKET: Explicit Time Encoding in Time Series Classification with Hyperdimensional Computing
+  - i don't understand most of this paper but...
+  - they bind in the timestep of the observation when encoding, which validates what thingy/ does
+    - they use fractional binding (power encoding) to level the timesteps
+      - they also mention DFT so i assume they're using FHRR
+    - "To be able of adjust the temporal similarity of feature vectors, we introduce a parameter s, which influences the graded similarity between consecutive timestamps"
+    - "s weigths the importance of temporal position – the higher its value, the more dissimilar become timestamps"
+    - "the similarity of two feature vectors, each bound to the encoding of their timestamp, gradually decreases with increasing difference of the timestamps."
+    - "It is very important to keep in mind that not all tasks and datasets benefit from explicit temporal encoding (e.g.. we can similarly construct datasets where temporal encoding is harmful."
+    - "In practice, selecting s should incorporate knowledge about the particular task."
+- A neural representation of continuous space using fractional binding
+  - semantic pointers, i don't fully understand them
+- [MIT 9.13 The Human Brain, Spring 2019](https://www.youtube.com/watch?v=ba-HMvDn_vU&list=PLUl4u3cNGP60IKRN_pFptIBxeiMc0MCJP)
+  - this course is radical
+  - grid cells, whoa
+- Intrusion Detection in IoT Networks Using Hyperdimensional Computing: A Case Study on the NSL-KDD Dataset
+  - i like the application of HDC to network detection <3
+  - i don't like using public intrusion datasets
+  - i don't like assuming DoS or scan detection has any relevance to other types of attacks
+  - "Another avenue for future research could involve extending the model to handle sophisticated attacks, such as zero-day and advanced persistent threats, and incorporating real-time detection and response for better performance in dynamic, resource-constrained IoT environments."
+    - let's say you bought 100 zero-days to further evaluate this experiment
+      - at $100,000 each, that'll only run about $10,000,000
+      - once you buy an ohdays, it is an ohday no longer
+- Network Anomaly Detection for IoT Using Hyperdimensional Computing on NSL-KDD
+  - this is very similar to "Intrusion Detection in IoT Networks Using Hyperdimensional Computing: A Case Study on the NSL-KDD Dataset" but with 1/4 different authors and way more math equations
 
 Summary
 -------
@@ -443,3 +494,6 @@ Misc
   - projecting something onto a bigger surface is often useful
     - think about a screen projector, it makes small images easier to see
 - [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
+- if we can substitute from one HV to another, making hv1 more similar to hv2...
+  - can we make hv1 more unlike hv2?
+  - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
