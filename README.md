@@ -356,6 +356,28 @@ operations include:
       - combine different leveling strategies to create a vector space with varying granularity
         - e.g. log then linear
         - elliptic, like a circle but longer on two of the sides
+- An Extension to Basis-Hypervectors for Learning from Circular Data in Hyperdimensional Computing
+  - basis-hypervectors, a representation of an atomic symbol
+  - level-hypervectors, derived from, and correlated with, a basis-hv
+  - class-hypervectors, a centroid or "prototype"
+  - query-hypervectors, an unlabeled HV which is queried against all class-hvs
+  - classification model, a group of class-hvs is the model. compare a query-hv against each of the class-hvs to determine its label
+  - regression model, a set of linearly leveled level-hvs is the model. 
+    - starts at a place and goes to another place
+    - requires a lookup function to conver the real-number to an HV
+    - bundle the levels to make a levels_bundle, then bind(query, levels_bundle)
+      - i'm pretty sure this is what factorization.py does
+  - on uncorrelated codebooks "While this seems suitable for encoding letters, which to some extent represent unrelated information, clearly it is not as adequate for other kinds of unitary information, such as real numbers"
+  - "the level-hypervectors created with the existing method, as described above, have a fixed distance between each pair of hypervectors."
+  - circular-hypervectors, similar to leveling but each "level" hv represents a single point "of a set of equidistant points on a circle"
+    - both even and odd number of levels can be used
+    - hvs which are represent opposite side of the circle have minimum similarity (they are as similar are any 2 random hv)
+    - see figure 6
+  - their results
+    - surgery robots, so cool
+    - it's nice to see that leveling didn't perform as well as random symbols for them too on a classification task. maybe that's why it doesn't work well on MNIST digit classification
+  - is it possible to create exponential/log correlate levels?
+
 
 
 Searching Memory
