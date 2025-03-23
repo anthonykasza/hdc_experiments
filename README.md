@@ -543,4 +543,6 @@ Misc
   - can we make hv1 more unlike hv2?
   - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
 - i wonder if our brains bundle when we sleep
-- [thanks](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
+- "science cannot move forward without heaps"
+  - [thank you to the heaps](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
+
