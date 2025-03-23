@@ -125,8 +125,6 @@ References
     - "the similarity of two feature vectors, each bound to the encoding of their timestamp, gradually decreases with increasing difference of the timestamps."
     - "It is very important to keep in mind that not all tasks and datasets benefit from explicit temporal encoding (e.g.. we can similarly construct datasets where temporal encoding is harmful."
     - "In practice, selecting s should incorporate knowledge about the particular task."
-- A neural representation of continuous space using fractional binding
-  - semantic pointers, i don't fully understand them
 - [MIT 9.13 The Human Brain, Spring 2019](https://www.youtube.com/watch?v=ba-HMvDn_vU&list=PLUl4u3cNGP60IKRN_pFptIBxeiMc0MCJP)
   - this course is radical
   - grid cells, whoa
@@ -169,6 +167,23 @@ References
     - permutation
     - no one has tried using column and row ngrams. sorta like a kernel/mask/convolution
       - after using photoshop filters for last 20 years i finally understand how they work
+- [Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements](https://www.youtube.com/watch?v=aYbJ_beUja8)
+  - VSAs enable probabilist programming
+    - binding encodes data, similarity computes probability, bundling updates beliefs (learns), unbinding is sort of like conditional probabilities
+    - lots o' math
+      - "Fractional binding is mathematically equivalent to the inverse Fourier transform of data encoded with RFFs"
+    - let's make some mental leaps: VSAs are probabilities, quantum things are probabilities, VSAs are quantum things, VSAs are neuromorphically inspired, our brains are quantum computers
+  - why do the waterloo papers use a different format for their References sections compared to other papers?
+- [Efficient navigation using a scalable, biologically inspired spatial representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
+  - representing physical spaces with VSAs, they call them SSP (spacial semantic pointer)
+  - grid cells, whoa
+  - wow! tiled mazes
+  - [code](https://github.com/ctn-waterloo/cogsci2020-ssp-nav). thank you.
+- A neural representation of continuous space using fractional binding
+  - semantic pointers, i don't fully understand them
+
+
+
 
 Summary
 -------
@@ -527,3 +542,5 @@ Misc
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
   - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
+- i wonder if our brains bundle when we sleep
+- [thanks](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)

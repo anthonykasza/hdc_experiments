@@ -1,63 +1,29 @@
-# Comparing the results of non-deterministic code
-#  is a real pain in the (grand) wazoo. You can't test
-#  for values you must test for ranges.
-
 
 import sys; sys.path.insert(0, '../')
-from utils import bind, bundle, cossim, sub, hdv
+from utils import bind, bundle, cossim, hdv, permute
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from sklearn import datasets
 import numpy as np
 import copy
 
 
-def make_levels(steps, hv1=hdv(), hv2=hdv()):
-  '''Make non-linear levels'''
-  levels = []
-  levels.append(hv1)
-  step_counter = 0
-  start = 0
-  total_changed_elements = 0
-
-  while step_counter < len(steps):
-    levels.append( copy.deepcopy(levels[len(levels)-1]) )
-
-    elements = int(steps[step_counter] * (len(hv1) / sum(steps)))
-    total_changed_elements = total_changed_elements + elements
-
-    levels[len(levels)-1][start:start+elements] = hv2[start:start+elements]
-    start = start + elements;
-    step_counter = step_counter + 1
-
-  return levels
-
-
-def value_lookup(value, codebook, steps):
-  start = 0
-  for idx in range(len(steps)):
-    step = steps[idx]
-    stop = start + step
-    if value > start and value <= stop:
-      return codebook[idx]
-    start = start + step
-  return codebook[-1]
-
-
 def embed_image_into_hv(pixels):
   '''Bundle pixel bindings to make an image HV'''
+  global x_hv
+  global y_hv
+  global value_hv
+
+  value_freqs = dict(Counter([int(pixel) for pixel in pixels]))
   pixel_hvs = []
   for idx, pixel in enumerate(pixels):
     x = int(idx / 8)
     y = idx % 8
     value = int(pixel)
 
-    pixel_x_hv = pixel_x_codebook[x]
-    pixel_y_hv = pixel_y_codebook[y]
-    pixel_value_hv = pixel_value_codebook[value]
-
-    # uncomment to test with non-linear leveling
-    '''pixel_value_hv = value_lookup(value, pixel_value_codebook, pixel_value_steps)'''
+    pixel_x_hv = permute(x_hv, x)
+    pixel_y_hv = permute(y_hv, y)
+    pixel_value_hv = value_codebook_not_corr[value_freqs[value]]
 
     pixel_binding = bind(pixel_x_hv, pixel_y_hv, pixel_value_hv)
     pixel_hvs.append(pixel_binding)
@@ -74,38 +40,14 @@ def split_data(data, train_size):
 
 dims = 10000
 
-# Leveled Codebooks, these don't work as well as uncorrelated codebooks
-'''
-pixel_value_codebook = sub(hdv(dims), hdv(dims), 17-1)
-pixel_x_codebook = sub(hdv(dims), hdv(dims), 8-1)
-pixel_y_codebook = sub(hdv(dims), hdv(dims), 8-1)
-'''
-
-# Non-linear Leveled Codebooks, these increase the range of the
-#  predictions (confidence) but they still don't perform as well as
-#  uncorrelated.
-# i played with a few different step strategies but they all seemed
-#  worse than random codebooks
-'''
-pixel_value_steps = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-pixel_value_steps = [500, 500, 500, 500, 500]
-pixel_value_steps = [8, 1, 8]
-pixel_value_steps = [10, 5, 10]
-pixel_value_steps = [1, 3, 2, 1, 1, 2, 3, 1]
-pixel_value_steps = [1, 3, 10, 3, 1]
-pixel_value_codebook = make_levels(pixel_value_steps)
-'''
-
-# Random Uncorrelated Codebooks
-pixel_value_codebook = [hdv(dims) for x in range(17)]
-pixel_x_codebook = [hdv(dims) for x in range(8)]
-pixel_y_codebook = [hdv(dims) for x in range(8)]
+x_hv = hdv(dims)
+y_hv = hdv(dims)
+value_codebook_not_corr = [hdv(dims) for i in range(8*8)]
 
 # Load data
 digits = datasets.load_digits()
 images = digits.data
 labels = digits.target
-# TODO - try different train/test ratios
 train_indices, test_indices = split_data(images, train_size=0.8)
 
 # train
