@@ -42,18 +42,20 @@ function make_groups(v: vector of hypervector, n: count): vector of vector of hy
 
 
 function dice_roll(): int {
-  local finite_group_size: count = 5;
+  local finite_group_size: count = 6;
   switch rand(finite_group_size) {
     case 0:
-      return 2;
+      return 3;
     case 1:
-      return 1;
+      return 2;
     case 2:
-      return 0;
+      return 1;
     case 3:
       return -1;
     case 4:
       return -2;
+    case 5:
+      return -3;
   }
 }
 
