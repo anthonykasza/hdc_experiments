@@ -6,7 +6,7 @@ export {
 
 module VSA;
 export {
-  option dimensions: count = 17000;
+  option dimensions: count = 20000;
 
   global dice_roll: function(): int;
   global hdv: function(n: count, all_zeros: bool): hypervector;
@@ -15,31 +15,41 @@ export {
   global bind: function(hdvs: vector of hypervector): hypervector;
   global sim: function(hv1: hypervector, hv2: hypervector): double;
   global perm: function(hv: hypervector, positions: int): hypervector;
-  global make_groups: function(v: vector of hypervector, n: count): vector of vector of hypervector;
+  global embed_tls_records: function(v: vector of hypervector, n: count): vector of hypervector;
   global make_levels: function(steps: vector of count, hv1: hypervector, hv2: hypervector): vector of hypervector;
 }
 
-function make_groups(v: vector of hypervector, n: count): vector of vector of hypervector {
-  if (n > |v|) { return vector(v); }
 
-  local result: vector of vector of hypervector = vector();
-  local tmp: vector of hypervector;
-  local j: count;
+function embed_tls_records(v: vector of hypervector, n: count): vector of hypervector {
+  if (n == 0) { return vector(); }
+  if (n > |v|) { n = |v|; }
 
-  for (idx in v) {
-    j = 0;
-    tmp = vector();
-    while (j < n) {
-      if (idx + j >= |v|) { return result; }
-      tmp += v[idx+j];
-      j += 1;
+  local ngram_bindings: vector of hypervector = vector();
+  local length_hvs: vector of hypervector;
+  local j: count = 1;
+  local i: count;
+
+  while (j <= n) {
+    i = 0;
+
+    while (i <= |v| - j) {
+
+      length_hvs = vector();
+      local length_subseq: vector of hypervector = v[i : i+j];
+      for (l_idx in length_subseq) {
+        local l = length_subseq[l_idx];
+        length_hvs[|length_hvs|] = VSA::perm(l, l_idx);
+      }
+      ngram_bindings[|ngram_bindings|] = VSA::bind(length_hvs);
+
+      i += 1;
     }
-    result += tmp;
+
+    j += 1;
   }
 
-  return result;
+  return ngram_bindings;
 }
-
 
 function dice_roll(): int {
   local finite_group_size: count = 5;

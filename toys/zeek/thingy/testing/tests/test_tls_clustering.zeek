@@ -6,25 +6,16 @@ function make_connection(lengths: vector of count, ivals: vector of double, endp
   local records: vector of hypervector = vector();
 
   for (idx in lengths) {
-    local length = lengths[idx];
-    local ival = ivals[idx];
-    local is_client = endpoints[idx];
-
-    local interval_hv = ::interval_lookup(ival);
-    local len_hv = ::length_lookup(length);
-
     local record_binding = VSA::bind(vector(
-      is_client ? ::client_hv : ::server_hv, #gotta love the syntax `bool?::foo:::bar`
-      len_hv,
-      interval_hv
+      ::endpoint_lookup(endpoints[idx]),
+      ::length_lookup(lengths[idx]),
+      ::interval_lookup(ivals[idx])
     ));
-
-    # ordered HVs representing TLS records
     records[|records|] = record_binding;
   }
 
-  # connections are bundles of record-ngrams
-  return ::make_ngram_bundle(records);
+  local records_hv = VSA::embed_tls_records(records, ::ngram_size);
+  return VSA::bundle(records_hv);
 }
 
 
@@ -105,7 +96,7 @@ event zeek_init() {
 
   local result = ::dbscan([
     $data=::conns_as_ngram_bundle,
-    $min_sim=0.66,
+    $min_sim=0.05,
     $min_size=3
   ]);
   # NOTE - if min_sim is set to 0.75, sometimes conn2 is included

@@ -6,6 +6,6 @@ processing conn3
 processing conn4
 processing conn5
 
-noise, [3, 4]
-cluster, [0, 1, 2, 5]
+noise, [1, 3, 4]
+cluster, [0, 2, 5]
 
