@@ -18,17 +18,15 @@ def embed_image_into_hv(pixels):
     y = idx % image_y_size
     value = int(pixel)
 
-    # x goes this way
     pixel_x_hv = permute(THE_ONLY_HV, x)
-
-    # y goes that way
     pixel_y_hv = permute(THE_ONLY_HV, y * -1)
 
-    # value goes waaay this way
-    pixel_value_hv = permute(THE_ONLY_HV, x * y * value)
-    # TODO - test using * vs + in the above value encoding.
-    #        from eyeballing it, i like * better. using +, 8s and 3s
-    #        seemed to get mixed up more. with *, 5s have more incorrect
+    # i think all of these do the same thing
+    #magic = x * y * value
+    #magic = (x * value) + (y * value)
+    #magic = (x**2) * y + value
+    magic = x + y + value
+    pixel_value_hv = permute(THE_ONLY_HV, magic)
 
     pixel_binding = bind(pixel_x_hv, pixel_y_hv, pixel_value_hv)
     pixel_hvs.append(pixel_binding)
