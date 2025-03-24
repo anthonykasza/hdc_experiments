@@ -159,6 +159,7 @@ References
     - surgery robots, so cool
     - it's nice to see that leveling didn't perform as well as random symbols for them too on a classification task. maybe that's why it doesn't work well on MNIST digit classification
   - is it possible to create exponential/log correlate levels?
+    - it seems to be possible, albeit my code is a overcomplicated... see `toys/zeek/thingy/testing/Baseline/tests.codebook_btest/output`
 
   - why haven't any of the paper's on image classification use 2d ngrams?
     - random (non) levels
