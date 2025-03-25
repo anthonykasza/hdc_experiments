@@ -44,6 +44,16 @@ References
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 - [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
 - [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
+  - DVS are super neat
+  - CNN-level performance without a CNN
+  - [Pt I: Hyperdimensional Computing (HDC) with Peter Sutor (Interview)](https://www.youtube.com/watch?v=1T2WdXcnefc)
+    - instead of clipping bundle after each operation, periodically clip when the bundle elements get too big/small
+  - [Pt II: Hyperdimensional Computing (HDC) with Peter Sutor (Interview)](https://www.youtube.com/watch?v=VjQBpJR3wsg)
+    - if you iterate the training data, it's possible to boost while learning
+      - this is similar to what was done in A Brain-Inspired Hyperdimensional Computing Approach for Classifying Massive DNA Methylation Data of Cancer
+    - [pyhdc](https://github.com/ncos/pyhdc)
+    - shout outs to San Jose and Cardiff U
+  - [April 2024 AICamp Boston meetup - Peter Sutor - Hyperdimensional Computing](https://www.youtube.com/watch?v=Nob2j5aY0yw)
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
 - Configurable Hardware Acceleration for Hyperdimensional Computing Extension on RISC-V
   - hyperdimensional coprocessor unit - push HDC tasks into hardware
@@ -182,7 +192,7 @@ References
   - [code](https://github.com/ctn-waterloo/cogsci2020-ssp-nav). thank you.
 - A neural representation of continuous space using fractional binding
   - semantic pointers, i don't fully understand them
-
+- 
 
 
 
