@@ -123,6 +123,7 @@ References
   - they, too, use uncorrelated levels to encode a range of numberical values. why?
     - i tried MNIST classification with leveled codebooks and it didn't work as well as randomized codebooks. i don't understand why
   - this is very cool: during training, if the wrong class is predicted, they subtract the sample_hv from all incorrect class prototypes
+    - this is done in MoleHD as well and is mentioned in "Tutorial on Hyperdimensional Computing"
     - then they continually bundle the sample_hv into the correct class prototype HV until the accuracy reaches some threshold 
   - they also demonstrate that more dimensions and more levels doesn't mean better accuracy. table 4 shows that there's a sweet-spot for the datasets they use
 - HDC-MiniROCKET: Explicit Time Encoding in Time Series Classification with Hyperdimensional Computing
@@ -192,8 +193,10 @@ References
   - [code](https://github.com/ctn-waterloo/cogsci2020-ssp-nav). thank you.
 - A neural representation of continuous space using fractional binding
   - semantic pointers, i don't fully understand them
-- 
-
+- MoleHD: Ultra-Low-Cost Drug Discovery using Hyperdimensional Computing
+  - [SMILES](https://en.wikipedia.org/wiki/Simplified_Molecular_Input_Line_Entry_System) are already strings, so just embed them into hv then learn
+  - retrain/fine-tune during training by subtract example from incorrect class prototypes and add to correct ones
+- [Structure and Interpretation of Computer Programs](https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/)
 
 
 Summary

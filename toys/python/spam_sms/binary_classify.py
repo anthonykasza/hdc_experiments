@@ -3,6 +3,7 @@ from utils import bind, bundle, hdv, permute, cossim
 
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 
 def split_data(data, train_size):
@@ -34,8 +35,7 @@ def make_message_bundle(msg, n, character_symbols):
 
 
 
-# one symbol per byte as latin-1 is a 1 byte encoding
-character_symbols = [hdv() for x in range(256)]
+character_symbols = defaultdict(hdv())
 
 df = pd.read_csv('uniq.csv', encoding='latin-1')
 labels = np.array(df['v1'], dtype='str')
