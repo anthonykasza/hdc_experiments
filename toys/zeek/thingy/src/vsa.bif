@@ -1,0 +1,49 @@
+
+module GLOBAL;
+type hypervector: vector of int;
+
+module VSA;
+option dimensions: count = 17000;
+
+
+%%{
+using namespace std;
+
+int dice_roll(): int {
+  int size = 3;
+  int num;
+  do {
+    num = ( rand() % ((size * 2) - 1) ) - size;
+  } while (num == 0);
+  return num;
+}
+%%}
+
+
+function hdv_all1%(n: count &default=VSA::dimensions%): hypervector %{
+  VectorVal* vv = v->AsVectorVal();
+%}
+
+function hdv_all0%(n: count &default=VSA::dimensions%): hypervector %{
+%}
+
+function hdv%(n: count &default=VSA::dimensions%): hypervector %{
+%}
+
+function make_ngrams%(v: vector of hypervector, n: count%): vector of vector of hypervector %{
+%}
+
+function make_levels%(steps: vector of count, hv1: hypervector &default=VSA::hdv(), hv2: hypervector &default=VSA::hdv()%): vector of hypervector %{
+%}
+
+function sim%(hv1: hypervector, hv2: hypervector%): double %{
+%}
+
+function bundle%(hdvs: vector of hypervector%): hypervector %{
+%}
+
+function bind%(hdvs: vector of hypervector%): hypervector %{
+%}
+
+function perm%(hv: hypervector, positions: int &default=1%): hypervector %{
+%}
