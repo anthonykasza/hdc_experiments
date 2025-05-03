@@ -197,6 +197,42 @@ References
   - [SMILES](https://en.wikipedia.org/wiki/Simplified_Molecular_Input_Line_Entry_System) are already strings, so just embed them into hv then learn
   - retrain/fine-tune during training by subtract example from incorrect class prototypes and add to correct ones
 - [Structure and Interpretation of Computer Programs](https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/)
+- Hypervector Design for Efficient Hyperdimensional Computing on Edge Devices
+  - [tinyML Research Symposium 2021](https://www.youtube.com/watch?v=CSJ9Qr-SkeQ)
+- Autonomous Learning with High-Dimensional Computing Architecture Similar to von Neumann’s
+  - "the circuits in the cerebellum are laid out beautifully in 3D for a massive long-term memory for high-dimensional vectors"
+  - "The vectors can be binary or integer or real or complex—the computing power comes more from high dimensionality (e.g., H = 10,000) than from the nature of vector components."
+  - "New representations are made from existing ones with explicit calculation, which is fundamentally different from the generation of representations in an autoencoder or in the layers of a deep neural net as it is trained."
+  - "they [HDC/VSA] compute with high precision if the dimensionality is high enough—and even if some of the simple circuits malfunction! In contrast, traditional circuits for computing with numbers are complicated and are expected to work flawlessly"
+  - catastrophic forgetting in neural nets is akin to a phase transition in physics, the network changes all at once
+  - storing information beyond short-term capacity is called "chunking"
+    - chunking is related to ngrams
+  - short-term memory can work on about 10 vectors (1 chunk) at a time, these are summarized into a single vector called "focus"
+    - sensors, actuators, and memory are all integrated into the "focus" or the current state of self
+      - this reminds me of the Ship of Theseus
+  - "the cochlea of the inner ear analyses sound into frequencies—it Fourier-transforms the sound before passing it on to the rest of the brain"
+  - "the optic nerve brings in information along about 1.4 million fibers and the primary visual cortex distributes it among 280 million neurons—a 200-fold increase"
+    - that's a huge fan out. hey brain. here's some raw vision data. now, do the analytics.
+  - "Detecting. Recognizing previously encountered states makes it possible to detect irregularities and anomalies that can serve as an alarm, for example."
+  - he keeps using this term "regularities" to refer to patterns/structure in data. regularities are anything that isn't random.
+  - everytime i read something by this Pentti guy, i wish there was more 
+- Computing with Hypervectors for Efficient Speaker Identification
+  - "The proposed speech encoder aims to capture the pronunciation variations between speakers"
+  - algo
+    - formants in a time window are embedded into a hypervector
+    - ngrams are created from ordered time-slice hypervectors
+      - component HV are weighted by when creating the ngram HV
+        - weights are the "total energy of a spectrum slice" at each component time
+      - weights for ngram components are normalized
+    - ngram hypervectors are summed up to create a profile/prototype of the speaker
+  - what are "similarly located formants"?
+  - "training and testing on 40 speakers’ data take roughly 5 minutes on an Apple M1 processor"
+  - "The results obtained so far are solely based on making use of one acoustic feature (formants) and their course over a short time. There are many more acoustic features yet to be considered, such as the pitch and cepstral coefficients. HD computing is especially suited for encoding a combination of features and producing a fixed-dimensional representation for them [27]. Therefore, its identification accuracy is expected to keep improving when combined with other acoustic features, with a modest increase in computing time and memory use."
+- Neuro-Symbolic Architecture Meets Large Language Models: A Memory-Centric Perspective
+  - "While VSA excels at manipulating and reasoning with symbolic information, it typically assumes that the input data is intrinsically structured and symbolic in nature."
+  - in Fig 3b, what happens to the index of hypervector which have the same number of 1 elements but a different permutation of 1s? how are the 2 different HV indexed?
+    - nearest neighbor becomes a simple subtraction of indices, but how can you support that NN operation and permutation of HV?
+  - "In essence, quantization in NeSy [HDC/VSA] systems can be understood as a function whose performance is influenced by parameters in the symbolic space, such as the length and number of vector-symbolic representations."
 
 
 Summary
@@ -498,6 +534,7 @@ Misc
   - [Car-Hacking](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset)
   - NWPU-RESISC45 - REmote Sensing Image Scene Classification
   - FMA: A Dataset For Music Analysis
+  - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements

@@ -16,8 +16,10 @@ def new_ngram(hvs):
 
 
 def make_sequence(iterations, n, store=False):
-  global store_a_ngram_name
-  global store_a_ngram_hv
+  global store_first_ngram_name
+  global store_first_ngram_hv
+  global store_last_ngram_name
+  global store_last_ngram_hv
 
   gram_deque = deque([])
   name_deque = deque([])
@@ -33,12 +35,22 @@ def make_sequence(iterations, n, store=False):
     gram_deque.appendleft(f_hv)
     name_deque.appendleft(f_name)
 
+    if i == n:
+      store_first_ngram_hv = ngram
+      store_first_ngram_name = '/'.join(name_deque)
+
     if len(gram_deque) >= n:
+      # This could be more better by storing ngram in a codebook
+      #  and checking to see if the symbol for the subseq was
+      #  previously encountered
       ngram = new_ngram(gram_deque)
       ngrams.append(ngram)
+
       if store:
-        store_a_ngram_hv = ngram
-        store_a_ngram_name = '/'.join(name_deque)
+        store_last_ngram_hv = ngram
+        store_last_ngram_name = '/'.join(name_deque)
+
+      # The lengths of our deques should never exceed n
       gram_deque.pop()
       name_deque.pop()
 
@@ -48,16 +60,22 @@ def make_sequence(iterations, n, store=False):
   return process_call_sequence, process_call_sequence_ngram_bundle
 
 
-store_a_ngram_hv = ''
-store_a_ngram_name = ''
+store_first_ngram_hv = ''
+store_first_ngram_name = ''
+store_last_ngram_hv = ''
+store_last_ngram_name = ''
+
 n = 4
 i = 100 # consider the capacity of your bundle!
 learned_pcs, learned_pcsnb = make_sequence(i, n, store=True)
 sample_pcs, sample_pcsnb = make_sequence(n, n)
 
 print()
-print(f'is the randomly selected subseq {"/".join(sample_pcs)} in the call seq?')
+print(f'randomly generated subseq is not in seq {"/".join(sample_pcs)}')
 print(f'{cossim(sample_pcsnb, learned_pcsnb)}')
 print()
-print(f'is the last added subseq {store_a_ngram_name} in the call sequence?')
-print(f'{cossim(store_a_ngram_hv, learned_pcsnb)}')
+print(f'the first subseq is in seq {store_first_ngram_name}')
+print(f'{cossim(store_first_ngram_hv, learned_pcsnb)}')
+print()
+print(f'the last subseq is in seq {store_last_ngram_name}')
+print(f'{cossim(store_last_ngram_hv, learned_pcsnb)}')

@@ -1,8 +1,16 @@
-# inspired by resonator networks
-#  since bind() is its own inverse this doesn't work great
-#  see fractional power encoding
-# the script seems to get stuck on 1s and 50s which means i probably
-#  have an off-by-one bug somewhere
+# Sometimes, it is correct.
+# Sometimes, it is very close to correct.
+# Other times, it loops infinitely.
+
+# The gist of decomposition is:
+#  Know how many parts you are decomposing into.
+#  Then, guess at one of the parts.
+#  Then, see how the other parts err using the
+#   guessed part.
+#  Then, update your guess.
+# This is interesting because we can use
+#  HDC sets to process in parallel.
+
 
 import random
 from utils import hdv, bind, bundle, cossim, make_levels
@@ -10,11 +18,12 @@ from utils import hdv, bind, bundle, cossim, make_levels
 
 # make codebooks for 3 variables: x, y, z
 # each codebook represents a contiguous vector field
-#codebook_size = 10000
-codebook_size = 100
-x_codebook = make_levels(bins=codebook_size, n=10_000)
-y_codebook = make_levels(bins=codebook_size, n=10_000)
-z_codebook = make_levels(bins=codebook_size, n=10_000)
+codebook_size = 10000
+n=10_000
+
+x_codebook = make_levels(bins=codebook_size, n=n)
+y_codebook = make_levels(bins=codebook_size, n=n)
+z_codebook = make_levels(bins=codebook_size, n=n)
 
 # select x, y, and z at random ensuring no zeros
 x_idx = random.randint(1, codebook_size)
