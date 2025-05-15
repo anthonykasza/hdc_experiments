@@ -233,6 +233,11 @@ References
   - in Fig 3b, what happens to the index of hypervector which have the same number of 1 elements but a different permutation of 1s? how are the 2 different HV indexed?
     - nearest neighbor becomes a simple subtraction of indices, but how can you support that NN operation and permutation of HV?
   - "In essence, quantization in NeSy [HDC/VSA] systems can be understood as a function whose performance is influenced by parameters in the symbolic space, such as the length and number of vector-symbolic representations."
+- [QLS/CAMBAM Seminar - Chris Eliasmith - February 25 2025](https://youtu.be/DvRWP4Xxhro?t=782)
+  - i like the penguin+cat explaination of bundling
+  - it reminds me of [My Wife and My Mother-in-Law](https://en.wikipedia.org/wiki/My_Wife_and_My_Mother-in-Law)
+- A Neurodiversity-Inspired Solver for the Abstraction & Reasoning Corpus (ARC) Using Visual Imagery and Program Synthesis
+  - wow.
 
 
 Summary

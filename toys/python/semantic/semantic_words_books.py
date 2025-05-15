@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0, '../')
 from utils import hdv, bundle, bind, cossim
 
-with open('pg11.txt', 'r') as file:
+with open('books/pg11.txt', 'r') as file:
   text = file.read()
 cleaned_text = re.sub(r'[^a-zA-Z\s’\'-]', ' ', text)
 cleaned_text = re.sub(r'[\n]', ' ', cleaned_text)

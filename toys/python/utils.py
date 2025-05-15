@@ -10,6 +10,9 @@ def hdv(n=10_000, all=None):
     return np.full((1, n), all).flatten()
   return np.random.choice([1, -1], size=n)
 
+def hdv_real(n):
+  return np.random.choice([5,4,3,2,1, -1,-2,-3,-4,-5], size=n)
+
 
 def clip(hdv, zeros=True):
   '''trims values to 1 or -1, optionally flips 0 randomly'''
@@ -23,6 +26,9 @@ def clip(hdv, zeros=True):
 def bundle(*args):
   '''element-wise addition of vectors'''
   return clip(np.sum([hdv for hdv in args], axis=0))
+
+def bundle_real(*args):
+  return np.sum([hdv for hdv in args], axis=0)
 
 
 def bind(*args):
@@ -183,3 +189,11 @@ def sub(hv1, hv2, bins):
 def inverse(hv):
   '''Inverse the elements'''
   return np.array([x * -1 for x in hv])
+
+
+def subtract(*args):
+  return np.array(args[0]) - np.sum([hdv for hdv in args[1:]], axis=0)
+
+def clip_real(hv):
+  '''Find the smallest element and subtract it from all elements'''
+  return hv
