@@ -187,12 +187,8 @@ References
     - let's make some mental leaps: VSAs are probabilities, quantum things are probabilities, VSAs are quantum things, VSAs are neuromorphically inspired, our brains are quantum computers
   - why do the waterloo papers use a different format for their References sections compared to other papers?
 - [Efficient navigation using a scalable, biologically inspired spatial representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
-  - representing physical spaces with VSAs, they call them SSP (spacial semantic pointer)
-  - grid cells, whoa
-  - wow! tiled mazes
   - [code](https://github.com/ctn-waterloo/cogsci2020-ssp-nav). thank you.
 - A neural representation of continuous space using fractional binding
-  - semantic pointers, i don't fully understand them
 - MoleHD: Ultra-Low-Cost Drug Discovery using Hyperdimensional Computing
   - [SMILES](https://en.wikipedia.org/wiki/Simplified_Molecular_Input_Line_Entry_System) are already strings, so just embed them into hv then learn
   - retrain/fine-tune during training by subtract example from incorrect class prototypes and add to correct ones
@@ -238,11 +234,19 @@ References
   - it reminds me of [My Wife and My Mother-in-Law](https://en.wikipedia.org/wiki/My_Wife_and_My_Mother-in-Law)
 - A Neurodiversity-Inspired Solver for the Abstraction & Reasoning Corpus (ARC) Using Visual Imagery and Program Synthesis
   - wow.
+- Multivariate Time Series Analysis for Driving Style Classification using Neural Networks and Hyperdimensional Computing
+- An Introduction to Hyperdimensional Computing for Robotics
+  - "The fact that in hyperdimensional computing most things work only approximately, requires a diferent engineer’s mindset."
+- Hyperdimensional computing as a framework for systematic aggregation of image descriptors
+- [Navigation Using a Biologically Inspired Spatial Representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
+  - "SSPs utilize the concept of fractional binding to extend vector symbolic architectures to include continous value signals in addition to discrete symbols"
+
 
 
 Summary
 -------
 What is Hyperdimensional computing?
+See [this video](https://www.youtube.com/watch?v=8Lonl-jSqUw).
 See a [Tutorial on Hyperdimensional Computing](https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/).
 
 What makes a Vector Symbolic Architecture?
