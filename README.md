@@ -240,6 +240,11 @@ References
 - Hyperdimensional computing as a framework for systematic aggregation of image descriptors
 - [Navigation Using a Biologically Inspired Spatial Representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
   - "SSPs utilize the concept of fractional binding to extend vector symbolic architectures to include continous value signals in addition to discrete symbols"
+- [Word Embeddings with HD Computing/VSA](https://drive.google.com/file/d/1vXO4wtBI2swI6uQUew3Y3NARM6GHXV8f/view)
+  - context embeddings are a fun trick for languages where word order (subject-verb-object) conveys information 
+  - do context embeddings work well on non-english languages?
+- Vector Symbolic Architectures as a Computing Framework for Emerging Hardware
+  - Section 5
 
 
 
@@ -504,17 +509,6 @@ Consider the following: unbinding a "scene" of objects each with some set of pro
   - hardware does not currently exist to implement. womp womp.
 
 
-Composing Structure with Vectors
---------------------------------
-- sets (bundle)
-- maps (bind)
-- sequences (permute)
-  - graphs (bind nodes, bundle paths)
-    - paths and words are both ngrams
-      - bind(HV1, perm(HV2, 2), perm(HV3, 3)
-    - trees
-    - finite state automata
-- stacks
 
 Misc
 ----
