@@ -21,13 +21,23 @@ def clip_sign(hv):
   return np.sign(hv)
 
 def clip_dec(hv, i=1):
-  '''Subtract i from each element'''
-  return np.array([element-i for element in hv])
+  '''Adjust each element towards 0 by i'''
+  for idx in range(len(hv)):
+    if hv[idx] > 0:
+      hv[idx] = hv[idx] - i
+    elif hv[idx] < 0:
+      hv[idx] = hv[idx] + i
+  return hv
 
 def clip_dec_mean(hv):
-  '''A special case of clip_dec which normalizes the bundle'''
+  '''Adjust each element towards 0 by the mean'''
   i = int(np.mean(hv))
-  return np.array([element-i for element in hv])
+  for idx in range(len(hv)):
+    if hv[idx] > 0:
+      hv[idx] = hv[idx] - i
+    elif hv[idx] < 0:
+      hv[idx] = hv[idx] + i
+  return hv
 
 
 
