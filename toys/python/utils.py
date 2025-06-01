@@ -13,6 +13,9 @@ def hdv(n=10_000, all=None):
 def hdv_real(n):
   return np.random.choice([5,4,3,2,1, -1,-2,-3,-4,-5], size=n)
 
+def hdv_prime(n):
+  return np.random.choice([11,7,5,3, -3,-5,-7,-11], size=n)
+
 
 def clip(hdv, zeros=True):
   '''trims values to 1 or -1, optionally flips 0 randomly'''

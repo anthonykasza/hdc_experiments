@@ -6,7 +6,7 @@ sys.path.insert(0, "../")
 from utils import hdv, bundle, cossim
 
 
-def sampled_bundle(*args):
+def partial_bundle(*args):
   '''element-wise addition of vectors, sometimes'''
   accumulator = hdv(all=0)
   for idx in range(len(args[0])):
@@ -51,6 +51,7 @@ print()
 
 
 # The most recent signal is the most similar to the accumulator
+#  This is caused by the clipping strategy
 print('Iterative bundling')
 accumulator = hdv(all=0)
 accumulator = bundle(accumulator, signal1)
@@ -67,10 +68,13 @@ print(f'noise: {cossim(noise, accumulator)}')
 print()
 
 
-# Similar to Regular bundling but with higher capacity
-print('Sampled bundling')
+# Similar to Regular bundling but not as good.
+#  If hardware implementing Regular bundling faulted
+#  indeterministically, the resulting bundle could
+#  still be used.
+print('partial bundling')
 accumulator = hdv(all=0)
-accumulator = sampled_bundle(signal1, signal2, signal3, signal4, signal5)
+accumulator = partial_bundle(signal1, signal2, signal3, signal4, signal5)
 print(f'signal1: {cossim(signal1, accumulator)}')
 print(f'signal2: {cossim(signal2, accumulator)}')
 print(f'signal3: {cossim(signal3, accumulator)}')
