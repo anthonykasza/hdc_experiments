@@ -245,7 +245,11 @@ References
   - do context embeddings work well on non-english languages?
 - Vector Symbolic Architectures as a Computing Framework for Emerging Hardware
   - Section 5
-
+- Exploring Storing Capacity of Hyperdimensional Binary Vectors
+  - "HD computing also "includes ideas from probability theory, statistics and abstract algebra""
+  - "Based on the obtained results ... we can state that a binary vector of size N = 2,500 is enough"
+  - see Table 2
+    - it actually got worse with too many dimensions!
 
 
 Summary

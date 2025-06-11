@@ -1,5 +1,5 @@
 # The more elements we pin onto a clotheline
-#  the more it begins to look like a straight line
+#  the more it begins to look like a horizontal line
 #  being stretched downward near its ends.
 # Notice how there is a clear sag in the clothelines
 #  until we have 10_000 items pinned to it.
