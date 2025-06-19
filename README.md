@@ -250,7 +250,15 @@ References
   - "Based on the obtained results ... we can state that a binary vector of size N = 2,500 is enough"
   - see Table 2
     - it actually got worse with too many dimensions!
-
+- [An Introduction to Vector Symbolic Architectures and Hyperdimensional Computing, VSA Tutorial](https://www.tu-chemnitz.de/etit/proaut/vsa_ecai20)
+- Representing Objects, Relations, and Sequences
+  - a bind operator that is it's own inverse has some issues.
+    1. the girl, `bind(THE_hv, GIRL_hv)`
+    2. the smart girl, `bind(THE_hv, SMART_hv, GIRL_hv)`
+    3. the very smart girl, `bind(THE_hv, VERY_hv, SMART_hv, GIRL_hv)`
+    4. the very very smart girl, `bind(THE_hv, VERY_hv, VERY_hv, SMART_hv, GIRL_hv)`
+      - VERY_hv bound to VERY_hv will equal the identity HV (all=1)
+      - the result of number 2 and number 4 will be indistinguishable
 
 Summary
 -------
