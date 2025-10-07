@@ -8,6 +8,8 @@ from utils import bind, bundle, new_hv, cossim, inverse
 
 
 # This does power encoding but not fractional power encoding
+#  I believe FPE uses an additional multiplication/scaling operation
+#  on the basis
 def ssp_make_levels(basis_hv, exp):
   if exp == 1:
     return list(basis_hv)

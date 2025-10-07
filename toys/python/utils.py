@@ -177,7 +177,7 @@ def substitute(hv1, hv2, bins):
     next_level = copy.deepcopy(bins_list[i-1])
     # all the possible indices, except those in altered_indices
     indexes_to_chose_from = set(range(len(next_level))).difference(altered_indices)
-    for j in random.sample(indexes_to_chose_from, flips_per_iteration):
+    for j in random.sample(sorted(indexes_to_chose_from), flips_per_iteration):
       altered_indices.add(j)
       next_level[j] = hv2[j]
     bins_list.append(next_level)
