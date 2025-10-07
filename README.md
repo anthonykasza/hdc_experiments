@@ -240,6 +240,23 @@ References
 - Hyperdimensional computing as a framework for systematic aggregation of image descriptors
 - [Navigation Using a Biologically Inspired Spatial Representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
   - "SSPs utilize the concept of fractional binding to extend vector symbolic architectures to include continous value signals in addition to discrete symbols"
+- The Recommendation Functional Architecture as the Basis for a Neurophysiological Understanding of Cognition
+  - L. Andrew Coward
+  - REM reinforcement
+  - perceive, cluster (find patterns), then select (compete)
+  - incremental without overwritting previous patterns
+- Efficient Exploration in Edge-Friendly Hyperdimensional Reinforcement Learning
+  - QHD: A brain-inspired hyperdimensional reinforcement learning algorithm
+    - a prior paper but it doesn't read as clearly
+    - very greedy, perhaps too greedy
+  - more better faster than a deep q approach
+  - fig 2
+    - each possible action is modeled using an hv
+    - action1_q_value = sim(action1_hv, current_state_hv)
+  - "experience replay buffer" memory
+    - current_state, prev_state, and action use to estimate q value for state-action pair
+    - update the hv modeling the action using weighted bundling or subtraction
+  - to encourage exploration, incorporate a confidence/confusion metric
 - [Word Embeddings with HD Computing/VSA](https://drive.google.com/file/d/1vXO4wtBI2swI6uQUew3Y3NARM6GHXV8f/view)
   - context embeddings are a fun trick for languages where word order (subject-verb-object) conveys information 
   - do context embeddings work well on non-english languages?
@@ -525,6 +542,7 @@ Consider the following: unbinding a "scene" of objects each with some set of pro
 Misc
 ----
 - torchhd and hrr python modules
+- https://github.com/rishikanthc/hypervector
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
