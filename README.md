@@ -276,6 +276,42 @@ References
     4. the very very smart girl, `bind(THE_hv, VERY_hv, VERY_hv, SMART_hv, GIRL_hv)`
       - VERY_hv bound to VERY_hv will equal the identity HV (all=1)
       - the result of number 2 and number 4 will be indistinguishable
+- Learning from Hypervectors: A Survey on Hypervector Encoding
+  - TLDR: all you need is coding
+  - "resistive RAM-based processing" aka memristors
+    - Mem-fractive Properties of Mushrooms
+      - grey oyster fungi
+  - szection III. hypervector mapping
+    - orthogonal hv for symbolic/categorical data
+      - orthogonality can be improved by generating atomic hv from sogol sequence
+        - A Linear-Time, Optimization-Free, and Edge Device-Compatible Hypervector Encoding 
+        - No-multiplication deterministic hyperdimensional encoding for resource-constrained devices
+      - low discrepency sobol sequences ensure roughly the same mean in each generated HV but ensures better orthogonality.
+        - better orthogonality means less random noise introduced when bundling or leveling
+        - i wonder how sampling in this way influences binding compared to bundling
+    - correlated hv for numeric data
+      - uniform steps
+      - non-uniform steps
+    - (fractional) power encoding works well on 2d input
+      - W = A<sup>u</sup> ⊕ B<sup>v</sup>
+      - with encoding pixel x,y position using uniform leveling W doesn't have the desired properties
+    - sparsity
+      - "Choosing the proper sparsity factor can significantly reduce the number of arithmetic operations"
+      - it may be wise to consider the operations used by the encoding process while choosing a sparsity factor. for example, multiplying 2 sparse vectors results in a sparser vector
+        - Low-Power Sparse Hyperdimensional Encoder for Language Recognition
+          - "the n-gram and text hypervectors can benefit far less from such initial sparsity"
+          - they discuss how XOR must be interpreted when using sparse hv
+    - sampling elements from a non-normal distribution induces that kernel
+    - different hv element types will hold information in different ways
+      - binary is nearest to the metal
+      - bipolar is easiest to reason about and is fundamentally the same as binary
+      - integers allow for variations on leveling and clipping. binding/bundling operations are still relatively intuitive
+      - f32 can hold more info than a single bit but they are treated more like vectors of blocks instead of vectors of bits which makes their binding/bundling operations less intuitive
+- An Encoding Framework for Binarized Images using HyperDimensional Computing
+  - local linear leveling
+  - Figure 5
+  - minor leveling between major levels
+  - a window around a point where anything outside of the window is maximally orthogonal
 
 Summary
 -------
@@ -543,6 +579,7 @@ Misc
 ----
 - torchhd and hrr python modules
 - https://github.com/rishikanthc/hypervector
+  - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
