@@ -312,6 +312,24 @@ References
   - Figure 5
   - minor leveling between major levels
   - a window around a point where anything outside of the window is maximally orthogonal
+- Classification using hyperdimensional computing: a review with comparative analysis
+  - fig5 and fig6 are both excellent
+  - 2.3.1 encoding univariate data, correlated hypervectors for dicrete levels
+    - they only discuss leveling from a basis hv to its inverse but leveling can also utilize a walk as done in "local linear mapping"
+  - section 3 has pseudocode for various modeling types. fig 13 is a taxonomy of the types:
+    - prototypes
+      - centroid
+      - adaptive
+      - regenerative
+      - compressed
+      - semi-spervised
+      - multiprototype
+    - optimization
+      - linear discriminant analysis
+      - svm
+      - backprop
+      - ridge regression
+
 
 Summary
 -------
