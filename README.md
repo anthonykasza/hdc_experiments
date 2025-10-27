@@ -312,6 +312,12 @@ References
   - Figure 5
   - minor leveling between major levels
   - a window around a point where anything outside of the window is maximally orthogonal
+- Hyperdimensional computing as a framework for systematic aggregation of image descriptors
+  - 3.1.5 uses concatenation of bits from random basis "major level" hv. compare with local linear leveling
+    - if a subrange is divided into thirds, and the desired location is between hv1 and hv2 then 1/3 of the elements from h1 and 2/3 of the elements from hv2 are concatenated to form the position hv
+    - this introduces unwanted artefacts as the paper admits. see local linear mapping for an improved method
+      - "this approach is able to evaluate similarities across the grid borders"
+      - local linear mapping evaluates similarities within grid borders
 - Classification using hyperdimensional computing: a review with comparative analysis
   - fig5 and fig6 are both excellent
   - 2.3.1 encoding univariate data, correlated hypervectors for dicrete levels
@@ -329,6 +335,62 @@ References
       - svm
       - backprop
       - ridge regression
+- HDnn-PIM: Efficient in Memory Design of Hyperdimensional Computing with Feature Extraction
+  - pretrained CNN frontend plumbed to an HDC backend. neato.
+  - 2 HDnn algorithmic flow
+    - use the first few convolutions and first pooling layer of popular pretrained DNNs, such as ResNet, to learn convolutional features of each set of training images
+    - multiply the extracted image features by a random matrix to project the features onto fixed length hypervectors
+      - this reminds me of MBAT
+    - use HD operations, like add and clip, to learn class prototypes. use cossim operation for inference.
+    - i dont understand (3) FE tuning
+- Designing Vector-Symbolic Architectures for Biomedical Applications: Ten Tips and Common Pitfalls
+  - molto bene. grazie mille. i love tip #10. science needs more tutorial style papers that include code. this paper is great even for those who study VSAs but are outside of the the biomedical domain.
+  - [use-cases](https://github.com/cumbof/Biomed-VSAs) that are licensed permissively. very cool.
+    - the paper reads a bit promotional for the author's hdlib project but since it's open source i can forgive all marketing aspects of the paper.
+  - "How to avoid the pitfall: add 3D information to the codebook"
+    - it would be nice to see some discussion of "correlation-aware codes" and how to select the best type of correlation-aware code. for example, should the design use circular codes since it represents angular data? or should it use linear codes? if linear, local or global linear codes?
+  - since many of the concept codebooks use uncorrelated atomic hypervectors i wonder how the results of each use case would be influenced by using sobol sequences to maximize orthogonality of atomic symbols.
+  - "As long as all your vectors share the same dimensionality, they can be mathematically combined, regardless of their origin"
+    - some VSA support resizing of a hypervector, via matrix multiplication, to enable computing on varying sized hv
+  - "Instead of taking just the single best match, take the top 2-3 matches, bundle them together, and then search the codebook again with this new, denoised vector" this is clever, but i agree that "A better long-term solution is to design your encoding scheme hierarchically"
+  - types of input data examined in the paper
+    - categorical data (symbol)
+      - bioinfo data seems to have lots of records which are easily expressed as bundles of bound key-value pairs
+      - diagnosis, medication, lab_test, etc
+    - numeric data (number)
+      - a brief mention of FPE for numeric ranges
+      - bond angles and molecule handedness
+    - compositional data (containers)
+      - sequential data
+        - long and categorical: acgt
+        - numeric: ecg, emg, eeg
+      - relational data
+        - patient knowledge graphs
+        - molecules (again)
+      - multi-modal data
+    - opaque data
+      - images
+      - use the early layers of a CNN as a front-end then VSA as a backend
+  - i couldn't find the source code for uhd :(
+- All You Need is Unary: End-to-End Bit-Stream Processing in Hyperdimensional Computing
+  - "demonstrating that there is no need for randomness in HDC systems" ... "In this work, we advocate unary HVs, free from randomness"
+    - randomness is used to decrease orthog between basis hv but orthog can be ensured in other ways
+    - how does removing randomness for the HV generation process affect security or cloud-based HDC computing paradigms?
+    - random HVs (10k random bits) look much like encrypted data. i suspect using ld sequences tarnishes this resemblance
+  - ld sequence, van der corput
+  - unary bit-stream processing
+  - figure 1, the bumpy blue field is caused by noise in the hv
+    - another way to decrease the height of these lumps is to increase hv dimensionality but that comes with a computational tax on _every_ operation
+  - leveling
+    - instead of flipping bits at random, flip some proportion of bits to 1s which represents 1 equal-sized level in the range
+    - the example from the paper uses vectors with dim = 1024 and b/w pixel intensity range of 256, so each level is represented by 4 elements of the hvs
+    - there's no step in the level procedure that says, "randomly pick 10 bits to flip"
+      - if you want level 37, `[1] * (37 * (1024//256)) + [0] * (1024 - 37*(1024//256))`
+      - if you want level 250, `[1] * (250 * (1024//256)) + [0] * (1024 - 250*(1024//256))`
+- uHD: Unary Processing for Lightweight and Dynamic Hyperdimensional Computing
+  - image embedding without binding in x,y coordinates sounds efficient
+  - more ld seqeunce stuff
+  - i don't full understand this paper
 
 
 Summary
@@ -593,11 +655,19 @@ Consider the following: unbinding a "scene" of objects each with some set of pro
 
 
 
+
 Misc
 ----
-- torchhd and hrr python modules
-- https://github.com/rishikanthc/hypervector
-  - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
+- code
+  - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
+  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations), 
+  - [disthd](https://github.com/jwang235/disthd)
+  - [openhd](https://github.com/UCSD-SEELab/openhd)
+  - [hdtorch](https://pypi.org/project/hdtorch/)
+  - [hdlib](https://github.com/cumbof/hdlib)
+  - [hypervector](https://github.com/rishikanthc/hypervector)
+    - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
+
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
