@@ -14,6 +14,7 @@ References
 - [Vector Symbolic Architectures In Clojure](https://www.youtube.com/watch?v=j7ygjfbBJD0) (Carin Meier)
 - Infini-gram: Scaling Unbounded n-gram Language Models to a Trillion Tokens
 - GraphHD: Efficient graph classification using hyperdimensional computing
+- GrapHD: Graph-Based Hyperdimensional Memorization for Brain-Like Cognitive Learning
 - [Understanding Hyperdimensional Computing for Parallel Single-Pass Learning](https://github.com/Cornell-RelaxML/Hyperdimensional-Computing)
 - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
@@ -391,6 +392,28 @@ References
   - image embedding without binding in x,y coordinates sounds efficient
   - more ld seqeunce stuff
   - i don't full understand this paper
+- Predicting the toxicity of chemical compounds via Hyperdimensional Computing
+  - binary string classifier similar to spam sms model
+    - 2 centroid/prototype hv
+    - subtraction is used during training misclassification
+  - data are SMILES ASCII strings (127 basis hv)
+    - molecule -> 3d graph -> SMILES -> hypervector
+      - an encoding of an encoding of an ...
+    - SMILES has different tokenization strategies, they compare different ones: atom-wise, k-mer, or fragment-based
+  - discovered optimal subsequence length
+  - source code!
+- A novel Vector-Symbolic Architecture for graph encoding and its application to viral pangenome-based species classification
+  - viruses evolve quickly. good for classifying unseen variants/strains
+    - any overlap with how malware variants are developed?
+  - graph encoding of viral species
+    - pangenome kmers -> graphs -> hypervector
+      - "These pangenome graphs are powerful representations that can capture large-scale structural variations, such as insertions, deletion, and rearrangements, which are often missed by linear sequence alignment"
+    - a node is a kmer
+    - edge represents kmer adjacency
+      - edge weight is the label/class
+  - kmer_length=9, stride=1, grapHD encoding scheme
+    - 2.3.2 contains pseudo-code implementation of the embedding procedure
+  - retraining only made use of additive reinforcements, no subtraction used. why?
 
 
 Summary
@@ -667,7 +690,11 @@ Misc
   - [hdlib](https://github.com/cumbof/hdlib)
   - [hypervector](https://github.com/rishikanthc/hypervector)
     - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
-
+- pangenomics
+  - studying all the genes of all strains of a species
+  - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
+  - [a tube map visualization](https://pmc.ncbi.nlm.nih.gov/articles/PMC10638906/figure/F1/) of a pangeonmic graph from  "Pangenome graph construction from genome alignments with Minigraph-Cactus" 
+    - [a tube map view of the loop](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Chicago_L_diagram_sb.svg/1827px-Chicago_L_diagram_sb.svg.png)
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
@@ -710,6 +737,12 @@ Misc
       - then raise the x vector to the exponent indicating the column of the pixel
       - do the same for the y
       - bind the pixel value HV with the exponentialized x and y HVs
+- low discrepency sequences
+  - sobol and others
+  - much literature points to these instead of random hv generation
+  - ld seqs fill a space more evenly. randomly filling a space will produce clumps
+  - similar to ordered dithering and halftones 
+  - may be useful for images as in uhd
 - HDC can be incorporated into NN to make both better
   - NN frontend to generate HVs
   - HDC frontend to generate vectors for NN
