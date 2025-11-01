@@ -167,6 +167,7 @@ References
     - both even and odd number of levels can be used
     - hvs which are represent opposite side of the circle have minimum similarity (they are as similar are any 2 random hv)
     - see figure 6
+      - r parameter controls window of simialrity. r value determines global circular vs local circular similarity of circular levels, similar to global linear vs local linear
   - their results
     - surgery robots, so cool
     - it's nice to see that leveling didn't perform as well as random symbols for them too on a classification task. maybe that's why it doesn't work well on MNIST digit classification
@@ -414,6 +415,11 @@ References
   - kmer_length=9, stride=1, grapHD encoding scheme
     - 2.3.2 contains pseudo-code implementation of the embedding procedure
   - retraining only made use of additive reinforcements, no subtraction used. why?
+- HDC-X: A Hyperdimensional Computing Framework for Efficient Classification on Low-Power Devices
+  - [code](https://github.com/jianglanwei/HDC-X)
+  - leveling strategy for representing numbers is global linear using a single hv
+
+
 
 
 Summary
@@ -633,6 +639,21 @@ operations include:
         - e.g. log then linear
         - elliptic, like a circle but longer on two of the sides
 
+- generation
+  - make a new hypervector
+    - consider the type, range, normalizaton of elements
+  - methods
+    - random uniform
+    - random weighted
+      - can be used to ensure sparsity
+    - low discrepency
+      - used to ensure orthogonality
+    - hv generated outside of the VSA
+      - learned from a CNN
+      - raw feature vector multiplied by a (random) matrix
+    - based on an existing hv
+      - learned from semantic contexts
+      - permute existing hv
 
 
 Searching Memory

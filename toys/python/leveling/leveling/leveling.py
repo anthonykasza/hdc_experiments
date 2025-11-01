@@ -72,6 +72,8 @@ def linear_global_leveling(hyperspace_length=1000, start=hdv(), stop=hdv()):
   return hyperspace
 
 
+# TODO - incorporate an 'r-value' so locality can be controlled.
+#        currently this function is global only
 def halfcircular_global_leveling(hyperspace_length=1000, start=hdv()):
   '''Angular values like color wheels, clocks, or gestures.
      Levels are correlated, then not, then yes again.

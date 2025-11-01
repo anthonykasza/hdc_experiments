@@ -2,6 +2,7 @@ import copy
 import random
 import numpy as np
 from numpy.linalg import norm
+from scipy.stats.qmc import Sobol
 
 
 def hdv(n=10_000, all=None):
@@ -16,6 +17,13 @@ def hdv_real(n):
 def hdv_prime(n):
   return np.random.choice([11,7,5,3, -3,-5,-7,-11], size=n)
 
+def hdv_ld(n=2**14, all=None, thresh=3/16):
+  '''return a new bipolar symbolic representation using a low discrepency sequence'''
+  if all is not None:
+    return np.full((1, n), all).flatten()
+  sobol = Sobol(d=1, scramble=True)
+  seq = sobol.random(n=n)
+  return np.where(seq < thresh, 1, -1).flatten()
 
 def clip(hdv, zeros=True):
   '''trims values to 1 or -1, optionally flips 0 randomly'''
