@@ -283,6 +283,13 @@ References
   - "resistive RAM-based processing" aka memristors
     - Mem-fractive Properties of Mushrooms
       - grey oyster fungi
+    - Sustainable memristors from shiitake mycelium for high-frequency bioelectronics
+      - mycelia memristors
+      - edible space computers
+        - shiitake and button
+      - [code](https://github.com/javeharron/abhothData)
+      - "dehydration  can preserve the observed properties in a previously “programmed” sample"
+      - "Unlike expensive conventional memristors, culturing fungal memristors does not require large facilities or rare minerals. The process can be scaled to grow large systems, which can be programmed and pre-served for long-term use at low cost."
   - szection III. hypervector mapping
     - orthogonal hv for symbolic/categorical data
       - orthogonality can be improved by generating atomic hv from sogol sequence
@@ -418,8 +425,44 @@ References
 - HDC-X: A Hyperdimensional Computing Framework for Efficient Classification on Low-Power Devices
   - [code](https://github.com/jianglanwei/HDC-X)
   - leveling strategy for representing numbers is global linear using a single hv
-
-
+- A Walsh Hadamard Derived Linear Vector Symbolic Architecture
+  - [HLB code](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding)
+  - Hadamard transform instead of Fourier in HRR
+  - 4.2.1 Connectionist Symbolic Pseudo Secrets
+    - bind in a secret hv before sending hv to a cloud/remote server (e.g. federated learning). homomorphic encryption.
+    - when result hv are returned from remote server to client, unbind the secret hv from it
+- Practical Lessons on Vector-Symbolic Architectures in Deep Learning-Inspired Environments
+  - MAP is great
+    - "Even faster, with a linear runtime, multiple add permute (MAP (11)) and Hadamard linear binding (HLB (4)) appear as the best candidates for DNN integration."
+    - "HLB can be seen as a real continuation of MAP-I"
+  - overall guidance
+    1. "Prefer linear VSAs or GPU-optimized implementations of HRR"
+    2. "Replace cosine similarity with a linear readout"
+    3. "Use linear VSAs or HRR equivalently under noise-free or noisy conditions"
+    4. "Use weighted multi-level compositions to create hierarchical data structures"
+- MissionHD: Hyperdimensional Refinement of Distribution-Deficient Reasoning Graphs for Video Anomaly Detection
+  - nsf
+    - 2127780  $299,999.00  4yrs  cyber
+    - 2319198  $360,000.00  3yrs  cyber
+    - 2321840  $796,800.00  3yrs  bioinformatics
+    - 2312517  $499,793.00  3yrs  cyber
+    - 2235472  $450,000.00  3yrs  cyber
+    - 2431561  $499,999.00  3yrs  cyber
+  - semiconductor research corporation
+  - mil
+    - office naval research
+    - army research office
+    - air force office of scientific research
+  - industry
+    - xilinx
+    - cisco
+- A Neural Hypervector Model of Memory-Driven Spatial Navigation
+  - "modeling navigation-oriented memory"
+  - i like that they used real humans
+- Brain Inspired Probabilistic Occupancy Grid Mapping with Vector Symbolic Architectures
+  -  multi-agent mapping is neat. hive mind.
+  - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
+- Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
 
 
 Summary
