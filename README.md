@@ -812,7 +812,7 @@ Misc
   - HDC frontend to generate vectors for NN
 - what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the levels' range's max/min?
 - fix sized ternary vectors remind me of
-  - nPrint
+  - nPrint: A Standard Data Representation for Network Traffic Analysis
     - concatenate all maximum length PDUs together to make a long sparse block vector
   - Ramanujan's sum, namaste sir
     - infinite sum of natural numbers equals -1/12
@@ -844,6 +844,8 @@ Misc
 - each dimension (element) of an HV increases the vector space exponentially
   - projecting something onto a bigger surface is often useful
     - think about a screen projector, it makes small images easier to see
+  - projecting higher dimensional data into lower dimensions is often useful too
+    - think about the 2d shadow cast by a 3d object
 - [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
