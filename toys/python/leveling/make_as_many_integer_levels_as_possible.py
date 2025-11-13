@@ -1,4 +1,5 @@
 
+
 import copy
 import numpy as np
 from numpy.linalg import norm
@@ -26,7 +27,7 @@ def make_levels_incdec(hv1=hdv(), hv2=hdv(), i=1):
   j = 0
 
   while not np.array_equal(levels[-1], hv2):
-    # indices are chosen by round robin
+    # indices are inc/dec by round robin
     idx = indices_to_alter[j % len(indices_to_alter)]
     next_level = copy.deepcopy(levels[-1])
 
@@ -50,19 +51,75 @@ def make_levels_incdec(hv1=hdv(), hv2=hdv(), i=1):
   return levels
 
 
-hv1 = hdv(10)
-hv2 = hdv(10)
+# when ELEMENT_RANGE is 1 the arch is binary/ternary
+
+'''
+# these leveling parameters don't work very nicely
+#  showing that more dims is better than a larger element range
+DIMENSIONS = 1000
+ELEMENT_RANGE = 10
+INCDEC_STEP = 1
+'''
+
+'''
+# these leveling parameters are more superior for crisp leveling
+#  but can only support a level count of their dims
+DIMENSIONS = 10000
+ELEMENT_RANGE = 1
+INCDEC_STEP = 1
+
+DIMENSIONS = 20000
+ELEMENT_RANGE = 1
+INCDEC_STEP = 1
+'''
+
+'''
+# these leveling parameters are good for generating a reliable progression
+#  but can only support a level count of FEWER than their dims.
+# this only happens when INCDEC_STEP is greater than ELEMENT_RANGE.
+#  its because none of the level hv contain zed. none are sparse.
+DIMENSIONS = 10000
+ELEMENT_RANGE = 1
+INCDEC_STEP = 2
+
+DIMENSIONS = 20000
+ELEMENT_RANGE = 1
+INCDEC_STEP = 2
+'''
+
+
+# these leveling parameters don't have as reliable of a progression
+#  in their levels but allow for many more levels than its dimensions
+DIMENSIONS = 10000
+ELEMENT_RANGE = 2
+INCDEC_STEP = 1
+
+DIMENSIONS = 10000
+ELEMENT_RANGE = 3
+INCDEC_STEP = 1
+
+DIMENSIONS = 10000
+ELEMENT_RANGE = 4
+INCDEC_STEP = 1
+
+
+
+hv1 = hdv(n=DIMENSIONS, bound=ELEMENT_RANGE)
+hv2 = hdv(n=DIMENSIONS, bound=ELEMENT_RANGE)
 print(f'hv1: {hv1}')
 print(f'hv2: {hv2}')
 
-levels = make_levels_incdec(hv1, hv2, 1)
+levels = make_levels_incdec(hv1, hv2, INCDEC_STEP)
 for idx in range(len(levels)):
   level = levels[idx]
-  sim = cossim(hv1, level)
-  print(idx, level, sim)
+  sim_hv1 = cossim(hv1, level)
+  sim_hv2 = cossim(hv2, level)
+  print(idx, level[:5], level[-5:], round(sim_hv1,8), round(sim_hv2,8))
 
-  # TODO: investigate why this happens with some HV pairs
-  if idx < len(levels)-1 and cossim(hv1, levels[idx+1]) > sim:
-    print('  levels are becoming more similar instead of less similar')
+  # TODO: investigate why these levels reverse direction
+  if idx < len(levels)-1 and cossim(hv1, levels[idx+1]) > sim_hv1:
+    print('  levels are becoming more similar to hv1 instead of less similar')
+  if idx < len(levels)-1 and cossim(hv2, levels[idx+1]) < sim_hv2:
+    print('  levels are becoming less similar to hv2 instead of more similar')
 
 print(cossim(hv1, hv2))
