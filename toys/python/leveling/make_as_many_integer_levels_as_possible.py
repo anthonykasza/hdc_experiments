@@ -64,3 +64,5 @@ for idx in range(len(levels)):
   # TODO: investigate why this happens with some HV pairs
   if idx < len(levels)-1 and cossim(hv1, levels[idx+1]) > sim:
     print('  levels are becoming more similar instead of less similar')
+
+print(cossim(hv1, hv2))
