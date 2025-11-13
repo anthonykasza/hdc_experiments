@@ -24,7 +24,7 @@ import numpy as np
 from numpy.linalg import norm
 
 def hdv(n=10_000, all=None):
-  '''Make a real-numbered hypervector'''
+  '''Make an integer hypervector'''
   if all is not None:
     return np.full((1, n), all).flatten()
 
@@ -46,7 +46,7 @@ def cossim(hdv1, hdv2):
 # in utils.py. In a bipolar architecture, make_levels has only 1
 # choice. It must: copy elements from hv2 into new levels.
 #
-# In a real-numbered architecture, make_levels has many choices.
+# In an integer-element architecture, make_levels has many choices.
 #  It could:
 #  1. also copy elements from hv2 into new levels
 #  2. increment/decrement new levels' elements towards hv2's elements
