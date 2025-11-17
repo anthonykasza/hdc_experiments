@@ -236,6 +236,13 @@ References
   - it reminds me of [My Wife and My Mother-in-Law](https://en.wikipedia.org/wiki/My_Wife_and_My_Mother-in-Law)
 - A Neurodiversity-Inspired Solver for the Abstraction & Reasoning Corpus (ARC) Using Visual Imagery and Program Synthesis
   - wow.
+- Vector Symbolic Algebras for the Abstraction and Reasoning Corpus
+  - [ARC Prize 2025](https://www.kaggle.com/competitions/arc-prize-2025)
+  - [code](https://github.com/ijoffe/ARC-VSA-2025)
+    - [vsa.py](https://github.com/ijoffe/ARC-VSA-2025/blob/main/src/vsa.py#L75) shows how to make "number tags" from a basis hypervector
+    - uses [sspspace](https://github.com/ctn-waterloo/sspspace) also by UoW
+      - i wish the demo notebook had words describing what was going on in each cell
+  - reminds me of "A Neurodiversity-Inspired Solver for the Abstraction & Reasoni..."
 - Multivariate Time Series Analysis for Driving Style Classification using Neural Networks and Hyperdimensional Computing
 - An Introduction to Hyperdimensional Computing for Robotics
   - "The fact that in hyperdimensional computing most things work only approximately, requires a diferent engineer’s mindset."
@@ -463,6 +470,7 @@ References
   -  multi-agent mapping is neat. hive mind.
   - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
 - Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
+
 
 
 Summary
@@ -748,7 +756,6 @@ Misc
 - code
   - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
   - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations), 
-  - [disthd](https://github.com/jwang235/disthd)
   - [openhd](https://github.com/UCSD-SEELab/openhd)
   - [hdtorch](https://pypi.org/project/hdtorch/)
   - [hdlib](https://github.com/cumbof/hdlib)
