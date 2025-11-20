@@ -33,7 +33,7 @@ print()
 # Be careful when to clip
 # Bundle 10 HV at a time, then clip, then bundle those
 #  10 clipped HVs into a single HV
-# NOTE: the affectsof clipping between bundles is more
+# NOTE: the effects of clipping between bundles is more
 #       pronounced for real-valued elements than for binary
 atoms = [new_hv() for x in range(100)]
 groups = []

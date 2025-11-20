@@ -243,6 +243,83 @@ References
     - uses [sspspace](https://github.com/ctn-waterloo/sspspace) also by UoW
       - i wish the demo notebook had words describing what was going on in each cell
   - reminds me of "A Neurodiversity-Inspired Solver for the Abstraction & Reasoni..."
+  - 2.1.1 Holographic Reduced Representations
+    - complex number hv elements
+    - similarity, cosine sim
+      - 2 input vectors, 1 scalar result
+      - the cost of "cleaning up" noisy vectors depends on the size of your library/codebook
+    - bundle, addition
+      - combines 2 input vectors resulting in a single vector which is similar to both inputs
+    - bind, circular convolution (DFT then multiplication)
+      - combines 2 input vectors resulting in a single vector which is unlike either input. if you know some of the inputs to a result, the other inputs may be recovered through another bind op
+      - used to build records
+        - the paper uses the term "slot-filler". others have other used the term role/filler
+      - used to build sequential structures
+        - "repeated binding" in HRR is possible unlike in a ternary/binary VSA
+          - this sounds computationally expensive
+    - inversion, used for unbinding
+      - 1 input vector, resulting in 1 output vector. when the input and result are bound their result is the binding identity vector (all=1)
+      - unbinding is used for querying
+  - 2.1.2 Spatial Semantic Pointers
+    - SSP is HRR for continuous spaces
+    - can be used for
+      - modeling grid cells
+      - spatial reasoning
+        - does not use language which means LLMs aren't useful. in human brains language and spatial tasks are handled by different brainial regions
+    - "SSP space"
+      - instead of calculating all the levels upfront, the math let's you efficiently calculate the level
+        - it may have sounded expensive at first until you see the FT reduces
+      - instead of having a discretized leveling vectors precomputed in memory, you just compute levels as needed
+      - data feature vectors can thus be represented as bindings (records) of continuous numeric values
+        - range bounds on the features values the space can represent?
+          - "the zero vector in the feature space (i.e., the origin) is represented as the identity vector in the SSP space"
+        - "Binding is addition in the feature space"
+        - "Inversion is negation in the feature space"
+  - dual process theory
+    - thinking fast and slow
+      - deep learning is system 1
+      - old symbolic models are system 2
+      - vsa are both systems and "VSAs are biologically and cognitively plausible and can be implemented in spiking NN"
+        - snn == loihi
+    - in my opinion, this link is tenuous as dp theory could arguably frame any 2-step process. i am not no scientist tho.
+  - ARC
+    - it's tough for computers and relatively simple for humans
+      - spatial tasks. no language required to:
+        1. close your eyes
+        2. imagine a 3d object
+        3. rotate the object with your mind's eye
+      - language is not the gateway to all intelligence, thus LLMs alone will never reach agi
+    - "objectness, goal-directedness, numbers, and geometry"
+  - recognize objects, synthesize transformation hypotheses (programs), select best guess
+    - objects: "a group of pixels transformed cohesively", "task-dependent"
+      - "representing position in Cartesian coordinates makes performing translations simple but rotations complicated, and vice versa for polar coordinates"
+      - colour. caegorical. only supports single-coloured objects
+      - centre. is midpoint of object's border as SSP
+      - shape. normalized bundle all of object's pixels as SSPs relative to centre
+        - does not consider symmetry (mirroring), pixel counts, or other "higher-level object properties". the authors admit their work is a start and can be improved upon
+    - programs: think fast and slow and use a DSL
+      - humans are constrained by their own transformation DSLs which are a mixture of transformations they've seen previously
+      - e.g. RECOLOUR, RECENTRE, RESHAPE, GENERATE
+      - rules (if-then conditions) which map input objects to output objects
+    - synthesis: do what humans do
+      - first, determine the solution grid size. this restricts possible objects/transformations
+      - demonstration, abduction, rule induction, and answer deduction
+      - use a nn
+  - other ARCish datasets: Sort-of-ARC, 1D-ARC, KidsARC, ConceptARC, MiniARC
+  - "we do not address the fundamental problem of how these conceptualizations came to be; instead, we assume they have already been acquired"
+    - from playing with:
+      - malcolmn gladwell's [grid puzzle](https://puzzling.stackexchange.com/questions/25738/malcolm-gladwells-outliers-progressive-matrices-puzzle)
+      - minecraft and legos
+  - instead of synthesizing programs, how could transformation sythensis occur?
+  - 5.2 limitations. "our solver can conceptualize neither many-to-one nor many-to-many object mappings" :(
+- Loihi: A Neuromorphic Manycore Processor with On-Chip Learning
+  - "low-EE-hee"
+  - SNNs incorporate time as an explicit dependency in their computations
+  - spike trains, "a sum of ... delta functions ... where tk is the time of the k-th [transmission]"
+    - i wonder if times are measured from transmission by the orig synapse or from receipt by the resp synapse? perhaps somewhere in between? like a tap.
+    - how fast does an action potential travel from one neuron to another?
+      - i wonder if wiring lengths are considered. some axons can reach multiple feet in length
+  - i could not understand most of this paper
 - Multivariate Time Series Analysis for Driving Style Classification using Neural Networks and Hyperdimensional Computing
 - An Introduction to Hyperdimensional Computing for Robotics
   - "The fact that in hyperdimensional computing most things work only approximately, requires a diferent engineer’s mindset."

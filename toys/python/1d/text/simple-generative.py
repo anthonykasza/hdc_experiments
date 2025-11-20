@@ -3,7 +3,7 @@ import re
 import string
 from collections import defaultdict
 
-sys.path.insert(0, '../')
+sys.path.insert(0, '../../')
 from utils import hdv, bundle, bind, cossim
 
 

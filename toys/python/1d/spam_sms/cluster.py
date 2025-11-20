@@ -1,4 +1,4 @@
-import sys; sys.path.insert(0, '../')
+import sys; sys.path.insert(0, '../../')
 from utils import bind, bundle, hdv, permute, cossim
 
 import os

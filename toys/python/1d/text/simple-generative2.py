@@ -4,7 +4,7 @@ import re
 import string
 from collections import defaultdict, Counter
 
-sys.path.insert(0, '../')
+sys.path.insert(0, '../../')
 with open('books/pg11.txt', 'r') as file:
   text = file.read()
 cleaned_text = re.split(r'\*\*\* START OF THE PROJECT GUTENBERG EBOOK ALICE\'S ADVENTURES IN WONDERLAND \*\*\*', text, maxsplit=1)[1]
