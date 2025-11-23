@@ -45,7 +45,7 @@ print(f'symbol3 to bundle sim:, {sim(symbol3, bundle_1_2)}')
 print()
 
 
-print('Test subtract - the set size is cut in half')
+print('Test subtract - the full set is not recoverable')
 recovered_ones = subtract(bundle_1_2, id=2)
 print(f'The recovered set, {recovered_ones}\n  of size {len(recovered_ones)}')
 for element in recovered_ones:
@@ -69,7 +69,7 @@ print()
 
 print(f'Test unbind')
 recovered_ones = unbind(binding_1_2, id=1)
-print(f'The recovered symbol1 {recovered_ones}  of size {len(recovered_ones)}')
+print(f'The recovered symbol1 {recovered_ones}\n  of size {len(recovered_ones)}')
 for element in recovered_ones:
   print(f'value: {element}, id: {element % len(recovered_ones)}')
 print()
