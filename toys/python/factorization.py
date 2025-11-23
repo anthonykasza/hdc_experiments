@@ -18,8 +18,8 @@ from utils import hdv, bind, bundle, cossim, make_levels
 
 # make codebooks for 3 variables: x, y, z
 # each codebook represents a contiguous vector field
-codebook_size = 10000
-n=10_000
+codebook_size = 10_000
+n = 20_000
 
 x_codebook = make_levels(bins=codebook_size, n=n)
 y_codebook = make_levels(bins=codebook_size, n=n)

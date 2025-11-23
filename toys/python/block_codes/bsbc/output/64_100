@@ -1,0 +1,32 @@
+Block size: 64
+Number of blocks: 100
+Total hv dimensions: 6400
+
+Uncompressed B, the first 4 blocks
+[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+
+Compressed B has length: 100
+[35 55 46 26  4 47 13 48 61 46 31 55  0 38 10 58  5 39  5  2 15 17 31  6
+ 33  4 33 24 63 29 30  4 40 25 35 25 19 33 15 17 23 20 41 61  5  2 49 14
+ 23 39 20 52  2 34 13 34 61 27 54 39  3 34 42 50  3 46 20 49  9 46 50 62
+ 10 61 52 19 48 23 38 30 58 24 56  1 47 15 58 29 32 32 36  4  2 63 34 57
+ 56 50  0 39]
+
+A to C similarity 0.02
+B to C similarity 0.0
+A to B_rec similarity 0.01
+C to B_rec similarity 0.0
+B to B_rec similarity 1.0
+
+Cosine similarity between HV 0 and bundle: 0.2300
+Cosine similarity between HV 1 and bundle: 0.2500
+Cosine similarity between HV 2 and bundle: 0.2400
+Cosine similarity between HV 3 and bundle: 0.1600
+Cosine similarity between HV 4 and bundle: 0.2500
+Cosine similarity between NOISE and bundle: 0.0200
