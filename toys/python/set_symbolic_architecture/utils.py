@@ -1,76 +1,61 @@
 # If vectors are single dimensional then set are zero dimensional.
 # How would a Matrix Symbolic Architecture work? Block-codes?
 
-# TODO - are operations associative?
-# TODO - how to inverse a symbol? all elements * -1?
-# TODO - are there identity symbols? empty set?
-# TODO - can we get better recovery rates of sub and unbind?
+# TODO - operation are not associative so analogy.py would never work
 # TODO - what would a set-based memory look like?
+# TODO - palendrone noise
 
 
 import random
 import copy
 
 
-def new(dims=10, id=1):
-  '''Return a new symbol'''
-  ss = set([])
-  while len(ss) < dims:
-    ss.add( (random.randint(0, (dims-1)) * dims) + id )
+def symbol(dims=10, id=1):
+  '''Return a symbol given an id'''
+  ss = set( [each for each in range(dims+id, (dims**2)+dims+id, dims)] )
   return ss
 
+
+def expand(elements, id, dims, thresh=2):
+  '''
+     Given elements, expand to the original symbol
+  '''
+  if len(elements) >= thresh:
+    return symbol(dims, id)
+  return set([])
+
+
 def sim(s1, s2):
-  '''
-     The similarity of two symbols.
-     Symbols do not need to be of the same size.
-  '''
+  '''The similarity of two symbols'''
   return len(s1.intersection(s2)) / len(s1)
 
-def bundle(s1, s2):
+
+def bundle(*args):
   '''Thinned union'''
-  pick = len(s1) // 2
-  s1 = copy.copy(s1)
-  s2 = copy.copy(s2)
-  s3 = set([])
-  for j in range(pick):
-    s3.add(s1.pop())
-    s2.pop()
-  return s3.union(s2)
+  pick = len(args[0]) // len(args)
+  s1 = copy.copy(args[0])
+  for ss in args:
+    ss = copy.copy(ss)
+    for j in range(pick):
+      s1.pop()
+      s1.add(ss.pop())
+  return s1
 
 
-def subtract(s1, id):
-  '''
-     Determine the max and min id and "recover" as much
-     of the original symbol as possible.
-  '''
+def subtract(s1, id, dims):
   elements = [element for element in s1 if element % len(s1) != id]
-  ma = max(elements)
-  mi = min(elements)
-  return set([each + id for each in range(mi, ma, len(s1))])
-
-def bind(s1, s2):
-  '''
-     this is bundling but we modify the result's elements
-     in a way that is reversible
-  '''
-  pick = len(s1) // 2
-  s1 = copy.copy(s1)
-  s2 = copy.copy(s2)
-  s3 = set([])
-  for j in range(pick):
-    s3.add(s1.pop())
-    s2.pop()
-  s3 = s3.union(s2)
-  # turn it to a string and reverse it
-  return set( [int(str(element)[::-1]) for element in s3.union(s2)] )
+  return expand(elements, id, dims)
 
 
-def unbind(s1, id):
-  '''reverse bind'''
-  # TODO - use the same trick as in subtraction to
-  #        "recover" more of the original symbol
+def bind(*args):
+  '''Bundle then reverse as string'''
+  s1 = bundle(*args)
+  # cast int to string and reverse it
+  return set( [int(str(element)[::-1]) for element in s1] )
+
+
+def unbind(s1, id, dims):
+  '''Undo bind'''
   result = [int(str(element)[::-1]) for element in s1]
-  elements = [element for element in result if element % len(s1) == id]
-  ma = max(elements)
-  mi = min(elements)
-  return set([each + id for each in range(mi, ma, len(s1))])
+  elements = [element for element in result if element % dims == id]
+  return expand(elements, id, dims)

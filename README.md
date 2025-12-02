@@ -547,6 +547,10 @@ References
   -  multi-agent mapping is neat. hive mind.
   - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
 - Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
+- On variable binding and the representation of symbolic structures in connecionst systems
+  - that's one hell of an abstract. the paper is a response to growing concerns about large NN at the time
+  - in VSA/HDC binding is a compression of inputs because the result does not grow in dimensions. in TPR things grow.
+  - 
 
 
 
