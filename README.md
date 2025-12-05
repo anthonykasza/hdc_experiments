@@ -547,11 +547,7 @@ References
   -  multi-agent mapping is neat. hive mind.
   - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
 - Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
-- On variable binding and the representation of symbolic structures in connecionst systems
-  - that's one hell of an abstract. the paper is a response to growing concerns about large NN at the time
-  - in VSA/HDC binding is a compression of inputs because the result does not grow in dimensions. in TPR things grow.
-  - 
-
+ 
 
 
 Summary
@@ -580,18 +576,22 @@ Why use HDC?
 
 Notable VSAs
 ------------
-Holographic Reduced Representations
-- "reduced", all HVs are fixed length
-- "holographic", all elements represent information equally
-  - a subset of bits from an HV represents the same object, just with less precision
-    - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
-    - this is akin to cutting a hologram into pieces
-  - what is a hologram?
-    - jó napot, Gabor úr
-    - holograms involve lasers and lightwave interference patterns
-      - scanning objects with interference patterns is called interferometry
-        - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
-- fourier HHR
+- Multiply Add Permute (3 flavors)
+- Binary Spatter Code
+- MBAT
+- Holographic Reduced Representations
+  - "reduced", all HVs are fixed length
+  - "holographic", all elements represent information equally
+    - a subset of bits from an HV represents the same object, just with less precision
+      - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
+      - this is akin to cutting a hologram into pieces
+    - what is a hologram?
+      - jó napot, Gabor úr
+      - holograms involve lasers and lightwave interference patterns
+        - scanning objects with interference patterns is called interferometry
+          - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
+
+- Fourier HHR
   - FHRR/HRRF is measurably better than other VSAs in some cases
   - i think this is because the more information a single element can hold (the more complex the number) the more effective the VSA can be
     - the more complex the element type the greater the hardware requirements
@@ -599,34 +599,34 @@ Holographic Reduced Representations
   - magnitude only is used
     - this appears related to spiking networks architectures
 
-Sparse Block Codes, Binary and Generic
-- HV is partitioned into blocks (segments) of equal size 
-  - the HV’s dimensionality is a multiple of the block size
-- block-wise (segment-wise) operations
-  - ensure a specified sparsity
-  - permute the block
-  - combine blocks with other blocks or scalars
-    - bind, bundle, substitue, maybe further subdivide the block?
+- Sparse Block Codes
+  - HV is partitioned into blocks (segments) of equal size 
+    - the HV’s dimensionality is a multiple of the block size
+  - block-wise (segment-wise) operations
+    - ensure a specified sparsity
+    - permute the block
+    - combine blocks with other blocks or scalars
+      - bind, bundle, substitue, maybe further subdivide the block?
       - block of block codes, hyperdimensional blocks
 
-Bloom filters, a special case of VSA
-- a set is represented by a binary vector
-  - an empty set is all zeros
-  - a single vector is more memory efficient than storing all samples
-- when adding an element to a bf, the item is hashed with several functions
-  - the functions result in an index which is flipped from 0 to 1
-- when checking inness, an element is hashed (using the same set of functions)
-  - the resulting indices of the bit vector are then checked for 1 values
-  - if indices are 0, the item is definitely not in the set
-  - hash collisions may cause FPs
-- no FNs, possible FPs
-  - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
-- what happens if we were to introduce noise and flip a few random bits in a vector?
-  - what happens to a bloom filter?
-    - FPs introduced for 0 bits changed to 1 bits
-    - FNs introduced for 1 bits changed to 0 bits
-  - what happens to the similarity between two HVs?
-    - not much
+- Bloom filters, a special case of VSA
+  - a set is represented by a binary vector
+    - an empty set is all zeros
+    - a single vector is more memory efficient than storing all samples
+  - when adding an element to a bf, the item is hashed with several functions
+    - the functions result in an index which is flipped from 0 to 1
+  - when checking inness, an element is hashed (using the same set of functions)
+    - the resulting indices of the bit vector are then checked for 1 values
+    - if indices are 0, the item is definitely not in the set
+    - hash collisions may cause FPs
+  - no FNs, possible FPs
+    - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
+  - what happens if we were to introduce noise and flip a few random bits in a vector?
+    - what happens to a bloom filter?
+      - FPs introduced for 0 bits changed to 1 bits
+      - FNs introduced for 1 bits changed to 0 bits
+    - what happens to the similarity between two HVs?
+      - not much
 
 
 
@@ -938,6 +938,18 @@ Misc
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
   - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
+- binding
+  - binding all the hypervectors in a VSA together converges to the binding identity
+  - binding is a symmetric operation. bind with itself to invert.
+    - A rotated/reflected around the hypercube according to B results in C
+  - binding is a group operation
+    - element * element = element
+    - the space is the set of all possible hypervectors
+      - consider integer MAP... clipping influences the group
+    - permutation is a binding operation. it too forms a group.
+      - multi-binding with multiplcation is commutative
+      - multi-binding with permutation is not unless constrained to cyclic shifting
+  - binding is how we "combine" concepts into new concepts in our mind
 - i wonder if our brains bundle when we sleep
 - "science cannot move forward without heaps"
   - [thank you to the heaps](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
