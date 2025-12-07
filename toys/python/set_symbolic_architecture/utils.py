@@ -6,6 +6,10 @@
 # TODO - palendrone noise
 
 
+# This is neat:
+#  https://commons.wikimedia.org/wiki/File:Symmetric_group_4;_Cayley_graph_4,9.svg
+
+
 import random
 import copy
 

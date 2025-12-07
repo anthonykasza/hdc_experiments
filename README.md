@@ -889,7 +889,16 @@ Misc
       - then raise the x vector to the exponent indicating the column of the pixel
       - do the same for the y
       - bind the pixel value HV with the exponentialized x and y HVs
+- permute
+  - is bind-like
+  - permuation can be done randomly
+  - permuation can be done on vectors, matrices, tensors or blocks
+    - permutation can be done in groups of elements (blocks)
+      - blocks do not need to be continuous
+  - can permuation be done 'partially' as bundle and bind can?
+    - yes. what happens if only 2 elements are swapped in an hv?
 - low discrepency sequences
+  - i'm not sure about using these...
   - sobol and others
   - much literature points to these instead of random hv generation
   - ld seqs fill a space more evenly. randomly filling a space will produce clumps
