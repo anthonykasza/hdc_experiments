@@ -947,6 +947,15 @@ Misc
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
   - instead of copying bits from hv2 into new levels, copy flipped bits from hv2 into hv1
+- special purpose block coding or hv which support holographic operations
+  - 30000 dim hvs
+    - block_size: 3
+    - block_count: 10000
+  - index % 3 determines if an operation applies to the element
+    - 0, used for bundling
+    - 1, used for permuting
+    - 2, used for binding
+  - each operation would essentially be done partially at 33% but would have a deterministic pattern to which elements it 'fails' on
 - binding
   - binding all the hypervectors in a VSA together converges to the binding identity
   - binding is a symmetric operation. bind with itself to invert.
