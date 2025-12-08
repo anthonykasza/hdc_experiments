@@ -26,8 +26,10 @@ def partial_permute(hv, pct=0.75):
     return result, swaps
 
   for x in range(0, target_changes, 2):
+    # instead of random sampling what would happen
+    #  if we bound in a shared secret hypervector?
     i, j = random.sample(range(n), 2)
-    # swap the pair of element without inspecting their values
+    # swaps look like rc4
     result[i], result[j] = result[j], result[i]
     swaps.add((i, j))
 
@@ -37,14 +39,15 @@ def partial_permute(hv, pct=0.75):
 
 dims = 10000
 
-print('shift right 1 time')
 hv = hv(n=dims)
 hv_permuted1 = permute(hv)
-print(hv, hv_permuted1)
+print('Cyclic shift towards tail by 1 position')
+print('orig', hv)
+print('shifted 1' , hv_permuted1)
 print('sim', sim(hv, hv_permuted1))
 print()
 
-# swapping 100% of the elements doesß
+# swapping 100% of the elements does
 #  not result in dissimilar hv. my guess is because
 #  some of the pairs have the same values
 print('swap 100% of the elements')
@@ -77,3 +80,18 @@ print(hv_0, len(swaps)*2)
 print('sim', sim(hv, hv_0))
 print()
 
+print('swap 100% of the elements, 10 times')
+hv_1 = hv.copy()
+for i in range(1, 10):
+  hv_1, swaps = partial_permute(hv_1, 1.00)
+  print(i, hv_1, len(swaps)*2)
+  print('sim', sim(hv, hv_1))
+print()
+
+print('swap 50% of the elements, 10 times')
+hv_50 = hv.copy()
+for i in range(1, 10):
+  hv_50, swaps = partial_permute(hv_50, 0.50)
+  print(i, hv_50, len(swaps)*2)
+  print('sim', sim(hv, hv_50))
+print()
