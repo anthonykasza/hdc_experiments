@@ -16,6 +16,18 @@ References
 - GraphHD: Efficient graph classification using hyperdimensional computing
 - GrapHD: Graph-Based Hyperdimensional Memorization for Brain-Like Cognitive Learning
 - [Understanding Hyperdimensional Computing for Parallel Single-Pass Learning](https://github.com/Cornell-RelaxML/Hyperdimensional-Computing)
+  - binary HDC is finite group (order=2) approximation of FHRR (unit cycle) which is a Lie group
+    - 2 phases: 0 and 180. the smallest possible finite group
+    - FHRR didn't really make sense until you think about it in terms of approximating it via a finite-group VSA.  the exponential binding operation likely ties into a power law
+  - finite groups of larger orders could better approximate the unity cycle
+    - "This cyclic group VSA is in some sense a “subset” of the unit cycle VSA, and as n goes to infinity, it approximates the the unit cycle VSA arbitrarily well [Plate, 1994], serving as an interpolation between the binary HDC and the unit cycle VSA"
+    - a group of size 60 is like a 60-sides die representing a marble. not quite but close.
+  - 6.2 Cycle Group VSA
+    - "addition modulo n as binding operation"
+    - sim is measured by the cosine of the phase differences
+    - bundling for learning a centroid/prototype is replaced with stochastic gradient decent
+    - "We leave exploration of non-Abelian VSAs to future work"
+  - [cgr](https://github.com/hyperdimensional-computing/torchhd/blob/main/torchhd/tensors/cgr.py)
 - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
 - SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
@@ -842,6 +854,8 @@ Misc
   - [hdlib](https://github.com/cumbof/hdlib)
   - [hypervector](https://github.com/rishikanthc/hypervector)
     - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
+  - [hdc](https://github.com/Zeldax64/hdc), HDC examples in C++ including BSC Vector classes and item memories
+    - no license :(
 - pangenomics
   - studying all the genes of all strains of a species
   - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
