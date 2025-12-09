@@ -41,6 +41,34 @@ References
     - hurray! open science!
   - figure 4 reminds me of Gilbert Strang's [The Big Picture of Linear Algebra](https://youtu.be/rwLOfdfc4dw?t=284)
     - orthogonality around a circle
+- Efficient Hyperdimensional Computing with Modular Composite Representations
+  - hardware! hyperdimensional coprocessing unit on risc-v. neat.
+  - after having implemented BSBC, MCR seems like the same thing
+    - the modulo N is the block size is the order of the finite-group
+    - MCR works on the compressed representations of BSBC hv
+    - BSBC hv are vectors of 1-hot cyclic segments
+      - blocks are thinned within eeach op
+      - cyclic/modulus structure is built by permutation of
+        - elements within blocks
+        - blocks within vectors
+        - one can imagine all bits of a block forming a circle. within each block only 1 (element) location on the circle is active at at time. hv are just lists of approximated circles.
+          - why not compute on lists of approximated spheres?
+      - can block sizes change in BSBC/MCR? perhaps block size changes depending on the operation?
+        - TO TRY: add/drop an element adjacent to the hot bit
+          - whatever is done to 1 block must be done to all blocks
+        - the vector remains a multiple of the number of blocks it contains
+      - can the number of blocks within a vector change?
+        - yeah, bind hv with a random matrix
+  - ops
+    - bundle is majority vote, ties broken randomly
+    - bind is modulo addition
+    - unbind is modulo subtraction. perfect unbind, no noise.
+    - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...
+      - expand the hvs to their decompressed binary form, flatten them, then take the cossim of them
+  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in C. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
+    - superposition is majority voting, not addition.
+    - what is the optimal number of discrete/sampled phasors?
+      - can we have too many?
 - Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
 - [VSAONLINE](https://sites.google.com/view/hdvsaonline/home) and its [GGroup](https://groups.google.com/g/vsacommunity/about)
