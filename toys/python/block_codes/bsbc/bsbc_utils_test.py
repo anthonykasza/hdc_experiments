@@ -8,7 +8,9 @@
 
 from bsbc_utils import hdv, bundle, bind, permute
 from bsbc_utils import cossim, inverse, decompress
-from bsbc_utils import flatten, make_levels, sim_cyclic
+from bsbc_utils import flatten, make_levels
+
+from bsbc_utils import sim_cyclic, bundle_cyclic
 
 
 # Test generation, decompression, flatten, cossim
@@ -172,6 +174,7 @@ print()
 
 
 # Test cyclic similarity
+print('Test cyclic group similarity')
 block_size_1 = 2      # binary just like BSC
 block_size_2 = 360    # a cyclic group of size 360
 hv1 = [0,   1,   1,   1,   1,   0]

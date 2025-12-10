@@ -98,7 +98,8 @@ def bundle(*args):
     counts = Counter([hv[idx] for hv in args])
     max_count = max(counts.values())
     winners = [value for value, count in counts.items() if count == max_count]
-    # The paper also mentions using a deterministic approach instead of selecting randomly
+    # The paper also mentions using a deterministic approach instead of selecting randomly.
+    #  TODO: to be a cyclic group we should round robin between the input hv's elements instead of selecting a winner randomly
     compressed_bundle.append(random.choice(winners))
   return compressed_bundle
 
@@ -160,6 +161,8 @@ def permute(hdv, positions=1):
   return hdv[-positions:] + hdv[:-positions]
 
 
+
+
 def sim_cyclic(hv1, hv2, hv1_block_size, hv2_block_size):
   '''Compare two compressed BSBC hypervectors
      regardless of their block sizes, so long as their
@@ -193,4 +196,3 @@ def sim_cyclic(hv1, hv2, hv1_block_size, hv2_block_size):
   avg_dist = total_dist / len(hv1)
   similarity = max(0, 1 - avg_dist / np.pi)
   return similarity
-
