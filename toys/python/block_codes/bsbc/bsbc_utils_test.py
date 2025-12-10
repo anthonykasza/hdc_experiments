@@ -8,7 +8,7 @@
 
 from bsbc_utils import hdv, bundle, bind, permute
 from bsbc_utils import cossim, inverse, decompress
-from bsbc_utils import flatten, make_levels
+from bsbc_utils import flatten, make_levels, sim_cyclic
 
 
 # Test generation, decompression, flatten, cossim
@@ -168,3 +168,34 @@ print(f'query to hv3: {cossim(hv3, query_d)}')
 print(f'query to hv4: {cossim(hv4, query_d)}')
 print(f'query to hv5: {cossim(hv5, query_d)}')
 print(f'query to noise: {cossim(noise, query_d)}')
+print()
+
+
+# Test cyclic similarity
+block_size_1 = 2      # binary just like BSC
+block_size_2 = 360    # a cyclic group of size 360
+hv1 = [0,   1,   1,   1,   1,   0]
+hv2 = [360, 180, 180, 180, 180, 360]
+similarity = sim_cyclic(hv1, hv2, block_size_1, block_size_2)
+print(f"{block_size_1} {block_size_2} {similarity}")
+
+block_size_1 = 4
+block_size_2 = 360
+hv1 = [1,  3,   3,   3,   3,   2]
+hv2 = [90, 270, 270, 270, 270, 180]
+similarity = sim_cyclic(hv1, hv2, block_size_1, block_size_2)
+print(f"{block_size_1} {block_size_2} {similarity}")
+
+block_size_1 = 64
+block_size_2 = 128
+hv1 = [0, 64,  54,  12, 32, 32, 32, 10]
+hv2 = [0, 128, 108, 24, 64, 64, 64, 20]
+similarity = sim_cyclic(hv1, hv2, block_size_1, block_size_2)
+print(f"{block_size_1} {block_size_2} {similarity}")
+
+block_size_1 = 64
+block_size_2 = 64
+hv1 = [0, 64, 54, 12, 32, 32, 32, 10]
+hv2 = [1, 63, 55, 11, 33, 31, 33, 9]
+similarity = sim_cyclic(hv1, hv2, block_size_1, block_size_2)
+print(f"{block_size_1} {block_size_2} {similarity}")

@@ -158,3 +158,39 @@ def permute(hdv, positions=1):
   '''Permute the hypervector block-wise'''
   positions %= len(hdv)
   return hdv[-positions:] + hdv[:-positions]
+
+
+def sim_cyclic(hv1, hv2, hv1_block_size, hv2_block_size):
+  '''Compare two compressed BSBC hypervectors
+     regardless of their block sizes, so long as their
+     block count is equal.
+  '''
+
+  # scale one hv to another. DONT SCALE DOWN
+  if hv1_block_size == hv2_block_size:
+    hv1_rescaled = hv1
+    hv2_rescaled = hv2
+    target_block_size = hv1_block_size
+
+  elif hv1_block_size > hv2_block_size:
+    scale = hv1_block_size / hv2_block_size
+    hv1_rescaled = hv1
+    hv2_rescaled = [int(p * scale) for p in hv2]
+    target_block_size = hv1_block_size
+
+  else:
+    scale = hv2_block_size / hv1_block_size
+    hv1_rescaled = [int(p * scale) for p in hv1]
+    hv2_rescaled = hv2
+    target_block_size = hv2_block_size
+
+
+  # Compute the cyclic similarity
+  total_dist = 0
+  for p1, p2 in zip(hv1_rescaled, hv2_rescaled):
+    raw = abs(p1 - p2)
+    total_dist += min(raw, target_block_size - raw)
+  avg_dist = total_dist / len(hv1)
+  similarity = max(0, 1 - avg_dist / np.pi)
+  return similarity
+

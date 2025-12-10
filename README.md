@@ -41,10 +41,18 @@ References
     - hurray! open science!
   - figure 4 reminds me of Gilbert Strang's [The Big Picture of Linear Algebra](https://youtu.be/rwLOfdfc4dw?t=284)
     - orthogonality around a circle
+  - "each model utilizes a different distance (or similarity) measurement, which explains the variations in performance between the two models"
+  - same as Cyclic Group Representation "but uses a bundling based on element-wise mode instead of addition of complex numbers"
 - Efficient Hyperdimensional Computing with Modular Composite Representations
   - hardware! hyperdimensional coprocessing unit on risc-v. neat.
   - after having implemented BSBC, MCR seems like the same thing
     - the modulo N is the block size is the order of the finite-group
+    - in BSBC each hv can be permuted cyclically and each block can be permuted cyclically - a toroid shape.
+      - each hv is a candy necklace
+        - the necklace is not perfectly round because the hv has a finite number of blocks
+      - each hv element (in MCR) or block (in BSBC) is a bead of the necklace. its value represents a dot on the bead.
+        - the bead is not perfectly round because the block has a finite size
+      - [see this](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Torus_cycles_(labeled).png/341px-Torus_cycles_(labeled).png). "b" is the circular hv. "a" is the cyclical block. the value of the block sits as a single point on "a".
     - MCR works on the compressed representations of BSBC hv
     - BSBC hv are vectors of 1-hot cyclic segments
       - blocks are thinned within eeach op
@@ -65,10 +73,16 @@ References
     - unbind is modulo subtraction. perfect unbind, no noise.
     - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...
       - expand the hvs to their decompressed binary form, flatten them, then take the cossim of them
+      - replace cossine sim with circular sim/dist metric
   - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in C. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
     - superposition is majority voting, not addition.
     - what is the optimal number of discrete/sampled phasors?
       - can we have too many?
+- Toroidal topology of population activity in grid cells
+  - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
+  - thank you, rats.
+  - "What kind of network architecture keeps the activity on a toroidal manifold ... remains to be determined"
+  - why a torus? why not a [lumpy torus](https://www.youtube.com/watch?v=sEnugXJblFU)?
 - Hyperdimensional Hashing: A Robust and Efficient Dynamic Hash Table
 - HDTest: Differential Fuzz Testing of Brain-Inspired Hyperdimensional Computing
 - [VSAONLINE](https://sites.google.com/view/hdvsaonline/home) and its [GGroup](https://groups.google.com/g/vsacommunity/about)
@@ -640,6 +654,7 @@ Notable VSAs
     - this appears related to spiking networks architectures
 
 - Sparse Block Codes
+  - BSBC
   - HV is partitioned into blocks (segments) of equal size 
     - the HV’s dimensionality is a multiple of the block size
   - block-wise (segment-wise) operations
@@ -648,6 +663,22 @@ Notable VSAs
     - combine blocks with other blocks or scalars
       - bind, bundle, substitue, maybe further subdivide the block?
       - block of block codes, hyperdimensional blocks
+  - BSBC is essentially Cyclic Group Representation
+    - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
+    - some method of mapping vector indices to blocks is necessary
+    - can element blocking be used to compress the binary vector similar to how the indices of the 1hot bits can be used as a compressed version of the binary vector
+    - each hv can have its own unique element-to-block map
+      - i wonder if changing the element-to-block mapping is useful?
+    - conceptualizing the block as a circle is useful
+      - convert the 1hot value into degrees/radians
+      - compare the degrees of different blocks for a distance metric
+      - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks
+       - hv1 has a block size of 4 with value of 3: 270 degrees
+       - hv2 has a block size of 12 with value of 9: 270 degrees
+       - hv3 has a block size of 64 with value 48: 270 degrees
+      - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
+        - the distance between 2 hv is the sum of their block distances divided by their number of blocks
+        - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
 
 - Bloom filters, a special case of VSA
   - a set is represented by a binary vector
