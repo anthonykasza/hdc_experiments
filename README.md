@@ -43,6 +43,7 @@ References
     - orthogonality around a circle
   - "each model utilizes a different distance (or similarity) measurement, which explains the variations in performance between the two models"
   - same as Cyclic Group Representation "but uses a bundling based on element-wise mode instead of addition of complex numbers"
+    - if each element is an approximate angle of a circle, why not bundle with the cyclic mean?
 - Efficient Hyperdimensional Computing with Modular Composite Representations
   - hardware! hyperdimensional coprocessing unit on risc-v. neat.
   - after having implemented BSBC, MCR seems like the same thing
@@ -68,7 +69,7 @@ References
       - can the number of blocks within a vector change?
         - yeah, bind hv with a random matrix
   - ops
-    - bundle is majority vote, ties broken randomly
+    - bundle is majority vote, ties broken randomly or with the lowest mode
     - bind is modulo addition
     - unbind is modulo subtraction. perfect unbind, no noise.
     - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...

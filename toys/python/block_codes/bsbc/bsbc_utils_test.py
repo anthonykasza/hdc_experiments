@@ -1,10 +1,3 @@
-# Bundling appears to work as expected (if not better)
-# Leveling appears to work as expected (if not better)
-# Permutation on compressed representations is equivalent to block-level permutation on the expanded representation. This should be the same as what's already in utils.py
-# Cosine similarity appears to work as expected but requires the hv to be decompressed and flattened.
-# TODO: binding doesn't seem to work. How to build records using this arch?
-#       i think some logic in bulk bind is affecting recoverability
-
 
 from bsbc_utils import hdv, bundle, bind, permute
 from bsbc_utils import cossim, inverse, decompress
@@ -86,13 +79,13 @@ print(f'hv5_c:    {hv5_c}')
 print(f'bundle_c: {bundle_c}')
 print()
 
-bundle = decompress(bundle_c, dims, block_count)
-print(f'hv1 to decompressed bundle: {cossim(hv1, bundle)}')
-print(f'hv2 to decompressed bundle: {cossim(hv2, bundle)}')
-print(f'hv3 to decompressed bundle: {cossim(hv3, bundle)}')
-print(f'hv4 to decompressed bundle: {cossim(hv4, bundle)}')
-print(f'hv5 to decompressed bundle: {cossim(hv5, bundle)}')
-print(f'noise to decompressed bundle: {cossim(noise, bundle)}')
+b = decompress(bundle_c, dims, block_count)
+print(f'hv1 to decompressed bundle: {cossim(hv1, b)}')
+print(f'hv2 to decompressed bundle: {cossim(hv2, b)}')
+print(f'hv3 to decompressed bundle: {cossim(hv3, b)}')
+print(f'hv4 to decompressed bundle: {cossim(hv4, b)}')
+print(f'hv5 to decompressed bundle: {cossim(hv5, b)}')
+print(f'noise to decompressed bundle: {cossim(noise, b)}')
 print()
 
 # Test leveling
@@ -202,3 +195,36 @@ hv1 = [0, 64, 54, 12, 32, 32, 32, 10]
 hv2 = [1, 63, 55, 11, 33, 31, 33, 9]
 similarity = sim_cyclic(hv1, hv2, block_size_1, block_size_2)
 print(f"{block_size_1} {block_size_2} {similarity}")
+print()
+
+
+# Test bundle_cyclic
+block_count = 5
+block_size = 360
+dims = block_count * block_size
+hv1, hv1_c = hdv(dims, block_count)
+hv2, hv2_c = hdv(dims, block_count)
+hv3, hv3_c = hdv(dims, block_count)
+hv4, hv4_c = hdv(dims, block_count)
+hv5, hv5_c = hdv(dims, block_count)
+noise, noise_c = hdv(dims, block_count)
+bundle_c_cyc = bundle_cyclic(hv1_c, hv2_c, hv3_c, hv4_c, hv5_c)
+
+print(hv1_c)
+print(hv2_c)
+print(hv3_c)
+print(hv4_c)
+print(hv5_c)
+print(bundle_c_cyc)
+print()
+
+h1 = [0,   0,   0,   0]
+h2 = [90,  90,  90,  90]
+h3 = [180, 180, 180, 180]
+h4 = [270, 270, 270, 270]
+b = bundle_cyclic(h1, h2, h3, h4, block_size=360)
+print(h1)
+print(h2)
+print(h3)
+print(h4)
+print(b)

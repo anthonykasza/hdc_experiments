@@ -99,9 +99,36 @@ def bundle(*args):
     max_count = max(counts.values())
     winners = [value for value, count in counts.items() if count == max_count]
     # The paper also mentions using a deterministic approach instead of selecting randomly.
-    #  TODO: to be a cyclic group we should round robin between the input hv's elements instead of selecting a winner randomly
     compressed_bundle.append(random.choice(winners))
   return compressed_bundle
+
+
+from scipy.stats import circmean
+def bundle_cyclic(*args, block_size=64):
+  '''
+  Circular mean of elements treated as angles.
+  If the circular mean is undefined (angles evenly distributed),
+  randomly pick one of the elements.
+  '''
+  n = len(args[0])
+  bundle = []
+
+  for idx in range(n):
+    elements = [hv[idx] for hv in args]
+
+    # Convert elements to radians
+    elements_rad = np.array(elements) * 2 * np.pi / block_size
+    # Compute mean resultant length
+    R = np.sqrt(np.mean(np.cos(elements_rad))**2 + np.mean(np.sin(elements_rad))**2)
+
+    threshold = 1e-6
+    if R < threshold:
+      mean = random.choice(elements)
+    else:
+      mean = int(circmean(elements, high=block_size, low=0))
+
+    bundle.append(mean)
+  return bundle
 
 
 def bind(*args, block_size):
@@ -161,8 +188,6 @@ def permute(hdv, positions=1):
   return hdv[-positions:] + hdv[:-positions]
 
 
-
-
 def sim_cyclic(hv1, hv2, hv1_block_size, hv2_block_size):
   '''Compare two compressed BSBC hypervectors
      regardless of their block sizes, so long as their
@@ -186,7 +211,6 @@ def sim_cyclic(hv1, hv2, hv1_block_size, hv2_block_size):
     hv1_rescaled = [int(p * scale) for p in hv1]
     hv2_rescaled = hv2
     target_block_size = hv2_block_size
-
 
   # Compute the cyclic similarity
   total_dist = 0
