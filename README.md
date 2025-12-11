@@ -36,6 +36,24 @@ References
 - Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
 - HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
   - figure 1b is awesome! and is similar to Figure 1 of Modular Composite Representation
+Variable Binding for Sparse Distributed Representations: Theory and Applications
+  - "Sparse block-codes can be regarded as an extreme version of competitive coding principles observed in the brain"
+- High-Dimensional Computing with Sparse Vectors
+  - segements (block)
+  - context-dependent thinning durin bundling (they call is sumset)
+  - modulo sum of indices, segment-wise permutation
+- Geometric Analogue of Holographic Reduced Representation
+  - "Replacing convolutions by geometric products one arrives at reduced representations analogous to HRR but interpretable in terms of geometry"
+  - intro
+    - quantum computation is "tensor products of two-dimensional complex vectors called qubits"
+    - replace tensor product with geometric ones from geometric algebra (GA)
+    - "Systems where HRR are applicable might therefore, at least in principle, perform quantum algorithms"
+  - the beef
+    - BSC is mapped to HRR thru an exponential map
+    - "the 'algebra' formalizes a procedure that resembles an IQ test". if groups/algebras define IQ tests then of course we should be using them to build AI
+    - wow, math.
+  - conclusion
+    - something about the geometric product?
 - Modular Composite Representation (MCR)
   - Thank you to the University of Memphis for making the research paper EASY to locate on the interwebs and FREE, as ,in beer, to download
     - hurray! open science!
@@ -631,75 +649,66 @@ Why use HDC?
 
 Notable VSAs
 ------------
-- Multiply Add Permute (3 flavors)
-- Binary Spatter Code
-- MBAT
-- Holographic Reduced Representations
-  - "reduced", all HVs are fixed length
-  - "holographic", all elements represent information equally
-    - a subset of bits from an HV represents the same object, just with less precision
-      - 10 randomly selected bits from the HV represents the same symbol as all 10_000 bits
-      - this is akin to cutting a hologram into pieces
-    - what is a hologram?
-      - jó napot, Gabor úr
-      - holograms involve lasers and lightwave interference patterns
-        - scanning objects with interference patterns is called interferometry
-          - interferometry has a ton of applications, e.g. JPL used it to measure surface topography changes after the 2014 Napa earthquake
+- *Tensor Product Representations*
+  - lossless :)
+  - dimensionality grows :(
 
-- Fourier HHR
-  - FHRR/HRRF is measurably better than other VSAs in some cases
-  - i think this is because the more information a single element can hold (the more complex the number) the more effective the VSA can be
-    - the more complex the element type the greater the hardware requirements
-  - each element of a HV is a random phase angle (phasor) between -pi and pi
-  - magnitude only is used
-    - this appears related to spiking networks architectures
+- *Holographic Reduced Representations*
+  - standard HRR
+  - *Fourier HRR*
+  - *Geometric Analogue of HRR*
+  - *Vector-Derived Binding*
+  - *Square Matrix Representations*
 
-- Sparse Block Codes
-  - BSBC
-  - HV is partitioned into blocks (segments) of equal size 
-    - the HV’s dimensionality is a multiple of the block size
-  - block-wise (segment-wise) operations
-    - ensure a specified sparsity
-    - permute the block
-    - combine blocks with other blocks or scalars
-      - bind, bundle, substitue, maybe further subdivide the block?
-      - block of block codes, hyperdimensional blocks
-  - BSBC is essentially Cyclic Group Representation
-    - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
+- *Binary Spatter Codes*
+  - a special case of HRR where values are bound to binary
+
+- *Multiply Add Permute*
+  - MAP-C (real)
+  - MAP-B (bipolar)
+    - the same thing as BSC but I think it's the easiest VSA to think about
+  - MAP-I (integer)
+
+- *Sparse Binary Distributed Representations*
+  - Conjunction-Disjunction
+  - Context-Dependent Thinning
+  - only VSA where bind(A,B) is similar to bind(A,C)
+
+- *(Binary) Sparse Block Codes*
+  - similarities to SBDR, BSC, CGR
+  - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
+  - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+  - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
     - some method of mapping vector indices to blocks is necessary
-    - can element blocking be used to compress the binary vector similar to how the indices of the 1hot bits can be used as a compressed version of the binary vector
     - each hv can have its own unique element-to-block map
-      - i wonder if changing the element-to-block mapping is useful?
-    - conceptualizing the block as a circle is useful
-      - convert the 1hot value into degrees/radians
-      - compare the degrees of different blocks for a distance metric
-      - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks
-       - hv1 has a block size of 4 with value of 3: 270 degrees
-       - hv2 has a block size of 12 with value of 9: 270 degrees
-       - hv3 has a block size of 64 with value 48: 270 degrees
-      - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
-        - the distance between 2 hv is the sum of their block distances divided by their number of blocks
-        - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
+  - conceptualizing the block as a circle is useful
+    - convert the 1hot value into degrees/radians
+    - compare the degrees of different blocks for a distance metric
+    - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks. always scale up so as to not lose information
+     - hv1 has a block size of 4 with value of 3: 270 degrees
+     - hv2 has a block size of 12 with value of 9: 270 degrees
+     - hv3 has a block size of 64 with value 48: 270 degrees
+    - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
+      - the distance between 2 hv is the sum of their block distances divided by their number of blocks
+      - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
 
-- Bloom filters, a special case of VSA
-  - a set is represented by a binary vector
-    - an empty set is all zeros
-    - a single vector is more memory efficient than storing all samples
-  - when adding an element to a bf, the item is hashed with several functions
-    - the functions result in an index which is flipped from 0 to 1
-  - when checking inness, an element is hashed (using the same set of functions)
-    - the resulting indices of the bit vector are then checked for 1 values
-    - if indices are 0, the item is definitely not in the set
-    - hash collisions may cause FPs
-  - no FNs, possible FPs
-    - is this thing in your cache? the bf can answer with 'definitely no' or 'maybe yeah'
-  - what happens if we were to introduce noise and flip a few random bits in a vector?
-    - what happens to a bloom filter?
-      - FPs introduced for 0 bits changed to 1 bits
-      - FNs introduced for 1 bits changed to 0 bits
-    - what happens to the similarity between two HVs?
-      - not much
+- *Matrix Binding of Additive Terms*
+  - binding is a matrix multiplication
+  - permutation is a matrix multiplication
+  - resizing is a matrix multiplication
+  - bundling is just addition
 
+- *Modular Composite Representation*
+  - binding is component-wise modular addition just like BSBC, BSC, FHRR, CGR
+  - *Cyclic Group Representation*
+    - uses a different bundle and similarity op than MCR
+
+- *Bloom filter*
+  - a special case of VSA
+  - standard, counting, scalable, etc.
+
+- *Walsh Hadamard Derived Linear Vector Symbolic Architecture*
+- *Sobol Sequence Optimization for Hardware-Efficient Vector Symbolic Architectures*
 
 
 VSA Operations 
