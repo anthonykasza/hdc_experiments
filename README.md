@@ -668,6 +668,8 @@ Notable VSAs
   - MAP-B (bipolar)
     - the same thing as BSC but I think it's the easiest VSA to think about
   - MAP-I (integer)
+    - instead of clipping addition/multiplication, permit uint32 overflows and then both operations are cyclical. no?
+
 
 - *Sparse Binary Distributed Representations*
   - Conjunction-Disjunction
@@ -676,8 +678,12 @@ Notable VSAs
 
 - *(Binary) Sparse Block Codes*
   - similarities to SBDR, BSC, CGR
-  - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
-  - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+  - sparsity
+    - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
+    - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+    - increasing sparsity decreases the distributed nature of the information
+      - Blocks are concentrated represenations. All information is in the hot bit. Blocks are _not_ robust to noise. A single flipped element is very impactful.
+      - with enough blocks (dims) in an hv, the representation becomes distributed. The hypervectors become robust to noise. A single incorrect/missing block and the system continues relatively unffected (given ~10k blocks).
   - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
     - some method of mapping vector indices to blocks is necessary
     - each hv can have its own unique element-to-block map
@@ -685,12 +691,171 @@ Notable VSAs
     - convert the 1hot value into degrees/radians
     - compare the degrees of different blocks for a distance metric
     - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks. always scale up so as to not lose information
-     - hv1 has a block size of 4 with value of 3: 270 degrees
-     - hv2 has a block size of 12 with value of 9: 270 degrees
-     - hv3 has a block size of 64 with value 48: 270 degrees
+      - hv1 has a block size of 4 with value of 3: 270 degrees
+      - hv2 has a block size of 12 with value of 9: 270 degrees
+      - hv3 has a block size of 64 with value 48: 270 degrees
     - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
       - the distance between 2 hv is the sum of their block distances divided by their number of blocks
       - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
+  - params
+    - block_count
+    - block_size
+    - k = "hotness"
+      - vector sparsity = k / block_count 
+      - during bundle op, the result is thinned so there are k number of 1s per block. the rest 0.
+  - bundle examples when k>1
+    - block_size=8, k=2, mode_count=2, mode=3
+    - no thinning necessary
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 0 0 0  0 0 1 1
+      ----------------
+      0 0 1 0  0 1 0 0
+      ```
+
+    - block_size=8, k=3, mode_count=3, mode=3
+    - no thinning necessary
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 1 0 0  0 0 1 1
+      ----------------
+      0 1 1 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=3, mode=3
+    - thinning achieved by random selection of mode indices
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 1 0 0  0 0 1 1
+      ----------------
+      0 0 1 0  0 1 0 0
+      or
+      0 1 0 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=1, mode=2
+    - mode_count less than k. 1hot when 2hot is expected
+      - randomly pick one of the "second place" modes or...
+      - ...leave the 2hot block as 1hot
+      ```
+      0 0 0 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 0 1 0  0 0 0 0
+      0 0 0 0  0 0 0 0
+      0 0 0 0  0 1 0 0
+      0 0 0 0  0 0 0 1
+      ----------------
+      0 1 0 0  0 1 0 0
+      or
+      0 0 1 0  0 1 0 0
+      or
+      0 0 0 0  0 1 0 1
+      or 
+      0 0 0 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=3, mode=3
+    - if blocks are permitted to have less than k hotness then we can use weighted voting.
+      - the index vote is divided by the hotness/certainty of the block
+      - ties are randomly broken
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 1 0
+      0 1 0 0  0 0 0 0
+      0 0 0 1  0 0 1 0
+      ----------------
+      0 1 1 0  0 0 0 0
+      or 
+      0 1 0 0  1 0 0 0
+    
+      0: 0
+      1: 1 + 1/2 + 1    * 1st
+      2: 1 + 1/2 + 1/2  * 2nd
+      3: 1/2              4th
+      4: 0
+      5: 1 + 1/2 + 1/2  * 2nd
+      6: 1/2 + 1/2        3rd
+      7: 0
+      ```
+  - when k>1
+    - blocks are superpositions of phases instead of just a single phase
+    - binary hypervector compresses to `vector of vector of ints` instead of `vector of int`
+      - the length of the nested vectors is equal to the hotness of the binary block
+        - what happens if hotness exceeds 1/2 * block_size? 0110 is the same as 1001.
+    - binding must change.
+      - examples:
+        - 1hot by 1hot, k=1, block_size=8
+        - vector of int
+          - cyclic shift A by the 1hot index of B
+        - (4 + 2) % 8 = 6
+        ```
+        A:  0 0 0 0  1 0 0 0....4 idx
+        B:  0 0 1 0  0 0 0 0....2 idx
+        ----------------‐-------------
+        C:  0 0 0 0  0 0 1 0....6 idx
+        ```
+
+        - 2hot by 1hot, k=2, block_size=8
+        - vector of [int, int]
+          - cyclic shift A by the 1hot index of B. B's single index influences all of A's bits.
+          - (1+2) % 8 = 3, (4+2) % 8 = 6
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 0 1 0  0 0 0 0....2   idx
+          -------------------------------------
+          C:  0 0 0 1  0 0 1 0....3,6 idx
+          ```
+
+        - 2hot by 2hot, k=2, block_size=8
+        - vector of [int, int]
+          - cyclic shift the index of the 1st bit of A by the index of the 1st bit of B
+          - cyclic shift the index of the 2nd bit of A by the index of the 2nd bit of B
+          - (1+1) % 8 = 2, (4+7) % 8 = 3
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 1 0 0  0 0 0 1....1,7 idx
+          ------------------------------------
+          C:  0 0 1 1  0 0 0 0....2,3 idx
+          ```
+          - if you permute different bits different amounts, you can create collisions which makes unbinding imperfect
+            - A is 2hot, B is 2hot, C is 1hot
+              - what happens if we permit less than k hotness?
+              - what happens if we randomly select another bit and turn it on to ensure k?
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 0 1 0  0 0 0 1....2,7 idx
+          ------------------------------------
+          C:  0 0 0 1  0 0 0 0....3 idx
+          ```
+
+        - 2hot by 3hot, k=3, block_size=8
+          - how do?
+          - i'm not sure if it's a good idea to allow "under hot" blocks 
+            - would a binding of 3hot by 3hot work?
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 1 0 0  0 0 1 1....1,6,7 idx
+          ---------------------------------
+          C:  ? ? ? ?  ? ? ? ? 
+          ```
+
+
 
 - *Matrix Binding of Additive Terms*
   - binding is a matrix multiplication
@@ -711,205 +876,74 @@ Notable VSAs
 - *Sobol Sequence Optimization for Hardware-Efficient Vector Symbolic Architectures*
 
 
-VSA Operations 
+HDC Operations
 --------------
-not all operations are applicable to all architectures.
-operations can be conceptualize with 3 abstraction levels:
-- elements operations which result in blocks or vectors
-- blocks operations which result in blocks or vectors
-- vectors operations which result in vectors or vector spaces
 
-implementations of operations need to consider:
-- atomic elements
-  - types: bool, int, float
-  - algebraic qualities: identity, symmetry, inverse
-  - bounds checking
-    - clipping, ensure element values are within a range
-    - normalization, ensure element values are normalized to a range
-- dimensionality and segmentation of vectors
-- sparsity of vectors or segments
-  - adding sparse vectors decreases sparsity
-  - multiplying sparse vectors increase sparsity
-- precision of results
-  - cleanup step
-
-operations include:
-- addition, summing two vectors into a single vector preserves information from both consituents
-  - aka: bundle, summation, superposition, learning, accumulation, majority vote
-
-- multiplication, multiplying two vectors into a single vector moves the relationship between the inputs to a new region of the hyperspace 
-  - aka: bind, compose, XOR, FFT, circular convolution
-    - binding approximates TPR by because HDC requires fixed-dimensionality
-    - see The Binding Problem
-  - exponentiation
-    - fractional power encoding (FPE)
-      - aka: trajectory association
-      - bind vector x times with itself, then the vector represents x
-        - raise each element to the exponent x
-        - this only works if the bind op is NOT the inverse of itself
-      - multiplying is the same as adding exponents if the base vectors are the same
-        - accomplishes scalar-like behavior 
-      - variants on FPE
-        - FPE with hadamard binding (phasor)
-        - FPE with circular convolution binding (real valued)
-        - block local circular convolution (sparse)
-        - VFA, vector function architecture
-          - FPE VSA plus a kernel function
-            - your task will dictate your kernel but it opens the door to using VSA for learning with kernel functions
-              - multidimensional kernels
-              - window/modulus/circular kernels
-              - periodic multidimensional kernels
-                - grid cells, hex pattern in mice neurons
-                - crystallography
-                - lattice-based crypto
-          - "the distribution from which components of the base vector are sampled [how sparsity is sprinkled into the HVs] determines the shape of the FPE kernel, which in turn induces a VFA for computing with band-limited functions"
-          - any FPE with uniformly sampled base vectors have a universal kernel
-            - whittaker-shannon interpolation formula
-              - sinc function
-                - normalized vs not
-                - well defined envelop
-                - crosses zero at the integers
-          - binding a scalar to a vector (function) shifts the vector
-          - binding 2 vectors (functions) together is a convolution of functions
-             - functions are compositional
-          - calculate similarities between functions
-
-- division, undo multiplication
-  - aka: unbind, factorization, decomposition
-  - in some VSA unbinding is imperfect and requires a second cleanup operation
-
-- cleanup, replace an operation's result with something else based on the result
-  - its nearest neighbor in memory
-    - resonator networks
-    - replace the noisy HV from unbinding with the most similar HV in memory
-  - a filtered version of itself
-    - thinning
-      - ensure the density/sparsity of a vector/segment
-
-- permutation, preserves the order of elements or segments 
-  - aka: shift, rotate, braid, protect
-  - the operation needs to be invertible
-    - does not need to be perfectly invertible if a cleanup is used
-  - permute is similar to multiple
-  - reverse is one type of permutation operation which:
-    - takes 0 parameters
-    - is lossess
-    - is the inverse of itself
-  - shift is one type of permuation operation which:
-    - takes 1 parameter
-    - is lossess
-    - can be inverted by flipping the sign of the parameter
-
-- similarity, a measure applied to vectors (segments) pairwise
-  - e.g. cos similarity, hamming distance
-  - similarity is robust to noise
-
-- substitution, mutating an HV to become more similar to another HV
-  - this is useful for leveling a vector space
-  - HV1 becomes more similar to HV2, HV2 remains unchanged
-  - a sequence of 'levels' (bins/buckets) is produces which leads from HV1 to HV2
-
-- segmentation, create structure or depth
-  - segment a vector into positional blocks
-    - aka: blocking, grouping, chunking, windowing
-    - locality preserving encoding (LPE)
-      - thermometer code
-        - linearly discretized levels
-          - the first vector is hdv(all=0)
-          - the last vector is hdv(all=1)
-          - the HV grows its count of 1 values by flipping 0s to 1s by incrementing index
-        - bundle(HVs[2],HVs[2]) != bundle(HVs[1],HVs[3])
-          - if using integers: 2 + 2 != 1 + 3
-          - consider the linearly discritized vector of hypervectors: HVs
-          - bundling/binding indices of the hyperspace do not behave as adding/multiplying integers would
-      - float code / sliding code
-        - simmilar to 1-hot but more like window-hot, where the window is centered around the element
-        - uses a fixed width window, slide across the all zeros vector, ensure bits in the window are 1s
-        - the window is slid across the all-zeros HV
-        - the start of the window is the HV's index in hypserspace
-        - more sparse compared to thermometer codes
-          - different similarity kernel
-      - scatter code
-        - no strict limitation on number of levels in a hyperspace
-        - hspace[0] = some random dense vector
-        - each level is created by randomly flipping a few elements in the previous unit
-
-  - segment the 'space' between vectors into levels
-    - aka: leveling, sampling, binning, discretization, quantization, bucketing
-    - enearby levels are somewhat similar, distant levels are dissimilar
-    - leveling strategies
-      - linear, for representing a continuous range as an evenly spaced buckets
-        - exact linear, dimensions / bins = elementsPerBin
-        - approximate linear mapping - cheaper than exact linear mapping 
-          - "Approximate linear mapping [58] does not guarantee ideal linear characteristic of the mapping, but the overall decay of similarity between feature levels will be approximately linear"
-          - only store the start and stop HVs instead of the entire hyperspace
-          - construct levels on the fly
-      - circular, useful for modulus/cyclical calculations such as:
-        - seasons of the year, hours of the day, months of the year, color spaces, round-robin hashing (rendezvous/hrw)
-      - logarithmic/exponential, shrink of shrink/growth of growth
-      - fibonacci (retracement)
-      - combine different leveling strategies to create a vector space with varying granularity
-        - e.g. log then linear
-        - elliptic, like a circle but longer on two of the sides
-
-- generation
-  - make a new hypervector
-    - consider the type, range, normalizaton of elements
-  - methods
-    - random uniform
-    - random weighted
-      - can be used to ensure sparsity
-    - low discrepency
-      - used to ensure orthogonality
-    - hv generated outside of the VSA
-      - learned from a CNN
-      - raw feature vector multiplied by a (random) matrix
-    - based on an existing hv
-      - learned from semantic contexts
-      - permute existing hv
+| Operation            | Input                                              | Output                                                                 |
+|----------------------|----------------------------------------------------|------------------------------------------------------------------------|
+| *similarity*         | Two hypervectors                                   | A similarity metric |
+| *bind*               | Two or more hypervectors                           | A bound (composite) hypervector approximately orthogonal to its constituents, from which constituents may be queried via inverse binding |
+| *bundle*             | Two or more hypervectors                           | A superposed hypervector that preserves similarity to all constituent hypervectors |
+| *permute*            | One hypervector and one permutation map               | A hypervector transformed by an invertible permutation, preserving similarity structure |
+| *new symbol*         | None                                               | A randomly generated, approximately orthogonal hypervector symbol     |
+| *level*              | Zero, one, or two hypervectors                     | A set or sequence of hypervectors encoding ordered or continuous values via structured similarity in hyperspace |
+| *normalize / clip*   | One hypervector                                    | A constrained or normalized hypervector, typically applied after bundling or binding to maintain representational capacity |
+| *unbind*             | One bound hypervector and one or more constituents | An approximate inverse binding operation yielding the remaining bound components |
+| *unbundle*           | One superposed hypervector and one or more constituents | A partial removal of superposed components from a bundled hypervector |
+| *cleanup*            | One noisy hypervector                              | The closest matching stored hypervector retrieved via associative (cleanup) memory |
 
 
-Searching Memory
-----------------
-Consider the following: unbinding a "scene" of objects each with some set of properties
-- decompose the scene into its composed constituents
-  - objects in the scene have properties
-    - color
-    - shape
-    - location
-      - x
-      - y
-  - e.g. scene = bind(HV1, HV2, HV3)
-    - HV1 = bind(color_HV, shape_HV, bind(x, y))
-    - HV2 = bind(color_HV, shape_HV, bind(x, y))
-    - HV3 = bind(color_HV, shape_HV, bind(x, y))
-  - to understand the scene, you need to search the codebook for combinations of all atomic symbols for all properties
-    - this can be expensive, which is why selecting an efficient encoding method is important
-  - assume there are 100 unique items in each HV's codebook (lookup memory)
-    - 100 possible items for HV1
-    - 100 possible items for HV2
-    - 100 possible items for HV3
-    - worst case: 10 * 100 * 100 = 1_000_000 item combinations to check cossim with
-- Resonator Networks
-  - aka Hopfield Network
-  - similar to the result of gradient descent
-  - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
-  - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
-    - create 'estimate' vectors, these represent your initial guesses
-      - xhat, yhat, zhat = hdv(), hdv(), hdv()
-    - do something with the estimates
-    - update the estimates based on results of comparison to portions of the codebooks
-    - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
-    - iterates to find best
-      - z, with estimates of y and x
-      - y, with estimates of x and z
-      - z, with estimates of y and z
-- Hyperdimensional Quantum Factorization
-  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
-  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
-    - this approach is better than resonator networks
-  - hardware does not currently exist to implement. womp womp.
+- Similarity
+  - Quantifies how near two symbols are in the hyperspace
+  - Common measures: Hamming, Cosine, Dot product, Correlation, Manhattan or Cyclic Manhattan
 
+- Binding
+  - Captures structured associations, similar to Tensor Product Representations
+  - Maintains fixed dimensionality unlike TPR
+  - Forms a group over the set of hypervectors in a fixed-dimensional hyperspace
+    - In binary HDC with XOR binding, the group has order `2^n`
+    - Some binding operations form continuous groups
+
+- Bundle
+  - Also called superposition, learning, accumulation, or voting
+  - Combines multiple hypervectors into a single symbol that represents all of them simultaneously, or holographically
+
+- Permutation operations
+  - Transforms hypervector indices. Can be any bijective map. Cyclic shift is simple to think about
+  - The full set of index permutations has order `n!`
+  - Cyclic permutations form a smaller subgroup with order `n`
+  - Block permutations form can form groups of discretized phases
+  - Permutations are also bindings
+
+- Normalization constraints
+  - Keeps hypervectors within valid ranges
+  - Methods: element-wise clipping or global normalization
+  - Preserves similarity structure and prevents unbounded growth 
+
+- Cleanup
+  - Corrects noisy vectors from approximate operations
+  - Uses a codebook or associative memory to restore/retrieve the closest matching hypervector
+
+- Leveling
+  - Creating a walk of the hyperspace based on similarity
+  - How far similarity propagates from a single symbol: locality vs. globality
+  - Common strategies include: Linear, Circular, Exponential, "Steps", Combinations of previously listed
+
+- Generating new symbols
+  - From a normal (Gaussian) distribution
+  - From a weighted distribution
+  - From a low-discrepancy sequence (e.g. Sobol)
+  - From a Walsh–Hadamard sequence
+  - From an external process like sensor data or a CNN
+  - From the result of another operation in the hypervector space
+
+- Implementing operations
+  - Element type: Boolean, integer, floating-point, or block-based components
+  - Algebraic properties: presence of an identity element, symmetry, and inverses
+  - Dimensionality: number of components in each hypervector
+  - Segmentation: whether vectors are partitioned into blocks for structured operations
+  - Sparsity: proportion of nonzero or active elements
+  - Precision: effects of approximate calculations and normalization/clipping/pooling
 
 
 
@@ -972,14 +1006,25 @@ Misc
       - then raise the x vector to the exponent indicating the column of the pixel
       - do the same for the y
       - bind the pixel value HV with the exponentialized x and y HVs
-- permute
-  - is bind-like
-  - permuation can be done randomly
-  - permuation can be done on vectors, matrices, tensors or blocks
-    - permutation can be done in groups of elements (blocks)
-      - blocks do not need to be continuous
-  - can permuation be done 'partially' as bundle and bind can?
-    - yes. what happens if only 2 elements are swapped in an hv?
+- Resonator Networks
+  - aka Hopfield Network
+  - similar to the result of gradient descent
+  - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
+  - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
+    - create 'estimate' vectors, these represent your initial guesses
+      - xhat, yhat, zhat = hdv(), hdv(), hdv()
+    - do something with the estimates
+    - update the estimates based on results of comparison to portions of the codebooks
+    - utilizes superimposed 'guesses' or 'estimates' to find best guesses for one parameter at a time
+    - iterates to find best
+      - z, with estimates of y and x
+      - y, with estimates of x and z
+      - z, with estimates of y and z
+- Hyperdimensional Quantum Factorization
+  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
+  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
+    - this approach is better than resonator networks
+  - hardware does not currently exist to implement. womp womp.
 - low discrepency sequences
   - i'm not sure about using these...
   - sobol and others
