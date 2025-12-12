@@ -676,8 +676,12 @@ Notable VSAs
 
 - *(Binary) Sparse Block Codes*
   - similarities to SBDR, BSC, CGR
-  - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
-  - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+  - sparsity
+    - when the blocks are maximally sparse, "each block is ... a phase angle" or a 1hot bit
+    - "When the block is not maximally sparse, it functions more like a superposition of phase angles"
+    - increasing sparsity decreases the distributed nature of the information
+      - Blocks are concentrated represenations. All information is in the hot bit. Blocks are _not_ robust to noise. A single flipped element is very impactful.
+      - with enough blocks (dims) in an hv, the representation becomes distributed. The hypervectors become robust to noise. A single incorrect/missing block and the system continues relatively unffected (given ~10k blocks).
   - the elements of blocks do not need to be contiguous, they can be randomly indexed within a hv. contiguous blocks are nice for for-loops tho.
     - some method of mapping vector indices to blocks is necessary
     - each hv can have its own unique element-to-block map
@@ -685,12 +689,161 @@ Notable VSAs
     - convert the 1hot value into degrees/radians
     - compare the degrees of different blocks for a distance metric
     - it is possible to compare hv of differnet block sizes so long as the 2 hv have the same number of blocks. always scale up so as to not lose information
-     - hv1 has a block size of 4 with value of 3: 270 degrees
-     - hv2 has a block size of 12 with value of 9: 270 degrees
-     - hv3 has a block size of 64 with value 48: 270 degrees
+      - hv1 has a block size of 4 with value of 3: 270 degrees
+      - hv2 has a block size of 12 with value of 9: 270 degrees
+      - hv3 has a block size of 64 with value 48: 270 degrees
     - the distance between 2 blocks is the cyclic distance (0 degrees == 360 degrees)
       - the distance between 2 hv is the sum of their block distances divided by their number of blocks
       - the maximum distance between 2 hv is 180 degrees times the number of blocks in the hv
+  - params
+    - block_count
+    - block_size
+    - k = "hotness"
+      - vector sparsity = k / block_count 
+      - during bundle op, the result is thinned so there are k number of 1s per block. the rest 0.
+  - bundle examples when k>1
+    - block_size=8, k=2, mode_count=2, mode=3
+    - no thinning necessary
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 0 0 0  0 0 1 1
+      ----------------
+      0 0 1 0  0 1 0 0
+      ```
+
+    - block_size=8, k=3, mode_count=3, mode=3
+    - no thinning necessary
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 1 0 0  0 0 1 1
+      ----------------
+      0 1 1 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=3, mode=3
+    - thinning achieved by random selection of mode indices
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 1 1 0  0 1 0 0
+      0 1 0 0  0 0 1 1
+      ----------------
+      0 0 1 0  0 1 0 0
+      or
+      0 1 0 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=1, mode=2
+    - mode_count less than k. 1hot when 2hot is expected
+      - randomly pick one of the "second place" modes or...
+      - ...leave the 2hot block as 1hot
+      ```
+      0 0 0 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 0 1 0  0 0 0 0
+      0 0 0 0  0 0 0 0
+      0 0 0 0  0 1 0 0
+      0 0 0 0  0 0 0 1
+      ----------------
+      0 1 0 0  0 1 0 0
+      or
+      0 0 1 0  0 1 0 0
+      or
+      0 0 0 0  0 1 0 1
+      or 
+      0 0 0 0  0 1 0 0
+      ```
+
+    - block_size=8, k=2, mode_count=3, mode=3
+    - if blocks are permitted to have less than k hotness then we can use weighted voting.
+      - the index vote is divided by the hotness/certainty of the block
+      - ties are randomly broken
+      ```
+      0 0 0 0  0 1 0 0
+      0 0 1 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 0 0
+      0 0 1 0  0 1 0 0
+      0 1 0 0  0 0 1 0
+      0 1 0 0  0 0 0 0
+      0 0 0 1  0 0 1 0
+      ----------------
+      0 1 1 0  0 0 0 0
+      or 
+      0 1 0 0  1 0 0 0
+    
+      0: 0
+      1: 1 + 1/2 + 1    * 1st
+      2: 1 + 1/2 + 1/2  * 2nd
+      3: 1/2              4th
+      4: 0
+      5: 1 + 1/2 + 1/2  * 2nd
+      6: 1/2 + 1/2        3rd
+      7: 0
+      ```
+  - when k>1
+    - blocks are superpositions of phases instead of just a single phase
+    - binary hypervector compresses to `vector of vector of ints` instead of `vector of int`
+      - the length of the nested vectors is equal to the hotness of the binary block
+        - what happens if hotness exceeds 1/2 * block_size? 0110 is the same as 1001.
+    - binding must change. 
+      - examples:
+        - 1hot by 1hot, k=1, block_size=8
+        - vector of int
+          - cyclic shift A by the 1hot index of B
+        - (4 + 2) % 8 = 6
+        ```
+        A:  0 0 0 0  1 0 0 0....4 idx
+        B:  0 0 1 0  0 0 0 0....2 idx
+        ----------------‐-------------
+        C:  0 0 0 0  0 0 1 0....6 idx
+        ```
+
+        - 2hot by 1hot, k=2, block_size=8
+        - vector of [int, int]
+          - cyclic shift A by the 1hot index of B. B's single index influences all of A's bits.
+          - (1+2) % 8 = 3, (4+2) % 8 = 6
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 0 1 0  0 0 0 0....2   idx
+          -------------------------------------
+          C:  0 0 0 1  0 0 1 0....3,6 idx
+          ```
+
+        - 2hot by 2hot, k=2, block_size=8
+        - vector of [int, int]
+          - cyclic shift the index of the 1st bit of A by the index of the 1st bit of B
+          - cyclic shift the index of the 2nd bit of A by the index of the 2nd bit of B
+          - (1+1) % 8 = 2, (4+7) % 8 = 3
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 1 0 0  0 0 0 1....1,7 idx
+          ------------------------------------
+          C:  0 0 1 1  0 0 0 0....2,3 idx
+          ```
+
+        - 2hot by 3hot, k=3, block_size=8
+          - how do?
+          - i'm not sure if it's a good idea to allow "under hot" blocks 
+            - would a binding of 3hot by 3hot work?
+          ```
+          A:  0 1 0 0  1 0 0 0....1,4 idx
+          B:  0 1 0 0  0 0 1 1....1,6,7 idx
+          ---------------------------------
+          C:  ? ? ? ?  ? ? ? ? 
+          ```
+
+
 
 - *Matrix Binding of Additive Terms*
   - binding is a matrix multiplication
