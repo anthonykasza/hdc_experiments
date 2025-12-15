@@ -643,6 +643,7 @@ Why use HDC?
 - supports probabilistic calculations
 - supports online/streaming learning
 - it aligns well with the theory of "distributed representation" aka "assemblies of neurons" theory of the brain
+- the cerebellum is a random access memory for high dimensional vectors. it supports a lifetime of learning.
 - learned results are not a blackbox but are instead interpretable
 - by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
 
@@ -654,10 +655,21 @@ Notable VSAs
   - dimensionality grows :(
 
 - *Holographic Reduced Representations*
-  - standard HRR
+  - *HRR*
+    - the progenitor of VSA/HDC
+    - bind: converts real elements to complex then back to real
+      - noisy, requires cleanup
+      - mixes amplitutes and phases of waves
   - *Fourier HRR*
+    - bind: operates on complex elements directly
+     - exact invertibility
+     - rotates phases. everything has magnitude of 1
+     - forms a group
   - *Geometric Analogue of HRR*
-  - *Vector-Derived Binding*
+  - *Vector-Derived Transformation Binding*
+    - bind: block-diagonal matrix-vector multiplication on real elements
+      - hv length must be an integer squared
+      - noisy, requires cleanup
   - *Square Matrix Representations*
 
 - *Binary Spatter Codes*
@@ -669,7 +681,6 @@ Notable VSAs
     - the same thing as BSC but I think it's the easiest VSA to think about
   - MAP-I (integer)
     - instead of clipping addition/multiplication, permit uint32 overflows and then both operations are cyclical. no?
-
 
 - *Sparse Binary Distributed Representations*
   - Conjunction-Disjunction
@@ -906,7 +917,7 @@ HDC Operations
 
 - Bundle
   - Also called superposition, learning, accumulation, or voting
-  - Combines multiple hypervectors into a single symbol that represents all of them simultaneously, or holographically
+  - Combines multiple hypervectors into a single symbol that represents all of them simultaneously, or [holographically](https://en.wikipedia.org/wiki/Dennis_Gabor). Jó napot, Gabor úr.
 
 - Permutation operations
   - Transforms hypervector indices. Can be any bijective map. Cyclic shift is simple to think about
