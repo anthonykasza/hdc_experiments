@@ -36,22 +36,17 @@ function sim(hdv1: vector of int, hdv2: vector of int): double {
 }
 
 function dice_roll(): int {
-  local finite_group_size: count = 5;
+  local finite_group_size: count = 4;
   switch rand(finite_group_size) {
     case 0:
       return 2;
     case 1:
       return 1;
     case 2:
-      return 0;
-    case 3:
       return -1;
-    case 4:
+    case 3:
       return -2;
   }
-
-  # TODO - consider implementing a finite group which
-  #   rests around -pi and +pi
 }
 
 function hdv(n: count &default=100000): vector of int {

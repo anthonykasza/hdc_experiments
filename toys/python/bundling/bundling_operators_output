@@ -1,0 +1,87 @@
+Regular bundling
+signal1: 0.3732
+signal2: 0.3884
+signal3: 0.3674
+signal4: 0.38
+signal5: 0.3772
+noise: 0.016
+
+Weighted bundling
+signal1: 0.8722
+signal2: 0.133
+signal3: 0.116
+signal4: 0.1358
+signal5: 0.1302
+noise: 0.0034
+
+Iterative bundling
+signal1: 0.0714
+signal2: 0.0634
+signal3: 0.0696
+signal4: 0.441
+signal5: 0.5678
+noise: 0.0066
+
+partial bundling - random 25%
+signal1: 0.20471280091244823
+signal2: 0.19683434426653154
+signal3: 0.21843656410210957
+signal4: 0.21462440766053698
+signal5: 0.20725423854016328
+noise: 0.015375697647676123
+count of 0s in bundle: 3807/10000
+
+partial bundling - random 50%
+signal1: 0.2881201781337669
+signal2: 0.29065259679894584
+signal3: 0.2862784191045459
+signal4: 0.2947965546146932
+signal5: 0.2745372052932617
+noise: 0.001266209332589467
+count of 0s in bundle: 2453/10000
+
+partial bundling - random 75%
+signal1: 0.32607008928592507
+signal2: 0.35853257345622513
+signal3: 0.3407449108971566
+signal4: 0.3576431903282717
+signal5: 0.33985552776920314
+noise: 0.015453031848190787
+count of 0s in bundle: 1909/10000
+
+random selection bundling - 100%
+signal1: 0.2068
+signal2: 0.1984
+signal3: 0.2002
+signal4: 0.2004
+signal5: 0.198
+noise: 0.0092
+count of 0s in bundle: 0/10000
+
+random selection bundling - 50%
+signal1: 0.14052981206602047
+signal2: 0.13232162566135866
+signal3: 0.1447754257236042
+signal4: 0.13713332113995352
+signal5: 0.13656723931894235
+noise: 0.01429356598053179
+count of 0s in bundle: 5007/10000
+
+Bundle noisy elements (a distribution around the element)
+signal1: 0.10821476231369127
+signal2: 0.17632007292404922
+signal3: 0.2565389763307159
+signal4: 0.3784824771468904
+signal5: 0.5930276651170693
+noise: 0.014805502306599551
+count of 0s in bundle: 4480/10000
+
+bundling ld - sobol
+signal1: 0.15034201009697856
+signal2: 0.17112661978780508
+signal3: 0.15911773418866088
+signal4: 0.16050337483471597
+signal5: 0.15773209354260576
+noise: 0.009930424630061564
+count of 0s in bundle: 8125/10000
+
