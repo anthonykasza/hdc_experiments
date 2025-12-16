@@ -16,18 +16,20 @@ References
 - GraphHD: Efficient graph classification using hyperdimensional computing
 - GrapHD: Graph-Based Hyperdimensional Memorization for Brain-Like Cognitive Learning
 - [Understanding Hyperdimensional Computing for Parallel Single-Pass Learning](https://github.com/Cornell-RelaxML/Hyperdimensional-Computing)
-  - binary HDC is finite group (order=2) approximation of FHRR (unit cycle) which is a Lie group
+  - binary HDC is finite group (order=2) approximation of FHRR (unit cycle)
     - 2 phases: 0 and 180. the smallest possible finite group
-    - FHRR didn't really make sense until you think about it in terms of approximating it via a finite-group VSA.  the exponential binding operation likely ties into a power law
+    - FHRR didn't really make sense to me until I thought about it in terms of approximating it via a modular permuation as in BSBC
   - finite groups of larger orders could better approximate the unity cycle
     - "This cyclic group VSA is in some sense a “subset” of the unit cycle VSA, and as n goes to infinity, it approximates the the unit cycle VSA arbitrarily well [Plate, 1994], serving as an interpolation between the binary HDC and the unit cycle VSA"
-    - a group of size 60 is like a 60-sides die representing a marble. not quite but close.
+      - the unity cycle VSA (HRR) may have infinite phases, but once its implemented in a computer inifinity will need to be approximated anyways.
+      - there are infinity phases on a clock, too. most of them just don't matter.
+    - a group of size 60 is like a 60-sides die representing a marble. not quite round but close. 
+      - a 1hot block of 60 bits could also represent seconds/minute hand on a clock
   - 6.2 Cycle Group VSA
     - "addition modulo n as binding operation"
     - sim is measured by the cosine of the phase differences
     - bundling for learning a centroid/prototype is replaced with stochastic gradient decent
     - "We leave exploration of non-Abelian VSAs to future work"
-  - [cgr](https://github.com/hyperdimensional-computing/torchhd/blob/main/torchhd/tensors/cgr.py)
 - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
 - SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
@@ -111,10 +113,10 @@ Variable Binding for Sparse Distributed Representations: Theory and Applications
 - Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
 - EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
 - [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
+- [An Introduction to Hyperdimensional Computing](https://www.esa.int/gsp/ACT/coffee/2024-03-22%20-%20Mike%20Heddes/)
 - Generalized Holographic Reduced Representations
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
-- [Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021](https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/)
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 - [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
 - [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
@@ -220,7 +222,7 @@ Variable Binding for Sparse Distributed Representations: Theory and Applications
   - "Another avenue for future research could involve extending the model to handle sophisticated attacks, such as zero-day and advanced persistent threats, and incorporating real-time detection and response for better performance in dynamic, resource-constrained IoT environments."
     - let's say you bought 100 zero-days to further evaluate this experiment
       - at $100,000 each, that'll only run about $10,000,000
-      - once you buy an ohdays, it is an ohday no longer
+      - once you buy an ohday it is an ohday no longer
 - Network Anomaly Detection for IoT Using Hyperdimensional Computing on NSL-KDD
   - this is very similar to "Intrusion Detection in IoT Networks Using Hyperdimensional Computing: A Case Study on the NSL-KDD Dataset" but with 1/4 different authors and way more math equations
 - An Extension to Basis-Hypervectors for Learning from Circular Data in Hyperdimensional Computing
@@ -626,8 +628,10 @@ Variable Binding for Sparse Distributed Representations: Theory and Applications
 Summary
 -------
 What is Hyperdimensional computing?
-See [this video](https://www.youtube.com/watch?v=8Lonl-jSqUw).
-See a [Tutorial on Hyperdimensional Computing](https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/).
+- See [this video](https://www.youtube.com/watch?v=8Lonl-jSqUw).
+- See a [Tutorial on Hyperdimensional Computing](https://michielstock.github.io/posts/2022/2022-10-04-HDVtutorial/).
+- See [Neuroscience 299: Computing with High-Dimensional Vectors - Fall 2021](https://redwood.berkeley.edu/courses/computing-with-high-dimensional-vectors/)
+
 
 What makes a Vector Symbolic Architecture?
 - concepts are high, but fixed, dimension random vectors. structure is built up from randomness
@@ -643,7 +647,7 @@ Why use HDC?
 - supports probabilistic calculations
 - supports online/streaming learning
 - it aligns well with the theory of "distributed representation" aka "assemblies of neurons" theory of the brain
-- the cerebellum is a random access memory for high dimensional vectors. it supports a lifetime of learning.
+  - the cerebellum is a random access memory for high dimensional vectors. it supports a lifetime of learning.
 - learned results are not a blackbox but are instead interpretable
 - by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
 
@@ -883,9 +887,6 @@ Notable VSAs
   - a special case of VSA
   - standard, counting, scalable, etc.
 
-- *Walsh Hadamard Derived Linear Vector Symbolic Architecture*
-- *Sobol Sequence Optimization for Hardware-Efficient Vector Symbolic Architectures*
-
 
 HDC Operations
 --------------
@@ -911,9 +912,9 @@ HDC Operations
 - Binding
   - Captures structured associations, similar to Tensor Product Representations
   - Maintains fixed dimensionality unlike TPR
-  - Forms a group over the set of hypervectors in a fixed-dimensional hyperspace
+  - Pefectly invertible binding operations form groups over a set of hypervectors in a fixed-dimensional hyperspace
     - In binary HDC with XOR binding, the group has order `2^n`
-    - Some binding operations form continuous groups
+    - Some operations include: circular convolution, permutation, element-wise multiplication, element-wise xor, matrix-vector multiplication
 
 - Bundle
   - Also called superposition, learning, accumulation, or voting
