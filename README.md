@@ -337,6 +337,7 @@ References
       - some noise is necessary for robustness of hv
       - too much noise makes operations less efficient
       - 1/sqrt(d) is a nice finding. what if we use values larger or smaller?
+        - in discrete HDC/VSA, like binary or ternary architectures, the noise in an hv is localized. you can point to the element's index that has ben corrupted. in binary, elements flip. in ternary, elements equal 0. in H-DLB the noise is distributed randomly/evenly throughout the elements of an hv through the variance from +/-1
 - Automatic Yara Rule Generation Using Biclustering
   - [code](https://github.com/FutureComputing4AI/AutoYara)
   - generate yara rules automagically
