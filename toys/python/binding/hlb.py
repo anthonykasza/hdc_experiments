@@ -1,66 +1,83 @@
-# llm generated
-
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.linalg import hadamard
 
-def hlb_bind(a: np.ndarray, b: np.ndarray) -> np.ndarray:
-  """Hadamard-derived Linear Binding (HLB) between two vectors a and b."""
-  n = len(a)
-  H = hadamard(n) / np.sqrt(n)
-  A = H @ a
-  B = H @ b
-  C = A * B
-  return H @ C
+#np.random.seed(42)
+D = 10000
 
-def hlb_unbind(a: np.ndarray, bound: np.ndarray) -> np.ndarray:
-  """Inverse binding for HLB."""
-  n = len(a)
-  H = hadamard(n) / np.sqrt(n)
-  A = H @ a
-  C = H @ bound
-  # Avoid divide-by-zero issues
-  B_est = C / (A + 1e-9)
-  return H @ B_est
+def ternary_map_hv(D):
+  return np.random.randint(-1, 2, D).astype(float)
 
-# --- Example data -----------------------------------------------------------
+def hlb_hv(D):
+  n1 = np.random.normal(-1, 1/np.sqrt(D), D)
+  n2 = np.random.normal(1, 1/np.sqrt(D), D)
+  mask = np.random.rand(D) > 0.5
+  return np.where(mask, n1, n2)
 
-np.random.seed(42)
-a = np.random.randn(64)
-b = np.random.randn(64)
+def scaled_cosine(a, b):
+  return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-# Bind and unbind
-hlb_bound = hlb_bind(a, b)
-b_reconstructed = hlb_unbind(a, hlb_bound)
+hv1 = ternary_map_hv(D)
+hv2 = ternary_map_hv(D)
+hv3 = ternary_map_hv(D)
+hv4 = ternary_map_hv(D)
+noise = ternary_map_hv(D)
 
-# --- Visualization ----------------------------------------------------------
+hv1_hlb = hlb_hv(D)
+hv2_hlb = hlb_hv(D)
+hv3_hlb = hlb_hv(D)
+hv4_hlb = hlb_hv(D)
+noise_hlb = hlb_hv(D)
 
-plt.figure(figsize=(14, 6))
+bundle_map = hv1 + hv2 + hv3 + hv4
+bundle_hlb = hv1_hlb + hv2_hlb + hv3_hlb + hv4_hlb
 
-plt.subplot(1, 3, 1)
-plt.title("Original vector b")
-plt.plot(b, color='steelblue')
-plt.xlabel("Dimension index")
-plt.ylabel("Value")
-plt.grid(True)
+print("=== Bundling Similarity (MAP) ===")
+for i, hv in enumerate([hv1, hv2, hv3, hv4, noise], start=1):
+  sim = scaled_cosine(hv, bundle_map)
+  if i == 5:
+    print(f"NOISE vs bundle: {sim:.3f}")
+  else:
+    print(f"HV{i} vs bundle: {sim:.3f}")
 
-plt.subplot(1, 3, 2)
-plt.title("Bound vector (HLB(a,b))")
-plt.plot(hlb_bound, color='darkorange')
-plt.xlabel("Dimension index")
-plt.grid(True)
+print("\n=== Bundling Similarity (HLB) ===")
+for i, hv in enumerate([hv1_hlb, hv2_hlb, hv3_hlb, hv4_hlb, noise_hlb], start=1):
+  sim = scaled_cosine(hv, bundle_hlb)
+  if i == 5:
+    print(f"NOISE vs bundle: {sim:.3f}")
+  else:
+    print(f"HV{i} vs bundle: {sim:.3f}")
 
-plt.subplot(1, 3, 3)
-plt.title("Recovered vector b′ from unbinding")
-plt.plot(b, color='gray', linestyle='--', label='True b')
-plt.plot(b_reconstructed, color='green', alpha=0.7, label='Recovered b′')
-plt.xlabel("Dimension index")
-plt.legend()
-plt.grid(True)
 
-plt.tight_layout()
-plt.show()
 
-# Print reconstruction quality
-cosine_similarity = np.dot(b, b_reconstructed) / (np.linalg.norm(b) * np.linalg.norm(b_reconstructed))
-print(f"Cosine similarity between original and reconstructed b: {cosine_similarity:.4f}")
+bound_map = hv1 * hv2
+bound_hlb = hv1_hlb * hv2_hlb
+
+print("\n=== Binding Similarity ===")
+sim_map1 = scaled_cosine(hv1, bound_map)
+sim_map2 = scaled_cosine(hv2, bound_map)
+sim_map_noise = scaled_cosine(noise, bound_map)
+sim_hlb1 = scaled_cosine(hv1_hlb, bound_hlb)
+sim_hlb2 = scaled_cosine(hv2_hlb, bound_hlb)
+sim_hlb_noise = scaled_cosine(noise_hlb, bound_hlb)
+
+print(f"MAP HV1 vs bound: {sim_map1:.3f}")
+print(f"MAP HV2 vs bound: {sim_map2:.3f}")
+print(f"MAP NOISE vs bound: {sim_map_noise:.3f}")
+print(f"HLB HV1 vs bound: {sim_hlb1:.3f}")
+print(f"HLB HV2 vs bound: {sim_hlb2:.3f}")
+print(f"HLB NOISE vs bound: {sim_hlb_noise:.3f}")
+
+recovered_hv1 = bound_map * hv2
+recovered_hv2 = bound_map * hv1
+recovered_hv1_hlb = bound_hlb * hv2_hlb
+recovered_hv2_hlb = bound_hlb * hv1_hlb
+
+print("\n=== Unbinding Recovery Similarity ===")
+sim_rec1 = scaled_cosine(hv1, recovered_hv1)
+sim_rec2 = scaled_cosine(hv2, recovered_hv2)
+sim_rec1_hlb = scaled_cosine(hv1_hlb, recovered_hv1_hlb)
+sim_rec2_hlb = scaled_cosine(hv2_hlb, recovered_hv2_hlb)
+
+print(f"MAP recovered HV1 vs original: {sim_rec1:.3f}")
+print(f"MAP recovered HV2 vs original: {sim_rec2:.3f}")
+print(f"HLB recovered HV1 vs original: {sim_rec1_hlb:.3f}")
+print(f"HLB recovered HV2 vs original: {sim_rec2_hlb:.3f}")
