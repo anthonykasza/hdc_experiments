@@ -49,9 +49,6 @@ function dice_roll(): int {
     case 4:
       return -2;
   }
-
-  # TODO - consider implementing a finite group which
-  #   rests around -pi and +pi
 }
 
 function hdv(n: count &default=100000): vector of int {

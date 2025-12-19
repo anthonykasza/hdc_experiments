@@ -1,78 +1,81 @@
-module VSA;
+# Based on Hadamard-derived Linear Binding
+
+
+module VSA::HLB;
 
 export {
-  global hdv: function(n: count): vector of int;
-  global bind: function(hdv1: vector of int, hdv2: vector of int): vector of int;
-  global unbind: function(hdv1: vector of int, hdv2: vector of int): vector of int;
-  global bundle: function(hdv1: vector of int, hdv2: vector of int): vector of int;
-  global clip: function(hdv: vector of int): vector of int;
-  global cossim: function(hdv1: vector of int, hdv2: vector of int): double;
+  global new_hv: function(n: count): vector of double;
+  global bind: function(hv1: vector of double, hv2: vector of double): vector of double;
+  global unbind: function(hv1: vector of double, hv2: vector of double): vector of double;
+  global bundle: function(hv1: vector of double, hv2: vector of double): vector of double;
+  global inverse: function(hv: vector of double): vector of double;
+  global cossim: function(hv1: vector of double, hv2: vector of double): double;
 }
 
-# This default value has to be big, literature suggests at least 10k
-function hdv(n: count &default=100000): vector of int {
-  local v: vector of int = vector();
+function generate_element(center: int, variance: double): double {
+  local max_resolution: count = 1000000;
+  local uniform: double = rand(max_resolution) / max_resolution;
+  local stretch_shift: double = (uniform * 2) - 1;
+  return center + (stretch_shift * variance);
+}
+
+function new_hv(n: count &default=10): vector of double {
+  local v: vector of double = vector();
+  local variance: double = 1 / sqrt(n);
   local j = 0;
-  while (n > 0) {
+  while (j < n) {
     local r: count = rand(2);
     if (r == 0) {
-      v[j] = 1;
+      v[j] = generate_element(1, variance);
     } else {
-      v[j] = -1;
+      v[j] = generate_element(-1, variance);
     }
-    n -= 1;
     j += 1;
   }
   return v;
 }
 
-function clip(hdv: vector of int): vector of int {
+function bundle(hv1: vector of double, hv2: vector of double): vector of double {
   local idx: count;
-  local v: vector of int = vector();
-  for (idx in hdv) {
-    if (hdv[idx] > 0) {
-      v[idx] = 1;
-    } else if (hdv[idx] < 0) {
-      v[idx] = -1;
-    } else {
-      v[idx] = 0;
-    }
+  local v: vector of double = vector();
+  for (idx in hv1) {
+    v[idx] = hv1[idx] + hv2[idx];
   }
   return v;
 }
 
-function bundle(hdv1: vector of int, hdv2: vector of int): vector of int {
+function bind(hv1: vector of double, hv2: vector of double): vector of double {
   local idx: count;
-  local v: vector of int = vector();
-  for (idx in hdv1) {
-    v[idx] = hdv1[idx] + hdv2[idx];
-  }
-  return clip(v);
-}
-
-function bind(hdv1: vector of int, hdv2: vector of int): vector of int {
-  local idx: count;
-  local v: vector of int = vector();
-  for (idx in hdv1) {
-    v[idx] = hdv1[idx] * hdv2[idx];
+  local v: vector of double = vector();
+  for (idx in hv1) {
+    v[idx] = hv1[idx] * hv2[idx];
   }
   return v;
 }
 
-function unbind(hdv1: vector of int, hdv2: vector of int): vector of int {
-  return bind(hdv1, hdv2);
+function inverse(hv: vector of double): vector of double {
+  local idx: count;
+  local v: vector of double = vector();
+  for (idx in hv) {
+    v[idx] = 1 / hv[idx];
+  }
+  return hv;
 }
 
-function cossim(hdv1: vector of int, hdv2: vector of int): double {
+function unbind(hv1: vector of double, hv2: vector of double): vector of double {
+  return bind(hv1, inverse(hv2));
+}
+
+function cossim(hv1: vector of double, hv2: vector of double): double {
   local dot: double = 0.0;
   local mag1: double = 0.0;
   local mag2: double = 0.0;
   local idx: count;
 
-  for (idx in hdv1) {
-    dot += hdv1[idx] * hdv2[idx];
-    mag1 += hdv1[idx] * hdv1[idx];
-    mag2 += hdv2[idx] * hdv2[idx];
+  for (idx in hv1) {
+    dot += hv1[idx] * hv2[idx];
+    mag1 += hv1[idx] * hv1[idx];
+    mag2 += hv2[idx] * hv2[idx];
   }
 
   local m1 = sqrt(mag1);
@@ -83,25 +86,27 @@ function cossim(hdv1: vector of int, hdv2: vector of int): double {
 
 
 event zeek_init() {
+  local dims: count = 10000;
+
   # keys of the maps
-  local country = hdv();
-  local capital = hdv();
-  local currency = hdv();
+  local country = new_hv(dims);
+  local capital = new_hv(dims);
+  local currency = new_hv(dims);
 
   # country values
-  local usa = hdv();
-  local mex = hdv();
-  local hun = hdv();
+  local usa = new_hv(dims);
+  local mex = new_hv(dims);
+  local hun = new_hv(dims);
 
   # capital values
-  local wdc = hdv();
-  local mxc = hdv();
-  local bud = hdv();
+  local wdc = new_hv(dims);
+  local mxc = new_hv(dims);
+  local bud = new_hv(dims);
 
   # currency values
-  local usd = hdv();
-  local mxn = hdv();
-  local huf = hdv();
+  local usd = new_hv(dims);
+  local mxn = new_hv(dims);
+  local huf = new_hv(dims);
 
   # a map of the keys and United States's values
   local tmp1 = bind(country, usa);
