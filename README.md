@@ -308,6 +308,7 @@ References
     - shout outs to San Jose and Cardiff U
   - [April 2024 AICamp Boston meetup - Peter Sutor - Hyperdimensional Computing](https://www.youtube.com/watch?v=Nob2j5aY0yw)
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
+  - [code](https://github.com/FutureComputing4AI/HGConv)
 - What Can N-Grams Learn for Malware Detection?
   - compared ngrams of: raw bytes vs assembly opcodes
     - "it seems that byte n-grams are robust in their ability to learn, but weak in what types of information they are able to learn"
@@ -385,8 +386,12 @@ References
     - i really like the idea of a partial bundling operation
       - it seems related to leveling strategies (replace, average, inc/dev)
       - how would other other operation modifications be useful? partial permutation?
+      - partial bundling sounds similar to what Gayler calls "random selection" bundling or randsel bundling. however, randsel bundling is just random weighted (50-50 in the case of 2 constituents) concatenation. a leveling strategy.
+        - parital bundling is element-wise failure or success some percent of the time. when it partial bundle fails it could use randsel as a result instead.
     - they are very concerned with performance. why not reduce HV dimensions? this would have made all operations more efficient (and less accurate)
     - they don't address the fact that neighboring pixels are often very near in value
+- VSA Next Generation Reservoir Computing
+  - 5 Feature fading, discusses bundle fading
 - Detecting COVID-19 Related Pneumonia on CT Scans using Hyperdimensional Computing
   - this is awesome because it's theoretical AND tangible
     - wow, expert radiologists are only 70% accurate!
@@ -1010,7 +1015,7 @@ Misc
 ----
 - code
   - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
-  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations), 
+  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
   - [openhd](https://github.com/UCSD-SEELab/openhd)
   - [hdtorch](https://pypi.org/project/hdtorch/)
   - [hdlib](https://github.com/cumbof/hdlib)
@@ -1018,6 +1023,13 @@ Misc
     - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
   - [hdc](https://github.com/Zeldax64/hdc), HDC examples in C++ including BSC Vector classes and item memories
     - no license :(
+  - [HDCpy](https://github.com/jdcasanasr/hdcpy)
+    - hobby project so nothing groundbreaking, BUT its dead simple to understand
+    - applying BSC and MAP to common datasets
+      - leveling via hv element "flips"
+  - [HoloVec](https://github.com/Twistient/HoloVec)
+    - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
+    - [gesture recognition](https://github.com/Twistient/gesture-demo/blob/main/src/lib/hdc.ts) using HDC in TypeScript. no license :(
 - pangenomics
   - studying all the genes of all strains of a species
   - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
