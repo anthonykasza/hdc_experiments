@@ -38,6 +38,95 @@ References
 - Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
 - HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
   - figure 1b is awesome! and is similar to Figure 1 of Modular Composite Representation
+- Computing on Functions Using Randomized Vector Representations
+  - this is a very strong and thorough paper and i cannot claim to understand it all
+  - generalize VSA to VFA (vector function architectures)
+  - continous valued data is mapped to the vector space so the inner product of vectors is a sim kernel
+    - inner product is the sum of pairwise multiplication. the sum provides a similarity score between the embedded functions
+    - cosine sim uses normalized inner product
+  - data points as well as functions are both hypervectors
+  - fractional power encoding (HRR)
+  - "the distribution from which elements of the base vector are sampled determines the shape of the FPE kernel, which in turn induces a VFA for computing with band-limited functions".
+  | VSA  | Vector Element Distribution          | Element Values        |
+  |------|--------------------------------------|-----------------------|
+  | HRR  | Real values [-1,1)                   | Continuous            |
+  | FHRR | Phases [0, 2pi)                      | Continuous            |
+  | HLB  | Normal +/-1, scaled by 1/sqrt(d)     | Continuous            |
+  | BSC  | {0, 1}                               | Discrete              |
+  | MAP-B| {-1, 0, 1}                           | Discrete              |
+  | MAP-I| Integer values                       | Both, sort of         |
+  | MAP-C| Real values                          | Continuous            |
+    - although with enough discrete measurements you become continuous. floating point digits (continuous) are represented as binary (discrete)
+    - I wonder if HLB supports FPE. HLB elements are real and hv are NOT self-inverses... so maybe?
+  - VFA (com)binds Reproducing Kernel Hilbert Spaces with VSA. or 
+    - radial basis kernel functions used by SVMs
+    - polynomial regression tasks
+  - BSBC are related to MCR
+  - "Combining KLPE and VSA produces a computing framework we refer to as Vector Function Architectures (VFA), in which not only symbols but real-valued data and functions can be represented and manipulated in a transparent fashion"
+    - kernel locality-preserving encoding + vsa = vfa
+  - "An optimal separation can be achieved by an encoding scheme with exactly orthogonal representation vectors...This encoding scheme ... is ... a quite ineﬃcient use of an n-dimensional representation space"
+    - this reminds me of how cyclic permutation restricts the resulting group size to n while the vector space is n^2
+  - VFA represents functions just like DNN. continuous holistic distributed
+  - VFA manipulates function just like VSA. structured symbolic distributed 
+  - VSA using FPE are KLPEs compatible with binding
+  - VFA requires FPE which requires continuous representations 
+    - i wonder if another method of representing scalars, other than FPE, could be used to build a VFA
+    - FPE is "self binding" and it can be used by various VSA and thus binding ops
+      - hadamard (element-wise) multiply
+      - circular convolve
+      - block-local circular convolve
+  - figure 2 reminds me of Generic Sparse Block Codes from Factorizers for Distributed Sparse Block Codes
+  - "By drawing the base vector of an FPE from distributions other than the uniform band-limited distribution, one can design kernels with shapes that diﬀer from the sinc function"
+    - figure 3 is neat. changing the distribution from which FPE's basis hv elements are sampled changes the similarity kernel
+    - use different distributions to make different/common kernel shapes then use them like wavelets
+  - figure 4: MCR produces a periodic kernel
+  - section 7. i like that they provide applications, not just theory/math
+    - MCR makes a torus and that can be used to make a scene's borders wrap
+    - nonlinear regression
+  - they call "leveling" "locality-preserving encoding" LPE
+    - float codes, concatenation, thermom codes "can also induce RKHS function spaces. However, none of these other LPEs induce a VFA because they do not include a binding operation compatible with the encoding scheme" 
+  - "a VFA vector can be seen as a compact probabilistic data structure or sketch of a function" which can go beyond sketching like bloom filters and count-mins
+  - "phasor vectors ... can be naturally represented by spikes". then MCR/BSBC should integrate well with SNN?
+  - "Probably closest to the VFA concept are population codes (Pouget et al., 2000; Barber et al., 2003), such as Bayesian population codes (Ma et al., 2006). In these models each neuron typically has a Gaussian-shaped receptive field on the encoding manifold. This leads to an inner product kernel that decays with distance and is translation invariant. Thus Bayesian population codes induce a kernel function space. However, they lack the binding operation (at least we are not aware of one) to perform the algebraic function manipulations possible with VFA"
+- Compositional Factorization of Visual Scenes with Convolutional Sparse Coding and Resonator Networks
+  - "Visual perception requires making sense of previously unencountered combinations of objects and their poses in a visual scene"
+  - "Learning new objects from limited examples is possible when one exploits the idea of compositionality"
+  - use a CNN to make sparse representations, use FHRR resonator network to factor the scene
+    - Vector Function Architecture (VFA)
+    - generate 3 hv and bind/bundle your way to an image embedding
+      - x, represents horizontal using FPE 
+      - y, represents vertical using FPE 
+      - j, randomly generated 'basis'
+    - objects are represented as hv
+  - a codebook is a matrix. rows may be uncorrelated as with random basis or correlated as in leveling
+  - factorizers, like RNs, work better with smaller codebooks
+    - bundling a codebook is a great way to compute in superposition but too large of a bundle and things go awry
+    - keeping a logical boundary/separation between codebooks allows a model to "focus" on one set of object attributes at a time. first, think about its shape, then its color, then its size, etc.
+  - what's novel in the paper is the pipeline. CNN -> sparse representations -> FHRR vectors -> scene factoring
+    - no pixel values used directly within the HDC/VSA part pipeline
+- Efficient Context-Preserving Encoding and Decoding of Compositional Structures Using Sparse Binary Representations
+  - "the key to overcoming those limitations in artificial neural networks is efficiently combining continuity with compositionality principles"
+  - context-dependent thinning (CDT) is one algorithm that ensures sparsity as the brain does but also supports encoding compositional structure
+  - CDT
+    - bound hv are similar to their constituents
+    - similarity does not require unbinding
+      - which is good because unbinding isn't possible because thinning isn't undoable
+        - thin_weave.py
+    - is slow
+    - is commutative (which means the VSA will require explicit encoding of positional info for binding)
+  - Context-preserving SDR encoding/decoding (CPSE/CPSD)
+    - cpse allows for order of binding input to be preserved
+    - cpsd allows for decoding using triadic memory
+  - section 2 has a nice history review
+    - Holographic Reduced Representations (HRRs)
+    - Fourier Holographic Reduced Representations (FHRRs)
+    - Binary Splatter Codes (BSCs)
+    - Sparse Block Code (SBC)
+    - Vector-Derived Transformation Binding (VTB)
+    - Binary Sparse Distributed Code (BDSC)
+      - makes use of context-dependent thinning (CDT)
+    - Sparse binary representations (SDRs)
+  - "Despite their unprecedented success, artificial neural networks suffer extreme opacity and weakness in learning general knowledge from limited experience"
 - Variable Binding for Sparse Distributed Representations: Theory and Applications
   - "Sparse block-codes can be regarded as an extreme version of competitive coding principles observed in the brain"
 - High-Dimensional Computing with Sparse Vectors
@@ -1014,7 +1103,16 @@ HDC Operations
 Misc
 ----
 - code
+  - [HoloVec](https://github.com/Twistient/HoloVec)
+    - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
+    - encoders by data type
+    - examples even include recommendations as to when to use different types of encoders and architectures. use cases, suggested next tutorial. wow.
+      - they compare: FPE, Thermom, Leveling :)
+      - they dont make any mention of the "similarity spread" or locality of leveling strategies :( they also assume evenly spaced steps/levels
+    - [gesture recognition](https://github.com/Twistient/gesture-demo/blob/main/src/lib/hdc.ts) using HDC in TypeScript. no license :(
   - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
+    - excellent coverage of different HDC/VSA including references to literature
+    - well engineered codebase, readable
   - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
   - [openhd](https://github.com/UCSD-SEELab/openhd)
   - [hdtorch](https://pypi.org/project/hdtorch/)
@@ -1026,10 +1124,7 @@ Misc
   - [HDCpy](https://github.com/jdcasanasr/hdcpy)
     - hobby project so nothing groundbreaking, BUT its dead simple to understand
     - applying BSC and MAP to common datasets
-      - leveling via hv element "flips"
-  - [HoloVec](https://github.com/Twistient/HoloVec)
-    - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
-    - [gesture recognition](https://github.com/Twistient/gesture-demo/blob/main/src/lib/hdc.ts) using HDC in TypeScript. no license :(
+      - leveling element "flips"
 - pangenomics
   - studying all the genes of all strains of a species
   - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
