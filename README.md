@@ -388,6 +388,15 @@ References
 - [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
 - [An Introduction to Hyperdimensional Computing](https://www.esa.int/gsp/ACT/coffee/2024-03-22%20-%20Mike%20Heddes/)
 - Generalized Holographic Reduced Representations
+  - "HDC's simplicity poses challenges for encoding complex compositional structures"
+  - GHRR is FHRR with a different binding operation
+    - GHRR "maintain[s] the kernel properties of FHRR"
+    - GHRR uses a binding operation that is not commutative, meaning order is significant. unlike multiplication.
+      - cyclic permute is not needed to build sequences which means the breadth/depth of conceivable data structures is not limited to the dimensions of the hv
+      - the binding is similar to both FHRR and the TPR
+  - hv elements are unitary matrices, binding is a composition of 2 transformations
+    - unitary matrices have inverse
+  - hypervectors with elements of matrices are more expressive than hv with elements of scalars
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
