@@ -38,6 +38,11 @@ References
 - Hyperdimensional Biosignal Processing: A Case Study for EMG-based Hand Gesture Recognition
 - HYPERDIMENSIONAL COMPUTING: A FAST, ROBUST AND INTERPRETABLE PARADIGM FOR BIOLOGICAL DATA
   - figure 1b is awesome! and is similar to Figure 1 of Modular Composite Representation
+- Computing on Functions Using Randomized Vector Representations (in brief)
+  - "The kernel shape depends on the random structure of the FPE base vector. Uniformly sampled base vectors produce VFAs with a universal kernel shape, the sinc function, independent of the underlying binding operation. Thus, vectors in the resulting VFA can represent the band-limited functions"
+    - the distribution from which the vector elements are draw influences the shape of the similarity kernel which develops between FPE levels
+  - 2d kernels can be constructed by sampking hypervectors elements from different distributions
+    - 2d combinations of disyributions make lattices, such as hex-shaped, like gridcells
 - Computing on Functions Using Randomized Vector Representations
   - this is a very strong and thorough paper and i cannot claim to understand it all
   - generalize VSA to VFA (vector function architectures)
@@ -322,6 +327,8 @@ References
     - wow, math.
   - conclusion
     - something about the geometric product?
+- Learning and generalization of compositional descriptions of visual scenes
+- Computing with Residue Numbers in High-Dimensional Representation
 - Modular Composite Representation (MCR)
   - Thank you to the University of Memphis for making the research paper EASY to locate on the interwebs and FREE, as ,in beer, to download
     - hurray! open science!
@@ -1135,6 +1142,7 @@ Misc
   - more complex element types make for more complex hardware needs
 - hrrformer
 - datasets mentioned in literature
+  - voxceleb and voxceleb2
   - isolet
   - ucihar
   - mnist
@@ -1174,6 +1182,20 @@ Misc
       - then raise the x vector to the exponent indicating the column of the pixel
       - do the same for the y
       - bind the pixel value HV with the exponentialized x and y HVs
+- Fractional Power Encoding (FPE)
+  - discussed in Plate's original HR paper
+  - self-binding can be a method for encoding integers in VSAs where vectors are NOT their own inverse. so this wont work for ternary or binary VSA
+    1. pick a random basis vector. this represents 1.
+    2. bind it with itselg. this represents 2.
+    3. repeat n times to reach the integer n.
+  - consider a simple example where we only examine a single element of a vector, 6
+    - vector represents integer 1, vector element value: 6 (6)
+    - vector represents integer 2, vector element value: 36 (6 * 6)
+    - vector represents integer 3, vector element value: 216 (6 * 6 * 6)
+  - FPE takes this self-binding scheme one step further by introducing fractional self-binding. this permits the representation of real numbers, not just integers
+    - vector represents real 1.5, vector element value: 18 (6 * 6 * 1/2)
+    - vector represents real 1.33, vectot element value: 12 (6 * 6 * 1/3)
+  - what's neat is that FPE works for binding operators besides multiplication
 - Resonator Networks
   - aka Hopfield Network
   - similar to the result of gradient descent
@@ -1188,6 +1210,10 @@ Misc
       - z, with estimates of y and x
       - y, with estimates of x and z
       - z, with estimates of y and z
+- Computing with Hypervectors for Efficient Speaker Identification
+- Integer Factorization with Compositional Distributed Representations
+  - "Thus, setting the value of 𝛽 allows traversing between two extremes: when 𝛽 is very small, FPEs of scalars that are far away from each other are still very similar (subsymbolic behavior) while when 𝛽 is very large, FPEs of scalars that are near each other are dissimilar (symbolic behavior)."
+    - this sound similar to local vs global similarity param in leveling
 - Hyperdimensional Quantum Factorization
   - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
   - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
