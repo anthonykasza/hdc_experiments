@@ -81,9 +81,12 @@ References
       - circular convolve
       - block-local circular convolve
   - figure 2 reminds me of Generic Sparse Block Codes from Factorizers for Distributed Sparse Block Codes
-  - "By drawing the base vector of an FPE from distributions other than the uniform band-limited distribution, one can design kernels with shapes that diﬀer from the sinc function"
-    - figure 3 is neat. changing the distribution from which FPE's basis hv elements are sampled changes the similarity kernel
+  - figure 3 is neat. changing the distribution from which FPE's basis hv elements are sampled changes the similarity kernel
+    - "By drawing the base vector of an FPE from distributions other than the uniform band-limited distribution, one can design kernels with shapes that diﬀer from the sinc function"
     - use different distributions to make different/common kernel shapes then use them like wavelets
+    - the relationship between the distribution the hv are generated from and the resulting induced kernel shape
+    - HLB uses not a single Gaussian (left panels second row of fig3) but a mixture of 2 Gaussians (not shown in fig 3). One of which is centered around 1 and the other aroubd -1. Both with a variance of 1/d
+      - fuzzy hamming distance
   - figure 4: MCR produces a periodic kernel
   - section 7. i like that they provide applications, not just theory/math
     - MCR makes a torus and that can be used to make a scene's borders wrap
@@ -93,6 +96,22 @@ References
   - "a VFA vector can be seen as a compact probabilistic data structure or sketch of a function" which can go beyond sketching like bloom filters and count-mins
   - "phasor vectors ... can be naturally represented by spikes". then MCR/BSBC should integrate well with SNN?
   - "Probably closest to the VFA concept are population codes (Pouget et al., 2000; Barber et al., 2003), such as Bayesian population codes (Ma et al., 2006). In these models each neuron typically has a Gaussian-shaped receptive field on the encoding manifold. This leads to an inner product kernel that decays with distance and is translation invariant. Thus Bayesian population codes induce a kernel function space. However, they lack the binding operation (at least we are not aware of one) to perform the algebraic function manipulations possible with VFA"
+- Computing reaching dynamics in motor cortex with Cartesian spatial coordinates
+  - moving an arm with a feed-forward only
+  - i mostly just looked at the pictures
+  - fig 1
+    - this model uses spatial coordinates (B), not joint-based (A)
+    - (C) looks like it could be represented symbolically
+  - figure 6 is neat
+    - imagine each arrow is a phase and each phase is a real valued element of a hypervector, a population vector
+    - "Because the muscle tensions required to make a reaching movement can be accurately approximated by a linearly weighted sum of motoneuron activities, the muscle tensions could be computed directly from the cross products represented by neurons in the motor cortex with our simplified muscle model. This could explain how the neurons in primate motor cortex that project directly to lower motoneurons in the spinal cord can effectively control muscle tension activities."
+- The structures and functions of correlations in neural population codes
+  - if neurons have independent noise (or correlations orthogonal to some signal) adding more neurons averages out the noise and the signal/inforamtion grows with population size
+  - "information-limiting correlations" cannot be averaged away by adding more neurons
+    - these correlations are noise which mimics a change in stimulus
+    - to me this sound like "ambiguity"
+    - the signal and noise grow at the same rate
+    - gain fluctuations aka feedback loops
 - Compositional Factorization of Visual Scenes with Convolutional Sparse Coding and Resonator Networks
   - "Visual perception requires making sense of previously unencountered combinations of objects and their poses in a visual scene"
   - "Learning new objects from limited examples is possible when one exploits the idea of compositionality"
@@ -327,6 +346,15 @@ References
     - wow, math.
   - conclusion
     - something about the geometric product?
+- Computing with Hypervectors for Efficient Speaker Identification
+- Integer Factorization with Compositional Distributed Representations
+  - "Thus, setting the value of 𝛽 allows traversing between two extremes: when 𝛽 is very small, FPEs of scalars that are far away from each other are still very similar (subsymbolic behavior) while when 𝛽 is very large, FPEs of scalars that are near each other are dissimilar (symbolic behavior)."
+    - this sound similar to local vs global similarity param in leveling
+- Hyperdimensional Quantum Factorization
+  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
+  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
+    - this approach is better than resonator networks
+  - hardware does not currently exist to implement. womp womp.
 - Learning and generalization of compositional descriptions of visual scenes
 - Computing with Residue Numbers in High-Dimensional Representation
 - Modular Composite Representation (MCR)
@@ -626,6 +654,9 @@ References
   - what are "similarly located formants"?
   - "training and testing on 40 speakers’ data take roughly 5 minutes on an Apple M1 processor"
   - "The results obtained so far are solely based on making use of one acoustic feature (formants) and their course over a short time. There are many more acoustic features yet to be considered, such as the pitch and cepstral coefficients. HD computing is especially suited for encoding a combination of features and producing a fixed-dimensional representation for them [27]. Therefore, its identification accuracy is expected to keep improving when combined with other acoustic features, with a modest increase in computing time and memory use."
+- [Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing](https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing)
+  - i do not understand all the math discussed
+  - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
 - Neuro-Symbolic Architecture Meets Large Language Models: A Memory-Centric Perspective
   - "While VSA excels at manipulating and reasoning with symbolic information, it typically assumes that the input data is intrinsically structured and symbolic in nature."
   - in Fig 3b, what happens to the index of hypervector which have the same number of 1 elements but a different permutation of 1s? how are the 2 different HV indexed?
@@ -720,6 +751,10 @@ References
     - how fast does an action potential travel from one neuron to another?
       - i wonder if wiring lengths are considered. some axons can reach multiple feet in length
   - i could not understand most of this paper
+- Hyperdimensional Computing with Spiking-Phasor Neurons
+  - "Throughout this paper, we will tend to use phase angles when we refer to spike times, but with the understanding that they are isomorphic to each other."
+    - spike times are phase angles
+    - spikes -> fhrr -> self-binding -> fractional self binding (fpe) -> ssp ?
 - Multivariate Time Series Analysis for Driving Style Classification using Neural Networks and Hyperdimensional Computing
 - An Introduction to Hyperdimensional Computing for Robotics
   - "The fact that in hyperdimensional computing most things work only approximately, requires a diferent engineer’s mindset."
@@ -982,6 +1017,7 @@ Why use HDC?
   - the cerebellum is a random access memory for high dimensional vectors. it supports a lifetime of learning.
 - learned results are not a blackbox but are instead interpretable
 - by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
+- binary models fail when the world is continuous. continuous models fail when the world is symbolic. HDC blends the two.
 
 
 Notable VSAs
@@ -1002,11 +1038,16 @@ Notable VSAs
      - rotates phases. everything has magnitude of 1
      - forms a group
   - *Geometric Analogue of HRR*
+  - *Generalized HRR*
+    - elements are square matrices
+    - bind: non-commutative, order matters
+      - no need for permute operation
   - *Vector-Derived Transformation Binding*
     - bind: block-diagonal matrix-vector multiplication on real elements
       - hv length must be an integer squared
       - noisy, requires cleanup
   - *Square Matrix Representations*
+    - square matrices
 
 - *Binary Spatter Codes*
   - a special case of HRR where values are bound to binary: 0 or 180 degrees
@@ -1017,17 +1058,25 @@ Notable VSAs
     - the same thing as BSC but I think it's the easiest VSA to think about
   - MAP-I (integer)
     - instead of clipping addition/multiplication, permit uint32 overflows and then both operations are cyclical. no?
+  - *Hadamard-derived Linear Binding (HLB)*
+    - elements are sampled from bipolar Gaussian MM with means at +/-1 and variances of 1/d
 
 - *Sparse Binary Distributed Representations*
   - Conjunction-Disjunction
-  - Context-Dependent Thinning
+  - Context-Dependent Thinning (CDT)
   - only VSA where bind(A,B) is similar to bind(A,C)
 
 - *(Binary) Sparse Block Codes*
   - similarities to SBDR, BSC, CGR
   - compressed (integers) and expanded (binary) hypervectors
-  - bundle is thinned voting
-  - bind is block-wise permutation (binary) or modulus add (integers)
+  - bundle is thinned voting (CDT)
+  - bind: block-wise permutation (binary) or modulus add (integers)
+
+- *Modular Composite Representation*
+  - bind: component-wise modular addition just like BSBC, BSC, FHRR, CGR
+    - behaves the same as BSBC compressed (integers) 
+  - *Cyclic Group Representation*
+    - uses a different bundle and similarity op than MCR
 
 - *Matrix Binding of Additive Terms*
   - binding is a matrix multiplication
@@ -1035,14 +1084,11 @@ Notable VSAs
   - resizing is a matrix multiplication
   - bundling is just addition
 
-- *Modular Composite Representation*
-  - binding is component-wise modular addition just like BSBC, BSC, FHRR, CGR
-  - *Cyclic Group Representation*
-    - uses a different bundle and similarity op than MCR
-
 - *Bloom filter*
   - a special case of VSA
   - standard, counting, scalable, etc.
+  - the representation of an item is distributes across elements
+  - all elements hold equal amounts of information
 
 
 HDC Operations
@@ -1129,7 +1175,6 @@ Misc
   - [torchhd](https://github.com/hyperdimensional-computing/torchhd)
     - excellent coverage of different HDC/VSA including references to literature
     - well engineered codebase, readable
-  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
   - [openhd](https://github.com/UCSD-SEELab/openhd)
   - [hdtorch](https://pypi.org/project/hdtorch/)
   - [hdlib](https://github.com/cumbof/hdlib)
@@ -1141,17 +1186,12 @@ Misc
     - hobby project so nothing groundbreaking, BUT its dead simple to understand
     - applying BSC and MAP to common datasets
       - leveling element "flips"
-- pangenomics
-  - studying all the genes of all strains of a species
-  - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
-  - [a tube map visualization](https://pmc.ncbi.nlm.nih.gov/articles/PMC10638906/figure/F1/) of a pangeonmic graph from  "Pangenome graph construction from genome alignments with Minigraph-Cactus" 
-    - [a tube map view of the loop](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Chicago_L_diagram_sb.svg/1827px-Chicago_L_diagram_sb.svg.png)
-- HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
-  - increasing complexity of each element is "better" at conveying information than making the vectors longer
-  - more complex element types make for more complex hardware needs
-- hrrformer
+  - [HLB](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding/blob/main/Classical%20VSA%20Tasks/vsa_models.py#L13)
+  - [hrrformer](https://github.com/FutureComputing4AI/Hrrformer)
+  - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
 - datasets mentioned in literature
   - voxceleb and voxceleb2
+    - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
   - isolet
   - ucihar
   - mnist
@@ -1171,20 +1211,31 @@ Misc
   - [Car-Hacking](https://ocslab.hksecurity.net/Datasets/car-hacking-dataset)
   - NWPU-RESISC45 - REmote Sensing Image Scene Classification
   - FMA: A Dataset For Music Analysis
-  - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
   - ARCish datasets: Sort-of-ARC, 1D-ARC, KidsARC, ConceptARC, MiniARC
   - A Dataset of EEG Signals from Adults with ADHD and Healthy Controls: Resting State, Cognitive function, and Sound Listening Paradigm
+- pangenomics
+  - studying all the genes of all strains of a species
+  - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
+  - [a tube map visualization](https://pmc.ncbi.nlm.nih.gov/articles/PMC10638906/figure/F1/) of a pangeonmic graph from  "Pangenome graph construction from genome alignments with Minigraph-Cactus" 
+    - [a tube map view of the loop](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Chicago_L_diagram_sb.svg/1827px-Chicago_L_diagram_sb.svg.png)
+- HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
+  - increasing complexity of each element is "better" at conveying information than making the vectors longer
+  - more complex element types make for more complex hardware needs
 - VSA has relationships with compressed sensing, which makes sense given how bundling of vectors is how VSA "learns"
 - when creating vectors, the distribution of element values does not need to be random (50% 1's and 50% 0's)
   - it may be useful to create sparse vectors where the distribution of 1's is 1% of the elements
   - sparse vectors are more easily compressed, making them more memory efficient 
-- how to encode a vector into a vector symbol? multiply it by a constant random matrix (a projection/hat matrix)
+  - the distribution from which elements are sampled influence the shape of the induced kernel as shown in VFA
+- how to encode a vector of scalars into a hypervector symbol?
+  - multiply it by a constant random matrix (a projection/hat matrix)
+  - use FPE to encode each scalar element then compose/combine the FPE hypervectors together
 - one of the big issues with HDC/VSA is that there is no standard method of encoding the application-specific data into vectors
   - should i bind with multiplication or permuation? that depends on your use-case.
   - "the HV representations must be designed to capture the information that is important for solving the problem and presenting it in a form that can be exploited by the HDC/VSA"
   - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
     - turning a 2d image into a 1d vector simply by concatination is naive
     - there is a need to incorporate both x and y axis data as well as pixel color value
+      - how to encode colors? rgb? what about the [munsell system](https://cdn.britannica.com/34/2834-050-8758A9D8/tree-Munsell-system-colours-representation-scales-chroma.jpg)?
     - partial permutation can address this by creating a radius where similar colors will have similar HVs
     - fractional power encoding can also be used
       - generate role-filler HVs for x and y
@@ -1204,7 +1255,7 @@ Misc
   - FPE takes this self-binding scheme one step further by introducing fractional self-binding. this permits the representation of real numbers, not just integers
     - vector represents real 1.5, vector element value: 18 (6 * 6 * 1/2)
     - vector represents real 1.33, vectot element value: 12 (6 * 6 * 1/3)
-  - what's neat is that FPE works for binding operators besides multiplication
+  - self-binding/FPE works for binding operators besides element-wise multiplication
 - Resonator Networks
   - aka Hopfield Network
   - similar to the result of gradient descent
@@ -1219,15 +1270,6 @@ Misc
       - z, with estimates of y and x
       - y, with estimates of x and z
       - z, with estimates of y and z
-- Computing with Hypervectors for Efficient Speaker Identification
-- Integer Factorization with Compositional Distributed Representations
-  - "Thus, setting the value of 𝛽 allows traversing between two extremes: when 𝛽 is very small, FPEs of scalars that are far away from each other are still very similar (subsymbolic behavior) while when 𝛽 is very large, FPEs of scalars that are near each other are dissimilar (symbolic behavior)."
-    - this sound similar to local vs global similarity param in leveling
-- Hyperdimensional Quantum Factorization
-  - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
-  - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
-    - this approach is better than resonator networks
-  - hardware does not currently exist to implement. womp womp.
 - low discrepency sequences
   - i'm not sure about using these...
   - sobol and others
@@ -1239,11 +1281,11 @@ Misc
   - NN frontend to generate HVs
   - HDC frontend to generate vectors for NN
 - what happens when a HDC model is trained on "levels" but then tested with samples that are outside of the levels' range's max/min?
-- fix sized ternary vectors remind me of
+- fix sized binary/ternary vectors, as in MAP, remind me of
   - nPrint: A Standard Data Representation for Network Traffic Analysis
     - concatenate all maximum length PDUs together to make a long sparse block vector
   - Ramanujan's sum, namaste sir
-    - infinite sum of natural numbers equals -1/12
+    - infinite sum of natural numbers equals `-1/12`
     - one of the steps to solve the formula is to calculate 1/2 as the sum of the infinite series: 1 - 1 + 1 - 1 + 1 - ...
 - multiple time-based signals can be quantized, then the signal at each timestep can be bundled together
   - combining multiple signals into a single vector
@@ -1257,10 +1299,6 @@ Misc
   - you can have in working memory given the need for a cleanup step in retrieval
   - you can bundle together before the resulting HV converge to random noise
     - this causes results of bundling to "forget"
-- Random High-Dimensional Binary Vectors, Kernel Methods, and Hyperdimensional Computing
-  - https://cse.umn.edu/ima/events/random-high-dimensional-binary-vectors-kernel-methods-and-hyperdimensional-computing
-  - i do not understand all the math discussed
- - if you're working with spacial data and you don't encode spacial features in your VSA pipeline then the results will not be great
 - a block can be thought of and operated on like a 'sampled' (or 'reduced') version of its source vector
   - all HV symbols are conceptually sampled versions of larger, and more precise, vector
     - the tensor product is the Platonic Form
@@ -1302,4 +1340,3 @@ Misc
 - i wonder if our brains bundle when we sleep
 - "science cannot move forward without heaps"
   - [thank you to the heaps](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
-
