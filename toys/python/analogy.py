@@ -1,3 +1,6 @@
+# Analogies only work when unbind is exact
+
+
 import numpy as np
 from numpy.linalg import norm
 

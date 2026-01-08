@@ -10,46 +10,68 @@ from utils import normal_dist_bundle, partial_normal_dist
 
 bundlers = {
   "sum": bundle,
-  "sum_partial_25%": partial_bundle(0.25),
-  "sum_partial_50%": partial_bundle(0.50),
-  "sum_partial_75%": partial_bundle(0.75),
+  "sum_p25": partial_bundle(0.25),
+  "sum_p50": partial_bundle(0.50),
+  "sum_p75": partial_bundle(0.75),
 
-  "iterative": iterative_bundle,
-  "iterative_partial_25%": partial_iterative(0.25),
-  "iterative_partial_50%": partial_iterative(0.50),
-  "iterative_partial_75%": partial_iterative(0.75),
+  "iter": iterative_bundle,
+  "iter_p25": partial_iterative(0.25),
+  "iter_p50": partial_iterative(0.50),
+  "iter_p75": partial_iterative(0.75),
 
   "randsel": randsel_bundle,
-  "randsel_partial_25%": partial_randsel(0.25),
-  "randsel_partial_50%": partial_randsel(0.50),
-  "randsel_partial_75%": partial_randsel(0.75),
+  "randsel_p25": partial_randsel(0.25),
+  "randsel_p50": partial_randsel(0.50),
+  "randsel_p75": partial_randsel(0.75),
 
-  "noisy_normal": normal_dist_bundle,
-  "noisy_normal_partial_25%": partial_normal_dist(0.25),
-  "noisy_normal_partial_50%": partial_normal_dist(0.50),
-  "noisy_normal_partial_75%": partial_normal_dist(0.75),
+  "normal": normal_dist_bundle,
+  "normal_p25": partial_normal_dist(0.25),
+  "normal_p50": partial_normal_dist(0.50),
+  "normal_p75": partial_normal_dist(0.75),
 }
 
 shapes = {
   "sum": "o",
-  "sum_partial_25%": "o",
-  "sum_partial_50%": "o",
-  "sum_partial_75%": "o",
+  "sum_p25": "X",
+  "sum_p50": "D",
+  "sum_p75": "s",
 
-  "iterative": "X",
-  "iterative_partial_25%": "X",
-  "iterative_partial_50%": "X",
-  "iterative_partial_75%": "X",
+  "iter": "o",
+  "iter_p25": "X",
+  "iter_p50": "D",
+  "iter_p75": "s",
 
-  "randsel": "D",
-  "randsel_partial_25%": "D",
-  "randsel_partial_50%": "D",
-  "randsel_partial_75%": "D",
+  "randsel": "o",
+  "randsel_p25": "X",
+  "randsel_p50": "D",
+  "randsel_p75": "s",
 
-  "noisy_normal": "s",
-  "noisy_normal_partial_25%": "s",
-  "noisy_normal_partial_50%": "s",
-  "noisy_normal_partial_75%": "s",
+  "normal": "o",
+  "normal_p25": "X",
+  "normal_p50": "D",
+  "normal_p75": "s",
+}
+
+colors = {
+  "sum": "blue",
+  "sum_p25": "blue",
+  "sum_p50": "blue",
+  "sum_p75": "blue",
+
+  "iter": "brown",
+  "iter_p25": "brown",
+  "iter_p50": "brown",
+  "iter_p75": "brown",
+
+  "randsel": "green",
+  "randsel_p25": "green",
+  "randsel_p50": "green",
+  "randsel_p75": "green",
+
+  "normal": "orange",
+  "normal_p25": "orange",
+  "normal_p50": "orange",
+  "normal_p75": "orange",
 }
 
 Ns = [10, 20, 30, 40, 50]
@@ -77,9 +99,7 @@ for N in Ns:
       np.mean(noise_sims)
     ))
 
-# -----------------------
-# Plotting
-# -----------------------
+
 
 plt.figure(figsize=(10, 6))
 
@@ -88,6 +108,7 @@ for name, vals in results.items():
     Ns,
     [v[0] for v in vals],
     marker=shapes[name],
+    color=colors[name],
     label=name,
     alpha=0.70
   )
@@ -109,6 +130,7 @@ for name, vals in results.items():
     Ns,
     [v[1] for v in vals],
     marker=shapes[name],
+    color=colors[name],
     label=name
   )
 

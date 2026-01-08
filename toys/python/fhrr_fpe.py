@@ -45,6 +45,9 @@ def fractional_power(basis_hv, x, bandwidth=1.0):
 
 
 def main():
+  # FHRR's imperfect unbind means we cannot
+  #  test it using an analogy as we can with BSC
+
   DIMS = 10000
 
   print("Sequences")

@@ -131,6 +131,11 @@ References
     - keeping a logical boundary/separation between codebooks allows a model to "focus" on one set of object attributes at a time. first, think about its shape, then its color, then its size, etc.
   - what's novel in the paper is the pipeline. CNN -> sparse representations -> FHRR vectors -> scene factoring
     - no pixel values used directly within the HDC/VSA part pipeline
+- Representation and Processing of Structures with Binary Sparse Distributed Codes
+  - when generating new symbols, ensure the ratio of 1 to 0 is 1/sqrt(D)
+    - altering the distribution of elements influences the resulting kernel
+  - CDT for binding operator
+    - CDT is iterative conjunction with permuted self
 - Efficient Context-Preserving Encoding and Decoding of Compositional Structures Using Sparse Binary Representations
   - "the key to overcoming those limitations in artificial neural networks is efficiently combining continuity with compositionality principles"
   - context-dependent thinning (CDT) is one algorithm that ensures sparsity as the brain does but also supports encoding compositional structure
@@ -399,10 +404,15 @@ References
     - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...
       - expand the hvs to their decompressed binary form, flatten them, then take the cossim of them
       - replace cossine sim with circular sim/dist metric
-  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in C. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
+  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in [the complex space]. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
     - superposition is majority voting, not addition.
     - what is the optimal number of discrete/sampled phasors?
       - can we have too many?
+  - FHRR, MCR, BSDC-SEG, and BSC are similar
+    - FHRR is the most robust, but using complex numbers makes it expensive to implement.
+    - MCR works like FHRR by operating on phases, but those phases are discretized, so it approximates FHRR using integers instead of real numbers.
+    - BSDC-SEG is similar to MCR, but represents those discrete values using binary segments, making it efficient to implement in hardware.
+
 - Toroidal topology of population activity in grid cells
   - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
   - thank you, rats.
@@ -746,6 +756,8 @@ References
       - minecraft and legos
   - instead of synthesizing programs, how could transformation sythensis occur?
   - 5.2 limitations. "our solver can conceptualize neither many-to-one nor many-to-many object mappings" :(
+- Probabilistic Abduction for Visual Abstract Reasoning via Learning Rules in Vector-symbolic Architectures
+  - Raven progressive matrices are similar to ARC
 - Loihi: A Neuromorphic Manycore Processor with On-Chip Learning
   - "low-EE-hee"
   - SNNs incorporate time as an explicit dependency in their computations
@@ -1033,8 +1045,6 @@ References
     - this provides equivariance to sequence shifts
   - see also "Shift-Equivariant Similarity-Preserving Hypervector Representations of Sequences"
 
-
-
 Summary
 -------
 What is Hyperdimensional computing?
@@ -1080,6 +1090,7 @@ Notable VSAs
      - exact invertibility
      - rotates phases. everything has magnitude of 1
      - forms a group
+    - same as HRR as "you can losslessly transform between them"
   - *Geometric Analogue of HRR*
   - *Generalized HRR*
     - elements are square matrices
@@ -1105,11 +1116,13 @@ Notable VSAs
     - elements are sampled from bipolar Gaussian MM with means at +/-1 and variances of 1/d
 
 - *Sparse Binary Distributed Representations*
+  - aka *Binary Sparse Distributed Codes*
   - Conjunction-Disjunction
   - Context-Dependent Thinning (CDT)
   - only VSA where bind(A,B) is similar to bind(A,C). see Figure 1 of A Comparison of Vector Symbolic Architectures
 
 - *(Binary) Sparse Block Codes*
+  - aka *Binary Sparse Distributed Codes - segments* (BSDC-SEG)
   - similarities to SBDR, BSC, CGR
   - compressed (integers) and expanded (binary) hypervectors
   - bundle is thinned voting (CDT)
@@ -1126,6 +1139,7 @@ Notable VSAs
   - permutation is a matrix multiplication
   - resizing is a matrix multiplication
   - bundling is just addition
+  - "soft" support for JSON
 
 - *Bloom filter*
   - a special case of VSA
@@ -1278,7 +1292,10 @@ Misc
   - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
     - turning a 2d image into a 1d vector simply by concatination is naive
     - there is a need to incorporate both x and y axis data as well as pixel color value
-      - how to encode colors? rgb? what about the [Munsell system](https://cdn.britannica.com/34/2834-050-8758A9D8/tree-Munsell-system-colours-representation-scales-chroma.jpg)? or [OKLAB](https://upload.wikimedia.org/wikipedia/commons/1/16/Linear%2C_sRGB%2C_OKLAB.gif)?
+      - how to encode colors?
+        - rgb?
+          - ["There are colors you can't get in this system"](https://youtu.be/TEjDYtkLRdQ?t=686)
+        - what about the [Munsell system](https://cdn.britannica.com/34/2834-050-8758A9D8/tree-Munsell-system-colours-representation-scales-chroma.jpg)? or [OKLAB](https://upload.wikimedia.org/wikipedia/commons/1/16/Linear%2C_sRGB%2C_OKLAB.gif)?
     - partial permutation can address this by creating a radius where similar colors will have similar HVs
     - fractional power encoding can also be used
       - generate role-filler HVs for x and y
@@ -1355,6 +1372,7 @@ Misc
     - think about a screen projector, it makes small images easier to see
   - projecting higher dimensional data into lower dimensions is often useful too
     - think about the 2d shadow cast by a 3d object
+- hypercomplex hypervectors, quaternions and octonions
 - [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
