@@ -34,24 +34,46 @@ bundlers = {
 
 shapes = {
   "sum": "o",
-  "sum_p25": "o",
-  "sum_p50": "o",
-  "sum_p75": "o",
+  "sum_p25": "X",
+  "sum_p50": "D",
+  "sum_p75": "s",
 
-  "iter": "X",
+  "iter": "o",
   "iter_p25": "X",
-  "iter_p50": "X",
-  "iter_p75": "X",
+  "iter_p50": "D",
+  "iter_p75": "s",
 
-  "randsel": "D",
-  "randsel_p25": "D",
+  "randsel": "o",
+  "randsel_p25": "X",
   "randsel_p50": "D",
-  "randsel_p75": "D",
+  "randsel_p75": "s",
 
-  "normal": "s",
-  "normal_p25": "s",
-  "normal_p50": "s",
+  "normal": "o",
+  "normal_p25": "X",
+  "normal_p50": "D",
   "normal_p75": "s",
+}
+
+colors = {
+  "sum": "blue",
+  "sum_p25": "blue",
+  "sum_p50": "blue",
+  "sum_p75": "blue",
+
+  "iter": "brown",
+  "iter_p25": "brown",
+  "iter_p50": "brown",
+  "iter_p75": "brown",
+
+  "randsel": "green",
+  "randsel_p25": "green",
+  "randsel_p50": "green",
+  "randsel_p75": "green",
+
+  "normal": "orange",
+  "normal_p25": "orange",
+  "normal_p50": "orange",
+  "normal_p75": "orange",
 }
 
 NUM_RUNS = 20
@@ -78,7 +100,7 @@ x = np.arange(1, NUM_SIGNALS + 1)
 plt.figure(figsize=(10, 6))
 
 for name, sims in results.items():
-  plt.plot(x, sims, marker=shapes[name], linewidth=1.5, label=name, alpha=0.65)
+  plt.plot(x, sims, marker=shapes[name], linewidth=1.5, label=name, color=colors[name])
 
 plt.xticks(x, [f"signal{i}" for i in x])
 plt.ylim(0, 1)
