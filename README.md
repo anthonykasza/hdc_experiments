@@ -399,10 +399,15 @@ References
     - sim is a "a modular variant of the Manhattan distance". my intuition tells me that their operation is more efficient than my current implementation of...
       - expand the hvs to their decompressed binary form, flatten them, then take the cossim of them
       - replace cossine sim with circular sim/dist metric
-  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in C. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
+  - "Surprisingly, MCR even performs significantly better than the unconstrained MAP model with 32 bits per component, with an average accuracy gain of 7.63%. Although this may appear counterintuitive, the difference in performance comes from the different properties of superposition adopted by the two models. While MAP relies on a simple integer sum (in effect, only a real part), MCR interprets integers as discretized phasors on the unit circle, and then performs vector addition in [the complex space]. The greater expressivity in the complex plane preserves more information during superposition and explains why MCR achieves higher capacity."
     - superposition is majority voting, not addition.
     - what is the optimal number of discrete/sampled phasors?
       - can we have too many?
+  - FHRR, MCR, BSDC-SEG, and BSC are similar
+    - FHRR is the most robust, but using complex numbers makes it expensive to implement.
+    - MCR works like FHRR by operating on phases, but those phases are discretized, so it approximates FHRR using integers instead of real numbers.
+    - BSDC-SEG is similar to MCR, but represents those discrete values using binary segments, making it efficient to implement in hardware.
+
 - Toroidal topology of population activity in grid cells
   - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
   - thank you, rats.
@@ -1105,11 +1110,13 @@ Notable VSAs
     - elements are sampled from bipolar Gaussian MM with means at +/-1 and variances of 1/d
 
 - *Sparse Binary Distributed Representations*
+  - aka *Binary Sparse Distributed Codes*
   - Conjunction-Disjunction
   - Context-Dependent Thinning (CDT)
   - only VSA where bind(A,B) is similar to bind(A,C). see Figure 1 of A Comparison of Vector Symbolic Architectures
 
 - *(Binary) Sparse Block Codes*
+  - aka *Binary Sparse Distributed Codes - segments* (BSDC-SEG)
   - similarities to SBDR, BSC, CGR
   - compressed (integers) and expanded (binary) hypervectors
   - bundle is thinned voting (CDT)
@@ -1126,6 +1133,7 @@ Notable VSAs
   - permutation is a matrix multiplication
   - resizing is a matrix multiplication
   - bundling is just addition
+  - "soft" support for JSON
 
 - *Bloom filter*
   - a special case of VSA
