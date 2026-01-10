@@ -751,6 +751,8 @@ References
       - minecraft and legos
   - instead of synthesizing programs, how could transformation sythensis occur?
   - 5.2 limitations. "our solver can conceptualize neither many-to-one nor many-to-many object mappings" :(
+- Probabilistic Abduction for Visual Abstract Reasoning via Learning Rules in Vector-symbolic Architectures
+  - Raven progressive matrices are similar to ARC
 - Loihi: A Neuromorphic Manycore Processor with On-Chip Learning
   - "low-EE-hee"
   - SNNs incorporate time as an explicit dependency in their computations
@@ -1085,6 +1087,7 @@ Notable VSAs
      - exact invertibility
      - rotates phases. everything has magnitude of 1
      - forms a group
+    - same as HRR as "you can losslessly transform between them"
   - *Geometric Analogue of HRR*
   - *Generalized HRR*
     - elements are square matrices
