@@ -1366,6 +1366,7 @@ Misc
     - think about a screen projector, it makes small images easier to see
   - projecting higher dimensional data into lower dimensions is often useful too
     - think about the 2d shadow cast by a 3d object
+- hypercomplex hypervectors, quaternions and octonions
 - [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?

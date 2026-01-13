@@ -1,0 +1,57 @@
+NUM OF BLOCKS: 10000
+BLOCK SIZE: 64
+SIGMA: 1.5
+
+
+TEST 1: identity similarity
+similarity(hv, hv) = 1.0
+
+TEST 2: random orthogonality
+similarity(random, random) = 0.11557322297436774
+(should be low, not zero)
+
+TEST 3: bundle similarity ordering
+bundle vs hv0: 0.7392620212495051
+bundle vs hv1: 0.7343988082781264
+bundle vs hv2: 0.7358881075130689
+bundle vs hv3: 0.7364126028555269
+bundle vs hv4: 0.7315605773312335
+bundle vs noise: 0.5529126644053645
+bundle sigma: 13.262812951923515
+
+TEST 4: partial agreement dominance
+bundle vs base: 0.9472609390676046
+bundle sigma: 10.124424422125774
+
+TEST 5: binding dissimilarity
+bound vs hv1: 0.15831292340681377
+bound vs hv2: 0.16857957205658555
+bound vs hv3: 0.1583745159460774
+bound sigma: 2.598076211353316
+
+TEST 6: approximate unbinding
+query vs (hv2 * hv3): 1.0
+query vs noise: 0.1800061212882449
+
+TEST 7: interpolation monotonicity
+step 0: sim(A, interp) = 1.0
+step 1: sim(A, interp) = 0.48202830684564624
+step 2: sim(A, interp) = 0.2707670722082073
+step 3: sim(A, interp) = 0.18730108100894624
+step 4: sim(A, interp) = 0.14236608711073828
+step 5: sim(A, interp) = 0.1196033045459193
+
+TEST 8: permutation invariance
+hv vs perm(hv): 0.11539331601268905
+sigma hv: 1.5
+sigma perm: 1.5
+
+TEST 9: explicit noise injection
+hv vs noisy: 1.0
+sigma hv: 1.5
+sigma noisy: 3.0
+
+TEST 10: capacity stress
+bundle vs first: 0.7154425296579922
+bundle sigma: 16.162112051756896
+
