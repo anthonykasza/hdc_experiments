@@ -2,7 +2,7 @@
 # This is an attempt to make 1hot BSBC fuzzy.
 #
 # This may be related to Generic Spare Block Codes as
-#  described in Factorizers for Distributed Sparse Block
+#  described in Factorizers for Distributed Sparse Block Codes
 
 
 import random
