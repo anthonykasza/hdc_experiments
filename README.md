@@ -131,6 +131,11 @@ References
     - keeping a logical boundary/separation between codebooks allows a model to "focus" on one set of object attributes at a time. first, think about its shape, then its color, then its size, etc.
   - what's novel in the paper is the pipeline. CNN -> sparse representations -> FHRR vectors -> scene factoring
     - no pixel values used directly within the HDC/VSA part pipeline
+- Representation and Processing of Structures with Binary Sparse Distributed Codes
+  - when generating new symbols, ensure the ratio of 1 to 0 is 1/sqrt(D)
+    - altering the distribution of elements influences the resulting kernel
+  - CDT for binding operator
+    - CDT is iterative conjunction with permuted self
 - Efficient Context-Preserving Encoding and Decoding of Compositional Structures Using Sparse Binary Representations
   - "the key to overcoming those limitations in artificial neural networks is efficiently combining continuity with compositionality principles"
   - context-dependent thinning (CDT) is one algorithm that ensures sparsity as the brain does but also supports encoding compositional structure
@@ -1040,8 +1045,6 @@ References
     - this provides equivariance to sequence shifts
   - see also "Shift-Equivariant Similarity-Preserving Hypervector Representations of Sequences"
 
-
-
 Summary
 -------
 What is Hyperdimensional computing?
@@ -1289,7 +1292,10 @@ Misc
   - 2d images need special encoding steps to ensure nearby pixels are "related" to each other
     - turning a 2d image into a 1d vector simply by concatination is naive
     - there is a need to incorporate both x and y axis data as well as pixel color value
-      - how to encode colors? rgb? what about the [Munsell system](https://cdn.britannica.com/34/2834-050-8758A9D8/tree-Munsell-system-colours-representation-scales-chroma.jpg)? or [OKLAB](https://upload.wikimedia.org/wikipedia/commons/1/16/Linear%2C_sRGB%2C_OKLAB.gif)?
+      - how to encode colors?
+        - rgb?
+          - ["There are colors you can't get in this system"](https://youtu.be/TEjDYtkLRdQ?t=686)
+        - what about the [Munsell system](https://cdn.britannica.com/34/2834-050-8758A9D8/tree-Munsell-system-colours-representation-scales-chroma.jpg)? or [OKLAB](https://upload.wikimedia.org/wikipedia/commons/1/16/Linear%2C_sRGB%2C_OKLAB.gif)?
     - partial permutation can address this by creating a radius where similar colors will have similar HVs
     - fractional power encoding can also be used
       - generate role-filler HVs for x and y
