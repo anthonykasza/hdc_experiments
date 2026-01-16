@@ -14,8 +14,8 @@ DEFAULT_SIGMA = 1.5
 # Types
 # ============================================================
 
-FuzzyBlock = Tuple[int, float]   # (mu, sigma)
-FuzzyHV = List[FuzzyBlock]
+CNRBlock = Tuple[int, float]   # (mu, sigma)
+CNRHV = List[CNRBlock]
 
 
 # ============================================================
@@ -40,11 +40,11 @@ def circular_weighted_mean(indices, weights, modulus):
 # Hypervector generation
 # ============================================================
 
-def random_fuzzy_hv(
+def random_hv(
     num_blocks: int,
     block_size: int,
     sigma_init: float = DEFAULT_SIGMA,
-) -> FuzzyHV:
+) -> CNRHV:
     return [
         (random.randrange(block_size), sigma_init)
         for _ in range(num_blocks)
@@ -55,9 +55,9 @@ def random_fuzzy_hv(
 # Binding / inverse
 # ============================================================
 
-def bind_fuzzy(*hvs: FuzzyHV, block_size: int) -> FuzzyHV:
+def bind(*hvs: CNRHV, block_size: int) -> CNRHV:
     num_blocks = len(hvs[0])
-    out: FuzzyHV = []
+    out: CNRHV = []
 
     for i in range(num_blocks):
         mu = sum(hv[i][0] for hv in hvs) % block_size
@@ -67,7 +67,7 @@ def bind_fuzzy(*hvs: FuzzyHV, block_size: int) -> FuzzyHV:
     return out
 
 
-def inverse_fuzzy(hv: FuzzyHV, block_size: int) -> FuzzyHV:
+def inverse(hv: CNRHV, block_size: int) -> CNRHV:
     return [((-mu) % block_size, sigma) for mu, sigma in hv]
 
 
@@ -75,12 +75,12 @@ def inverse_fuzzy(hv: FuzzyHV, block_size: int) -> FuzzyHV:
 # Bundling
 # ============================================================
 
-def bundle_fuzzy(
-    *hvs: FuzzyHV,
+def bundle(
+    *hvs: CNRHV,
     block_size: int,
     weights=None,
     symbolicity: float = 1.0,
-) -> FuzzyHV:
+) -> CNRHV:
     """
     Belief fusion with semantic confidence.
 
@@ -110,7 +110,7 @@ def bundle_fuzzy(
     wsum = sum(weights)
     weights = [w / wsum for w in weights]
 
-    out: FuzzyHV = []
+    out: CNRHV = []
 
     for i in range(num_blocks):
         mus = [hv[i][0] for hv in hvs]
@@ -156,9 +156,9 @@ def bundle_fuzzy(
 # Similarity
 # ============================================================
 
-def similarity_fuzzy(
-    hv1: FuzzyHV,
-    hv2: FuzzyHV,
+def similarity(
+    hv1: CNRHV,
+    hv2: CNRHV,
     block_size: int,
 ) -> float:
     num = 0.0
@@ -178,13 +178,13 @@ def similarity_fuzzy(
 # Cleanup memory
 # ============================================================
 
-def cleanup_fuzzy(
-    query: FuzzyHV,
-    dictionary: List[FuzzyHV],
+def cleanup(
+    query: CNRHV,
+    dictionary: List[CNRHV],
     block_size: int,
 ) -> int:
     sims = [
-        similarity_fuzzy(query, hv, block_size)
+        similarity(query, hv, block_size)
         for hv in dictionary
     ]
     return max(range(len(sims)), key=sims.__getitem__)
@@ -194,7 +194,7 @@ def cleanup_fuzzy(
 # Permutation
 # ============================================================
 
-def permute_fuzzy(hv: FuzzyHV, shifts: int = 1) -> FuzzyHV:
+def permute(hv: CNRHV, shifts: int = 1) -> CNRHV:
     shifts %= len(hv)
     return hv[-shifts:] + hv[:-shifts]
 
@@ -206,16 +206,23 @@ def permute_fuzzy(hv: FuzzyHV, shifts: int = 1) -> FuzzyHV:
 if __name__ == "__main__":
     random.seed(0)
 
-    BLOCKS = 4096
-    BLOCK_SIZE = 64
+    BLOCK_SIZE = 128
+    BLOCKS = 10
 
-    a = random_fuzzy_hv(BLOCKS, BLOCK_SIZE)
-    b = random_fuzzy_hv(BLOCKS, BLOCK_SIZE)
+    for BLOCKS in list(range(1, 21)) + [1024, 2048, 10_000]:
+      for BLOCK_SIZE in [8, 16, 32, 64, 128, 1000]:
+        a = random_hv(BLOCKS, BLOCK_SIZE)
+        b = random_hv(BLOCKS, BLOCK_SIZE)
+        noise = random_hv(BLOCKS, BLOCK_SIZE)
 
-    bundle = bundle_fuzzy(a, a, a, b, block_size=BLOCK_SIZE)
+        b_b = bundle(a, a, a, b, block_size=BLOCK_SIZE)
 
-    print("Similarity(a, a):", similarity_fuzzy(a, a, BLOCK_SIZE))
-    print("Similarity(bundle, a):", similarity_fuzzy(bundle, a, BLOCK_SIZE))
-    print("Similarity(bundle, b):", similarity_fuzzy(bundle, b, BLOCK_SIZE))
-    print("Avg sigma a:", sum(s for _, s in a) / BLOCKS)
-    print("Avg sigma bundle:", sum(s for _, s in bundle) / BLOCKS)
+        print("Blocks count:", BLOCKS)
+        print("Block size:", BLOCK_SIZE)
+        print("Similarity(a, a):", similarity(a, a, BLOCK_SIZE))
+        print("Similarity(bundle, a):", similarity(b_b, a, BLOCK_SIZE))
+        print("Similarity(bundle, b):", similarity(b_b, b, BLOCK_SIZE))
+        print("Similarity(bundle, noise):", similarity(b_b, noise, BLOCK_SIZE))
+        print("Avg sigma a:", sum(s for _, s in a) / BLOCKS)
+        print("Avg sigma bundle:", sum(s for _, s in b_b) / BLOCKS)
+        print()
