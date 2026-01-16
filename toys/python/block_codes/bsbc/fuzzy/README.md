@@ -93,7 +93,3 @@ This can occur when bundling maximally different blocks.
 ```
 
 ---
-
-
-What happens if the blocks support more than 1 fuzzy hot bit?
-What happens if we use modular integer averaging instead of angle averaging for bundling?

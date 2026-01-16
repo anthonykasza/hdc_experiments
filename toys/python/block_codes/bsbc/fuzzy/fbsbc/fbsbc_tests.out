@@ -1,0 +1,13 @@
+✓ random_fuzzy_hv
+✓ circular_distance
+✓ bind_fuzzy / inverse_fuzzy
+✓ binding dissimilarity
+✓ bundling agreement dominance. bundle sigma:  1.0606601717798212 default sigma: 1.5
+✓ bundling disagreement increases sigma 1.5 13.18008087234155
+✓ similarity properties
+✓ approximate unbinding
+✓ permutation
+✓ cleanup_fuzzy
+✓ symbolicity extremes with slight disagreement. 1.0408329997330663 0.8660254037844386
+
+All FUZZY tests passed.
