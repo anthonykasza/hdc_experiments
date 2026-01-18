@@ -8,3 +8,5 @@
 | MAP             | ±1 bits        | implicit     | sum+sign          | saturation           |
 | FHRR            | unit complex   | implicit     | complex sum       | magnitude loss       |
 | **CNR**         | (μ, σ)         | **explicit** | Bayesian fusion   | graceful degradation |
+
+Blocks of different sizes could be bound or bundled by scaling blocks to their least common multiple, performing the operation, and then scaling back. Sigma would need to scale up/down with the ratio of block size.

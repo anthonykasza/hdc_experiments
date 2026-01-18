@@ -1,0 +1,9 @@
+Blocks count: 4096
+Block size: 128
+Similarity(a, a): 1.0
+Similarity(bundle, a): 0.9624438453801953
+Similarity(bundle, b): 0.6263661187804503
+Similarity(bundle, noise): 0.072467273353717
+Avg sigma a: 1.5
+Avg sigma bundle: 15.635821922386631
+

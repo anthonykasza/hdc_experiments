@@ -1,0 +1,16 @@
+✓ random_hv
+✓ circular_distance
+✓ bind / inverse
+✓ binding dissimilarity
+✓ bundling agreement dominance. bundle sigma: 1e-06 default sigma: 1.5
+✓ bundling disagreement increases sigma 1.5 28.146618607904728
+✓ similarity properties
+✓ approximate unbinding
+✓ permutation
+✓ cleanup
+✓ uniform regime successfully changed mus [64]
+✓ self-binding: mu wrapped to 0, sigma unchanged
+✓ self-bundling: mu unchanged, sigma decreased
+Original sigma: 1.5, bundled sigma: 1e-06
+
+All CNR tests passed.

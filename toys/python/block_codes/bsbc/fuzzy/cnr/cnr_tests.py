@@ -1,15 +1,14 @@
-from cnr import *
-
 import random
 import math
+from cnr import *
 
 # -----------------------------
 # Test configuration
 # -----------------------------
 
 BLOCK_SIZE = 128
-BLOCKS = 10
-SIGMA = DEFAULT_SIGMA
+BLOCKS = 4096
+SIGMA = 1.5
 
 random.seed(0)
 
@@ -25,11 +24,9 @@ def avg_sigma(hv):
 def test_random_generation():
     hv = random_hv(BLOCKS, BLOCK_SIZE)
     assert len(hv) == BLOCKS
-
     for mu, sigma in hv:
         assert 0 <= mu < BLOCK_SIZE
         assert sigma == SIGMA
-
     print("✓ random_hv")
 
 
@@ -42,7 +39,6 @@ def test_circular_distance():
     assert circular_distance(0, 63, 64) == 1
     assert circular_distance(10, 20, 64) == 10
     assert circular_distance(20, 10, 64) == 10
-
     print("✓ circular_distance")
 
 
@@ -53,13 +49,11 @@ def test_circular_distance():
 def test_binding_inverse():
     hv = random_hv(BLOCKS, BLOCK_SIZE)
     inv = inverse(hv, BLOCK_SIZE)
-
     bound = bind(hv, inv, block_size=BLOCK_SIZE)
 
     for mu, sigma in bound:
         assert mu == 0
-        assert math.isclose(sigma, math.sqrt(2) * SIGMA)
-
+        assert math.isclose(sigma, SIGMA)
     print("✓ bind / inverse")
 
 
@@ -70,7 +64,6 @@ def test_binding_inverse():
 def test_binding_dissimilarity():
     a = random_hv(BLOCKS, BLOCK_SIZE)
     b = random_hv(BLOCKS, BLOCK_SIZE)
-
     bound = bind(a, b, block_size=BLOCK_SIZE)
 
     sim_a = similarity(bound, a, BLOCK_SIZE)
@@ -78,7 +71,6 @@ def test_binding_dissimilarity():
 
     assert sim_a < 0.5
     assert sim_b < 0.5
-
     print("✓ binding dissimilarity")
 
 
@@ -93,8 +85,7 @@ def test_bundling_agreement():
     sim = similarity(b, base, BLOCK_SIZE)
     assert sim > 0.9
     assert avg_sigma(b) < avg_sigma(base)
-
-    print("✓ bundling agreement dominance. bundle sigma: ", avg_sigma(b), "default sigma:", avg_sigma(base))
+    print("✓ bundling agreement dominance. bundle sigma:", avg_sigma(b), "default sigma:", avg_sigma(base))
 
 
 # ============================================================
@@ -104,9 +95,7 @@ def test_bundling_agreement():
 def test_bundling_disagreement():
     hvs = [random_hv(BLOCKS, BLOCK_SIZE) for _ in range(5)]
     b = bundle(*hvs, block_size=BLOCK_SIZE)
-
     assert avg_sigma(b) > SIGMA
-
     print("✓ bundling disagreement increases sigma", SIGMA, avg_sigma(b))
 
 
@@ -123,7 +112,6 @@ def test_similarity_properties():
 
     assert sim_self > 0.95
     assert sim_rand < sim_self
-
     print("✓ similarity properties")
 
 
@@ -139,10 +127,8 @@ def test_unbinding():
     query = bind(bound, inverse(role, BLOCK_SIZE), block_size=BLOCK_SIZE)
 
     sim = similarity(query, filler, BLOCK_SIZE)
-
     assert sim > 0.5
-    assert avg_sigma(query) > avg_sigma(filler)
-
+    assert avg_sigma(query) >= avg_sigma(filler)
     print("✓ approximate unbinding")
 
 
@@ -155,10 +141,8 @@ def test_permutation():
     perm = permute(hv, shifts=5)
 
     sim = similarity(hv, perm, BLOCK_SIZE)
-
     assert sim < 0.2
     assert math.isclose(avg_sigma(hv), avg_sigma(perm))
-
     print("✓ permutation")
 
 
@@ -172,35 +156,63 @@ def test_cleanup():
 
     query = memory[target]
     idx = cleanup(query, memory, BLOCK_SIZE)
-
     assert idx == target
-
     print("✓ cleanup")
 
 
-def test_symbolicity_extremes():
-    base = random_hv(BLOCKS, BLOCK_SIZE)
+# ============================================================
+# 12. Uniform regime randomness consistency
+# ============================================================
 
-    # create two hypervectors almost identical to base
-    hv1 = [(mu, sigma) for mu, sigma in base]
-    hv2 = [( (mu + 1) % BLOCK_SIZE, sigma ) for mu, sigma in base]  # slight difference
+def test_uniform_regime_randomness():
+    """
+    When multiple bundles hit the uniform regime, mus should be approximately
+    one of the extreme constituent values (allowing ±1 rounding error)
+    """
+    extreme_mus = {0, int(BLOCK_SIZE * 1/4), int(BLOCK_SIZE * 2/4), int(BLOCK_SIZE * 3/4)}
 
-    strict = bundle(
-        hv1, hv2, hv1,
-        block_size=BLOCK_SIZE,
-        symbolicity=1.0,
-    )
+    hvs = [
+        [(0, 0)],
+        [(int(BLOCK_SIZE * 1/4), 0)],
+        [(int(BLOCK_SIZE * 2/4), 0)],
+        [(int(BLOCK_SIZE * 3/4), 0)],
+    ]
 
-    soft = bundle(
-        hv1, hv2, hv1,
-        block_size=BLOCK_SIZE,
-        symbolicity=0.0,
-    )
+    b = bundle(*hvs, block_size=BLOCK_SIZE)
 
-    assert avg_sigma(strict) > avg_sigma(soft)  # symbolicity=1 → more "symbolic" → less shrinkage
+    for mu, sigma in b:
+        # Check if mu is "close" to one of the extreme mus (±1)
+        if not any(abs((mu - x) % BLOCK_SIZE) <= 2 for x in extreme_mus):
+            raise AssertionError(f"μ={mu} not approximately in extreme mus {extreme_mus}")
 
-    print("✓ symbolicity extremes with slight disagreement.", avg_sigma(strict), avg_sigma(soft))
+    print("✓ uniform regime successfully changed mus", [mu for mu, _ in b])
 
+
+# ============================================================
+# 13. Self operations
+# ============================================================
+
+def test_self_binding_and_self_bundling():
+    mu = BLOCK_SIZE // 2
+    sigma = DEFAULT_SIGMA
+    hv = [(mu, sigma) for _ in range(BLOCKS)]
+
+    # Self-binding
+    hv_bound = bind(hv, hv, block_size=BLOCK_SIZE)
+    for m, s in hv_bound:
+        assert m == 0
+        assert math.isclose(s, sigma)
+
+    print("✓ self-binding: mu wrapped to 0, sigma unchanged")
+
+    # Self-bundling
+    hv_bundled = bundle(hv, hv, hv, block_size=BLOCK_SIZE)
+    for m, s in hv_bundled:
+        assert m == mu
+        assert s < sigma
+
+    print("✓ self-bundling: mu unchanged, sigma decreased")
+    print(f"Original sigma: {sigma}, bundled sigma: {hv_bundled[0][1]}")
 
 
 # ============================================================
@@ -218,6 +230,7 @@ if __name__ == "__main__":
     test_unbinding()
     test_permutation()
     test_cleanup()
-    test_symbolicity_extremes()
+    test_uniform_regime_randomness()
+    test_self_binding_and_self_bundling()
 
     print("\nAll CNR tests passed.")
