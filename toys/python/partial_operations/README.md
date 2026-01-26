@@ -1,4 +1,2 @@
 If FHRR hypervectors' elements are complex values and complex values are just 2 signed 32/64 bit ints - 1 int for the real part and 1 int for the imaginary part - then why not just use 1 int for bundling and 1 int for binding? Permute can be still done on all, even, or odd hypervector indices.
 This is similar to BSC or ternary MAP but operations are done to some subset of the hypervector elements.
-
-What if the bind operator multiplies the even elements then add the odd elements while a bundle operator multiplies the odd elements then adds the even ones? 

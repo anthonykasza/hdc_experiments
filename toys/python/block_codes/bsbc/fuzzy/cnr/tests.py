@@ -73,34 +73,34 @@ def test_angle_to_idx_halfway_wraparound():
 
 
 # -------------------------
-# to_phasor tests
+# idx_to_phasor tests
 # -------------------------
 
-def test_to_phasor_zero_mu():
+def test_idx_to_phasor_zero_mu():
     block_size = 8
     kappa = 1.0
-    z = to_phasor(0, kappa, block_size)
+    z = idx_to_phasor(0, kappa, block_size)
     assert np.isclose(z, kappa + 0j)
-    print("test_to_phasor_zero_mu passed")
+    print("test_idx_to_phasor_zero_mu passed")
 
 
-def test_to_phasor_magnitude():
+def test_idx_to_phasor_magnitude():
     block_size = 8
     kappa = 1.0
     for mu in range(block_size):
-        z = to_phasor(mu, kappa, block_size)
+        z = idx_to_phasor(mu, kappa, block_size)
         assert np.isclose(np.abs(z), kappa)
-    print("test_to_phasor_magnitude passed")
+    print("test_idx_to_phasor_magnitude passed")
 
 
-def test_to_phasor_angle():
+def test_idx_to_phasor_angle():
     block_size = 16
     kappa = 1.0
     mu = 5
-    z = to_phasor(mu, kappa, block_size)
+    z = idx_to_phasor(mu, kappa, block_size)
     expected = np.exp(1j * idx_to_angle(mu, block_size))
     assert np.allclose(z, expected)
-    print("test_to_phasor_angle passed")
+    print("test_idx_to_phasor_angle passed")
 
 
 # -------------------------
@@ -467,9 +467,9 @@ if __name__ == "__main__":
     test_angle_to_idx_exact_halfway()
     test_angle_to_idx_halfway_wraparound()
 
-    test_to_phasor_zero_mu()
-    test_to_phasor_magnitude()
-    test_to_phasor_angle()
+    test_idx_to_phasor_zero_mu()
+    test_idx_to_phasor_magnitude()
+    test_idx_to_phasor_angle()
 
     test_new_hv_shape()
     test_new_hv_range()

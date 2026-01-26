@@ -15,7 +15,7 @@ def angle_to_idx(theta, block_size):
     return np.mod(np.floor(x + 0.5), block_size).astype(int)
 
 
-def to_phasor(mu, kappa, block_size):
+def idx_to_phasor(mu, kappa, block_size):
     """Block index to a complex phasor"""
     theta = idx_to_angle(mu, block_size)
     return kappa * np.exp(1j * theta)
@@ -68,7 +68,7 @@ def bundle(hvs, block_size, noise_thresh=None):
     """Bundle multiple hypervectors using von Mises fusion."""
     mus = np.stack([hv[0] for hv in hvs], axis=0)
     kappas = np.stack([hv[1] for hv in hvs], axis=0)
-    phasors = to_phasor(mus, kappas, block_size)
+    phasors = idx_to_phasor(mus, kappas, block_size)
     z = np.sum(phasors, axis=0)
     theta = np.angle(z)
     mu = angle_to_idx(theta, block_size)

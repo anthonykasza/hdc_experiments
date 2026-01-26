@@ -131,11 +131,132 @@ References
     - keeping a logical boundary/separation between codebooks allows a model to "focus" on one set of object attributes at a time. first, think about its shape, then its color, then its size, etc.
   - what's novel in the paper is the pipeline. CNN -> sparse representations -> FHRR vectors -> scene factoring
     - no pixel values used directly within the HDC/VSA part pipeline
+- Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory
+  - neocortex processes a contast high-definition stream of the outside world. it does so in realtime using sparse representations.
+  - "The SDRs in later sensory areas encode more abstract and categorical information" 
+    - this ties to category theory and sets
+  - "Robustness to noise is high enough such that reliable classification can be performed with as much as 50% noise"
+  - Sparse Distributed Representations types:
+    - binary SDR example (uncompressed) *from paper*
+      - dims = 40
+      - hot_count = 4
+      - x = vector([0100000000000000000100000000000110000000])
+      - y = vector([1000000000000000000100000000000110000000])
+      - overlap = 3, sim = 3/4
+      - 40 * 1 bit = 40 bits per symbol
+    - integer set example (compressed binary SDR) *not in paper*
+      - dims = 4
+      - max_val = 40
+      - x = set([1, 19, 31, 32])
+      - y = set([0, 19, 31, 32])
+      - intersect = 3, sim = 3/4
+      - 4 * 8 bits = 32 bits per symbol
+    - tuple set example (compressed binary SDR with magnitudes) *not in paper*
+      - dims = 4
+      - max_val = 40
+      - not only do x and y have hot positions, but those hot positions have a value
+        - x = vector([0400000000000000000700000000000920000000])
+        - y = vector([7000000000000000000700000000000920000000])
+          - should this be called real-valued SDR?
+          - sparsity is preserved just as with binary SDR
+      - x = set([(1, 4/40), (19, 7/40), (31, 9/40), (32, 2/40)])
+      - y = set([(0, 7/40), (19, 7/40), (31, 9/40), (32, 2/40)])
+        - tuple(position, value)
+          - [0], index/position of the hot bit
+          - [1], magntiude/value of the position normalized to `(0-1]`. the magnitude cannot be zero but it could be negative
+          - symbols are lists of tuples `(int, float)` just like Circular Normal Representations's use of (mu, kappa) except here they are sets and in CNR they are vectors
+            - here, the [0] in tuples are guaranteed unique so order of tuples/elements is insignificant
+            - in CNR, the [0] in tuples are not unique but the order of tuple/elements is significant
+      - intersect = 3, sim = 3/4
+        - similarity could utilize the difference or ratio of overlapping indices
+  - the paper explores math behind various combinations of dims and hot_count for FPs and noise
+    - the appendix includes actuarial tables
+  - OR is the bundling operation. it increase density of binary vectors. it increases the size of integer sets
+    - prior to thinning, you can compare a symbol to a superposition to see if its in the set the superposition represents
+    - the more constituents to bundle, the more possible an FP is. same as other HDC/VSA.
+  - SDRs can be subsampled
+  - "In the absence of learning, the SP process examines the overlap between a set of randomly initialized columns and individual binary input vectors. The top 𝑘 columns, determined by calculating the overlap, win and form the ON bits in the resulting SDR." this is thinning
+  - Temporal Memory, a sequence prediction model using SDR
+    - prodcues a union of possible temporal states for the next timestep
+- Quantum Computation via Sparse Distributed Representation
+  - SDRs enable "quantum speed-up[s]" on classical hardware
+    - published as "Opinion and Perspectives". the author believes "that SDR constitutes a classical instantiation of quantum superposition and that switching from localist representations to SDR, which entails no new, esoteric technology, is the key to achieving quantum computation in a single-processor, classical (Von Neumann) computer."
+  - Figure 1. "SDR provides a classical realization of quantum superposition in which probability amplitudes are represented directly and implicitly by sizes of intersections"
+  - thinning is great. add recurrent connections and you can steer the bundle over timesteps while still permitting collapse at each timestep.
+- Encoding Data for HTM Systems
+  - methods for encoding various types of data using binary SDRs
+    - goals for an encoder:
+      - semantically similar data should result in similar SDRs
+      - deterministic outputs for all inputs
+      - outputs have fixed dimensionality
+      - outputs have fixed hotness
+    - numbers, logs, deltas (no mention of decimate/supplement encoder from Sparse Binary Distributed Encoding of Scalars)
+    - categories
+    - orders and cycles
+    - geospatial (2d such as images)
+      - incorporate speed to find anomalous moving objects
+    - natural language
+    - multi-modal
+- The Use of Hierarchical Temporal Memory and Temporal Sequence Encoder for Online Anomaly Detection in Industrial Cyber-Physical Systems
+  - SDRs for realtime detections in OT environments
+  - novel temporal sequnce encoder (TSSE)
+    - designed for "processing data streams of slowly varying physical measurement"
+  - deep learning models need a ton of data and often need retrained :(
+  - their encoder uses 2 encoders described in Encoding Data for HTM Systems
+  - they use CDT on SDRs. where does the 2% sparsity come from?
+  - i think "substructive" is supposed to read "subtractive"
+  - HTM does need a training period with supervised feedback on anomalies
+- A Distributed Anomaly Detection System for In-Vehicle Network Using HTM
 - Representation and Processing of Structures with Binary Sparse Distributed Codes
   - when generating new symbols, ensure the ratio of 1 to 0 is 1/sqrt(D)
     - altering the distribution of elements influences the resulting kernel
   - CDT for binding operator
     - CDT is iterative conjunction with permuted self
+- Binding and Normalization of Binary Sparse Distributed Representations by Context-Dependent Thinning
+  - CDT makes SDRs
+  - CDT is a special type of superposition
+    - CDT can also be considered as a hashing procedure: the subspace to where hashing is performed is defined by 1s of z, and some 1s of z are mapped to that subspace"
+  - section 3 really spells out what makes a CDT procedure
+  - section 4: direct, permutative, additive, subtractive
+  - "Performing the CDT procedure can be viewed as an analog of introducing brackets into symbolic descriptions"
+    - if cdt does not have a true binding operator then the family of models it can produce must be set-like not group-like.
+      - set symbolic architecture. you can bundle, you can thin, but you cannot bind. 
+      - the symbols are sets. integer SDR/hv act as sets. thinning ensures DIMS which is actually set size. OR/conjunction is union.
+- Sparse Binary Distributed Encoding of Scalars
+  - "The number of unity (1s) elements M in sparse codevectors should be significant for maintenance statistical stability of the number of unities and reducing its deviation about the mean value"
+  - historically these are used ...
+    - thermometric
+      - start with all 0s
+      - for each level flip the next 0 bit to 1
+    - partially distributed float
+      - start with all 0s but first 3 (or 4 or 5) elements are 1s
+      - shift the consecutive 1s, as a group, cyclically
+    - partially distributed multifloat
+      - serval float encoding hvs represent a single number
+      - the hvs are concatentated
+      - ?
+  - ... but the authors suggested these distributed stochastic encodings
+    - subtractive-additive: exponential
+      - geenrate a random reference/basis hv, 10000 elements, 100 hot, k is some percent of hot
+      - randomly flip k 0s to 1s of the basis hv. randomly flip k 1s to 0s of the basis hv. that's the next level.
+        - this can be done by conjuncting the basis hv with another random hv.
+      - repeat the adding and removing of hot bits for more levels
+      - k determines the steepness of the leveling
+      - steps from paper
+        - generate the basis hv
+        - generate decimator hv
+        - conjunct basis with decimator
+       - generate complementor hv
+        - disjunct basis with complementor
+    - concatenation of parts: linear
+      - generate a start hv and a stop hv, then interpolate between them to make levels
+      - or generate multiple landmark hv, then interpolate between the landmarks
+    - cyclic quantities
+      - with reproduction
+        - ? disjunction of preceding hv ?
+      - with reference
+        - generate multiple hv, representing the equal division of a circle's angles: 0, 90, 180, 270
+        - level between them  using concatenation of parts or subtractive-additive
 - Efficient Context-Preserving Encoding and Decoding of Compositional Structures Using Sparse Binary Representations
   - "the key to overcoming those limitations in artificial neural networks is efficiently combining continuity with compositionality principles"
   - context-dependent thinning (CDT) is one algorithm that ensures sparsity as the brain does but also supports encoding compositional structure
@@ -149,6 +270,7 @@ References
   - Context-preserving SDR encoding/decoding (CPSE/CPSD)
     - cpse allows for order of binding input to be preserved
     - cpsd allows for decoding using triadic memory
+      - what is triadic memory? it seems to be a columnary co-ocurrence table
   - section 2 has a nice history review
     - Holographic Reduced Representations (HRRs)
     - Fourier Holographic Reduced Representations (FHRRs)
@@ -441,7 +563,21 @@ References
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
-- [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
+- [Category Theory Illustrated](https://github.com/abuseofnotation/category-theory-illustrated/tree/master)
+  - MellSans is disagreeable
+  - picture books are a great way to teach. this is cool.
+- Developing a Foundation of Vector Symbolic Architectures Using Category Theory
+  - if CDT SDRs are sets then category theory aligns well
+  - MBAT and VTB can do leveling via self-binding because their binds are not commutative. Non diagonal matrices are used to control the commutative of multiplication in GHRR.
+  - "VSA require two binary operations. One must be reversible, and the other must distribute over the first."
+  - "many of the alterations to element-wise multiplication/division (i.e. normalisation, thresholding, etc.) are imposed to model certain behavioural effects, such as neuronal saturation, rather than endowing computational advantages"
+    - so, the choice to clip hvs elements is not inherent in the VSA's division ring, but rather it is a modeling choice "strapped onto" the algebra by engineers to achieve desired modeling results.
+  - similarity
+    - FHRR uses the inner product
+      - cosine similarity is normalized inner product
+        - hamming distance is cosine sim for binary
+    - what about other distance/edit metrics? 4.4 is a slim section
+    - what about uncertainty propagation through operations?
 - [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
   - DVS are super neat
   - CNN-level performance without a CNN
@@ -1222,6 +1358,8 @@ HDC Operations
 Misc
 ----
 - code
+  - Various [data structures](https://github.com/denkle/HDC-VSA_cookbook_tutorial/blob/main/HDVecSym/DS.py) built up from a custom ternary MAP implementation
+  - [Binary Sparse Distributed Representation with segments BSBC-SEG](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj) in clojure
   - [HoloVec](https://github.com/Twistient/HoloVec)
     - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
     - encoders by data type
@@ -1246,7 +1384,16 @@ Misc
   - [HLB](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding/blob/main/Classical%20VSA%20Tasks/vsa_models.py#L13)
   - [hrrformer](https://github.com/FutureComputing4AI/Hrrformer)
   - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
+- what's the difference between HoloVec and TorchHD?
+  - bsc was dense parent of
+    - bsdr-cdt, sparsity across the entire hypervector, constrains the lengths of integer hv to the square root of the binary hv dimensionality, leads to square matrices which leads to ghrr which generalizes fhrr into a vector function architecture. in ghrr commutivity is controllable by diagonality through the size, m, of unitary matrices which act as hv elements.
+    - bsdr-seg, sparsity in blocks leads to hardware friendly approximation of fhrr. with a block size of 2 this behaves like bsc. as the block size goes to inifity it becomes fhrr-like.
+    - both, binary representations can be compressed to integers. 
+  - holovec provides best VSA/HDC for expressivity - deeply nested structures like trees and graphs
+  - torchhd provides best VSA/HDC for hardware-friendliness - RISCV, FPGA, ASIC friendly
 - datasets mentioned in literature
+  - Secure Water Treatment (SWaT) from [iTrust](https://itrust.sutd.edu.sg/itrust-labs_datasets/dataset_info/) or [Kaggle](https://www.kaggle.com/datasets/vishala28/swat-dataset-secure-water-treatment-system)
+    - [Anomaly Detection for Industrial Control Systems](https://www.kaggle.com/code/scarss/anomaly-detection-for-industrial-control-systems)
   - voxceleb and voxceleb2
     - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
   - isolet
