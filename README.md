@@ -136,6 +136,47 @@ References
     - altering the distribution of elements influences the resulting kernel
   - CDT for binding operator
     - CDT is iterative conjunction with permuted self
+- Binding and Normalization of Binary Sparse Distributed Representations by Context-Dependent Thinning
+  - CDT is a special type of superposition
+    - CDT can also be considered as a hashing procedure: the subspace to where hashing is performed is defined by 1s of z, and some 1s of z are mapped to that subspace"
+  - section 3 really spells out what makes a CDT procedure
+  - section 4: direct, permutative, additive, subtractive
+  - "Performing the CDT procedure can be viewed as an analog of introducing brackets into symbolic descriptions"
+- Sparse Binary Distributed Encoding of Scalars
+  - "The number of unity (1s) elements M in sparse codevectors should be significant for maintenance statistical stability of the number of unities and reducing its deviation about the mean value"
+  - historically these are used ...
+    - thermometric
+      - start with all 0s
+      - for each level flip the next 0 bit to 1
+    - partially distributed float
+      - start with all 0s but first 3 (or 4 or 5) elements are 1s
+      - shift the consecutive 1s, as a group, cyclically
+    - partially distributed multifloat
+      - serval float encoding hvs represent a single number
+      - the hvs are concatentated
+      - ?
+  - ... but the authors suggested these distributed stochastic encodings
+    - subtractive-additive: exponential
+      - geenrate a random reference/basis hv, 10000 elements, 100 hot, k is some percent of hot
+      - randomly flip k 0s to 1s of the basis hv. randomly flip k 1s to 0s of the basis hv. that's the next level.
+        - this can be done by conjuncting the basis hv with another random hv.
+      - repeat the adding and removing of hot bits for more levels
+      - k determines the steepness of the leveling
+      - steps from paper
+        - generate the basis hv
+        - generate decimator hv
+        - conjunct basis with decimator
+       - generate complementor hv
+        - disjunct basis with complementor
+    - concatenation of parts: linear
+      - generate a start hv and a stop hv, then interpolate between them to make levels
+      - or generate multiple landmark hv, then interpolate between the landmarks
+    - cyclic quantities
+      - with reproduction
+        - ? disjunction of preceding hv ?
+      - with reference
+        - generate multiple hv, representing the equal division of a circle's angles: 0, 90, 180, 270
+        - level between them  using concatenation of parts or subtractive-additive
 - Efficient Context-Preserving Encoding and Decoding of Compositional Structures Using Sparse Binary Representations
   - "the key to overcoming those limitations in artificial neural networks is efficiently combining continuity with compositionality principles"
   - context-dependent thinning (CDT) is one algorithm that ensures sparsity as the brain does but also supports encoding compositional structure
@@ -441,7 +482,20 @@ References
 - Recasting Self-Attention with Holographic Reduced Representations
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
-- [HDC/VSA: Binary Sparse Distributed Representation with segments](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj)
+- Developing a Foundation of Vector Symbolic Architectures
+Using Category Theory
+  - first i must say that i cannot comment too deeply on category theory...
+  - MBAT and VTB can do leveling via self-binding because their binds are not commutative. Non diagonal matrices are used to control the commutative of multiplication in GHRR.
+  - "VSA require two binary operations. One must be reversible, and the other must distribute over the first."
+  - "many of the alterations to element-wise multiplication/division (i.e. normalisation, thresholding, etc.) are imposed to model certain behavioural effects, such as neuronal saturation, rather than endowing computational
+advantages"
+    - so, the choice to clip hvs elements is not inherent in the VSA's division ring, but rather it is a modeling choice "strapped onto" the algebra by engineers to achieve desired modeling results.
+  - similarity
+    - FHRR uses the inner product
+      - cosine similarity is normalized inner product
+        - hamming distance is cosine sim for binary
+    - what about other distance/edit metrics? 4.4 is a slim section
+    - what about uncertainty propagation through operations?
 - [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
   - DVS are super neat
   - CNN-level performance without a CNN
@@ -1222,6 +1276,7 @@ HDC Operations
 Misc
 ----
 - code
+  - [Binary Sparse Distributed Representation with segments BSBC-SEG](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj) in clojure
   - [HoloVec](https://github.com/Twistient/HoloVec)
     - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
     - encoders by data type
@@ -1246,6 +1301,13 @@ Misc
   - [HLB](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding/blob/main/Classical%20VSA%20Tasks/vsa_models.py#L13)
   - [hrrformer](https://github.com/FutureComputing4AI/Hrrformer)
   - [hrr](https://github.com/MahmudulAlam/Holographic-Reduced-Representations)
+- what's the difference between HoloVec and TorchHD?
+  - bsc was dense parent of
+    - bsdr-cdt, sparsity across the entire hypervector, constrains the lengths of integer hv to the square root of the binary hv dimensionality, leads to square matrices which leads to ghrr which generalizes fhrr into a vector function architecture. in ghrr commutivity is controllable by diagonality through the size, m, of unitary matrices which act as hv elements.
+    - bsdr-seg, sparsity in blocks leads to hardware friendly approximation of fhrr. with a block size of 2 this behaves like bsc. as the block size goes to inifity it becomes fhrr-like.
+    - both, binary representations can be compressed to integers. 
+  - holovec provides best VSA/HDC for expressivity - deeply nested structures like trees and graphs
+  - torchhd provides best VSA/HDC for hardware-friendliness - RISCV, FPGA, ASIC friendly
 - datasets mentioned in literature
   - voxceleb and voxceleb2
     - [VoxCeleb1](https://www.robots.ox.ac.uk/~vgg/data/voxceleb/vox1.html)
