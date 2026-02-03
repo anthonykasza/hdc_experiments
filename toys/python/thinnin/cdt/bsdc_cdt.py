@@ -8,12 +8,18 @@ import numpy as np
 import copy
 
 
-# Hypervectors longer than DIMS will get thinned to DIMS
-#  when they are operated on.
+# Symbols are much taller than they are wide. They act
+#  like sets of columns. DIMS is how many columns each
+#  symbol contains. MAX_VAL can be thought of as the
+#  max height of each column
+
+# Symbols larger than DIMS will get thinned to DIMS when
+#  they are operated on.
 DIMS = 200
 
 # Squares are nice because they can be tracked as diagonals.
 MAX_VAL = DIMS**2
+
 
 
 def new_hv(dims=DIMS, max_val=MAX_VAL, fill=None, seed=420):
@@ -47,6 +53,129 @@ def bundle(hvs, dims=DIMS):
 def permute(hv, positions=1):
   """Cyclic shift ->"""
   return np.roll(hv, shift=positions, axis=0)
+
+
+def permute_with_seed(hv, seed, max_val=MAX_VAL):
+  """
+  Deterministic permutation of indices using a seed.
+  This is CPSE-style positional permutation, not cyclic shift.
+  """
+  rng = np.random.default_rng(seed)
+  perm = rng.permutation(max_val)
+  return np.array(sorted(perm[hv]))
+
+
+def cpse_encode(hvs, dims=DIMS, base_seed=42):
+  """Context-Preserving SDR Encoding (CPSE)
+
+  Returns:
+    composite_sdr : sparse index SDR
+    position_seeds : position_seeds
+  """
+  if len(hvs) == 0:
+    return np.array([], dtype=int), None
+
+  M = len(hvs)
+  position_seeds = [base_seed + i for i in range(M)]
+
+  # 1. Position-permute components
+  permuted = [
+    permute_with_seed(hv, position_seeds[i])
+    for i, hv in enumerate(hvs)
+  ]
+
+  # 2. Context-dependent thinning (reuse CDT logic, but on permuted hvs)
+  target_hot = dims
+  per_component = max(1, target_hot // M)
+  thinned_parts = []
+
+  for i, hv in enumerate(permuted):
+    context = permuted[:i] + permuted[i+1:]
+    ctx_sig = _context_signature(context)
+    scores = _score_bits(hv, ctx_sig)
+    order = np.argsort(scores)
+    keep = hv[order[:per_component]]
+    thinned_parts.append(keep)
+
+  merged = np.unique(np.concatenate(thinned_parts))
+
+  # 3. Final normalization
+  if len(merged) > target_hot:
+    scores = np.array([hash(int(b)) & 0xffffffff for b in merged])
+    merged = merged[np.argsort(scores)[:target_hot]]
+
+  return np.array(sorted(merged)), position_seeds
+
+
+def cpsd_decode_queries(
+  composite,
+  position_seeds
+):
+  """
+  Generate CPSD decoding queries.
+
+  Returns:
+    List of dicts, one per position, each containing:
+      - position index
+      - inverse-permuted composite (query SDR)
+  """
+  if composite is None or position_seeds is None:
+    return []
+
+  queries = []
+
+  for i, seed in enumerate(position_seeds):
+    # Inverse permutation via regenerating permutation
+    rng = np.random.default_rng(seed)
+    perm = rng.permutation(MAX_VAL)
+    inv_perm = np.empty_like(perm)
+    inv_perm[perm] = np.arange(len(perm))
+
+    # Undo position permutation
+    query = np.array(sorted(inv_perm[composite]))
+
+    queries.append({
+      "position": i,
+      "query_sdr": query
+    })
+
+  return queries
+
+
+def cpsd_decode_from_candidates(
+  composite,
+  position_seeds,
+  candidates,
+  similarity_threshold=0.0
+):
+  """
+  CPSD decoding by candidate matching (no Triadic Memory).
+
+  Args:
+    composite : CPSE composite SDR
+    candidates: list of possible component SDRs
+
+  Returns:
+    List of decoded SDRs (one per position)
+  """
+  decoded = []
+
+  queries = cpsd_decode_queries(composite, position_seeds)
+
+  for q in queries:
+    best = None
+    best_score = -1.0
+
+    for c in candidates:
+      s = similarity(q["query_sdr"], c)
+      if s > best_score and s >= similarity_threshold:
+        best = c
+        best_score = s
+
+    decoded.append(best)
+
+  return decoded
+
 
 
 def _context_signature(hvs):

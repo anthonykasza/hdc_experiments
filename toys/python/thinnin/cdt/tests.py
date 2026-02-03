@@ -179,3 +179,96 @@ levels = make_levels(
 for idx, level in enumerate(levels):
   print(f'{idx} {level[0:3]}..{level[-3:]} {similarity(h1, level)}')
 print()
+
+
+
+
+# ============================================================
+# 7. CPSE/D
+# ============================================================
+print_header("CPSE/D")
+A = new_hv(seed=1)
+B = new_hv(seed=2)
+C = new_hv(seed=3)
+D = new_hv(seed=4)
+vocab = [A, B, C, D]
+labels = ["A", "B", "C", "D"]
+
+cdt_composite = bind([A, B, C])
+print("CDT composite size:", len(cdt_composite))
+print("Similarity to A:", similarity(cdt_composite, A))
+print("Similarity to B:", similarity(cdt_composite, B))
+print("Similarity to C:", similarity(cdt_composite, C))
+print("ABC to CBA:", similarity(cdt_composite, bind([C, B, A])))
+print()
+
+cpse_composite, position_seeds = cpse_encode([A, B, C])
+print("CPSE composite size:", len(cpse_composite))
+print("  position_seeds:", position_seeds)
+cpse_rev, p_s_rev = cpse_encode([C, B, A])
+print("ABC to CBA:", similarity(cpse_composite, cpse_rev))
+print()
+
+print("Simple CPSD")
+decoded = cpsd_decode_from_candidates(
+  composite=cpse_composite,
+  position_seeds=position_seeds,
+  candidates=vocab
+)
+
+def label_from_similarity(hv, vocab, labels):
+  sims = [similarity(hv, v) for v in vocab]
+  return labels[int(np.argmax(sims))]
+
+for i, hv in enumerate(decoded):
+  label = label_from_similarity(hv, vocab, labels)
+  print(f"Position {i} decoded as:", label)
+
+decoded_rev = cpsd_decode_from_candidates(
+  composite=cpse_rev,
+  position_seeds=p_s_rev,
+  candidates=vocab
+)
+for i, hv in enumerate(decoded_rev):
+  label = label_from_similarity(hv, vocab, labels)
+  print(f"Rev position {i} decoded as:", label)
+print()
+
+
+print('TM CPSD')
+from triadic_memory import TriadicMemory
+tm = TriadicMemory()
+component_ids = {}
+for hv, label in zip(vocab, labels):
+  component_ids[label] = tm.register_component(hv)
+
+tm.learn(
+  composite=cpse_composite,
+  position_seeds=position_seeds,
+  component_ids=[
+    component_ids["A"],
+    component_ids["B"],
+    component_ids["C"]
+  ]
+)
+
+decoded = tm.recall(cpse_composite, position_seeds)
+for i, hv in enumerate(decoded):
+  label = label_from_similarity(hv, vocab, labels)
+  print(f"TM decoded position {i} as:", label)
+
+
+tm.learn(
+  composite=cpse_rev,
+  position_seeds=p_s_rev,
+  component_ids=[
+    component_ids["C"],
+    component_ids["B"],
+    component_ids["A"]
+  ]
+)
+
+decoded = tm.recall(cpse_rev, p_s_rev)
+for i, hv in enumerate(decoded):
+  label = label_from_similarity(hv, vocab, labels)
+  print(f"TM rev decoded position {i} as:", label)
