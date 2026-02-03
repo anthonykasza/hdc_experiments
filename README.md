@@ -136,20 +136,39 @@ References
   - "The SDRs in later sensory areas encode more abstract and categorical information" 
     - this ties to category theory and sets
   - "Robustness to noise is high enough such that reliable classification can be performed with as much as 50% noise"
-  - binary example (uncomrpessed) from paper
-    - dims = 40
-    - hot_count = 4
-    - x = vector([0100000000000000000100000000000110000000])
-    - y = vector([1000000000000000000100000000000110000000])
-    - overlap = 3, sim = 3/4
-    - 40 * 1 bit = 40 bits per symbol
-  - integer example (compressed) not in paper
-    - dims = 4
-    - max_val = 40
-    - x = set([1, 19, 31, 32])
-    - y = set([0, 19, 31, 32])
-    - intersect = 3, sim = 3/4
-    - 4 * 8 bits = 32 bits per symbol
+  - Sparse Distributed Representations types:
+    - binary SDR example (uncompressed) *from paper*
+      - dims = 40
+      - hot_count = 4
+      - x = vector([0100000000000000000100000000000110000000])
+      - y = vector([1000000000000000000100000000000110000000])
+      - overlap = 3, sim = 3/4
+      - 40 * 1 bit = 40 bits per symbol
+    - integer set example (compressed binary SDR) *not in paper*
+      - dims = 4
+      - max_val = 40
+      - x = set([1, 19, 31, 32])
+      - y = set([0, 19, 31, 32])
+      - intersect = 3, sim = 3/4
+      - 4 * 8 bits = 32 bits per symbol
+    - tuple set example (compressed binary SDR with magnitudes) *not in paper*
+      - dims = 4
+      - max_val = 40
+      - not only do x and y have hot positions, but those hot positions have a value
+        - x = vector([0400000000000000000700000000000920000000])
+        - y = vector([7000000000000000000700000000000920000000])
+          - should this be called real-valued SDR?
+          - sparsity is preserved just as with binary SDR
+      - x = set([(1, 4/40), (19, 7/40), (31, 9/40), (32, 2/40)])
+      - y = set([(0, 7/40), (19, 7/40), (31, 9/40), (32, 2/40)])
+        - tuple(position, value)
+          - [0], index/position of the hot bit
+          - [1], magntiude/value of the position normalized to `(0-1]`. the magnitude cannot be zero but it could be negative
+          - symbols are lists of tuples `(int, float)` just like Circular Normal Representations's use of (mu, kappa) except here they are sets and in CNR they are vectors
+            - here, the [0] in tuples are guaranteed unique so order of tuples/elements is insignificant
+            - in CNR, the [0] in tuples are not unique but the order of tuple/elements is significant
+      - intersect = 3, sim = 3/4
+        - similarity could utilize the difference or ratio of overlapping indices
   - the paper explores math behind various combinations of dims and hot_count for FPs and noise
     - the appendix includes actuarial tables
   - OR is the bundling operation. it increase density of binary vectors. it increases the size of integer sets
