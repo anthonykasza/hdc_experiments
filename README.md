@@ -131,6 +131,7 @@ References
     - keeping a logical boundary/separation between codebooks allows a model to "focus" on one set of object attributes at a time. first, think about its shape, then its color, then its size, etc.
   - what's novel in the paper is the pipeline. CNN -> sparse representations -> FHRR vectors -> scene factoring
     - no pixel values used directly within the HDC/VSA part pipeline
+- [Modeling Data Streams Using Sparse Distributed Representations](https://www.youtube.com/watch?v=iNMbsvK8Q8Y)
 - Properties of Sparse Distributed Representations and their Application to Hierarchical Temporal Memory
   - neocortex processes a contast high-definition stream of the outside world. it does so in realtime using sparse representations.
   - "The SDRs in later sensory areas encode more abstract and categorical information" 
@@ -144,7 +145,7 @@ References
       - y = vector([1000000000000000000100000000000110000000])
       - overlap = 3, sim = 3/4
       - 40 * 1 bit = 40 bits per symbol
-    - integer set example (compressed binary SDR) *not in paper*
+    - integer set example (compressed binary SDR) *not in paper* but is done in [HTM](https://github.com/htm-community/htm.core/blob/master/py/htm/encoders/coordinate.py#L129C30-L129C42)
       - dims = 4
       - max_val = 40
       - x = set([1, 19, 31, 32])
@@ -162,8 +163,8 @@ References
       - x = set([(1, 4/40), (19, 7/40), (31, 9/40), (32, 2/40)])
       - y = set([(0, 7/40), (19, 7/40), (31, 9/40), (32, 2/40)])
         - tuple(position, value)
-          - [0], index/position of the hot bit
-          - [1], magntiude/value of the position normalized to `(0-1]`. the magnitude cannot be zero but it could be negative
+          - [0], position of the hot bit
+          - [1], value of the position normalized to `[-1, 1]`
           - symbols are lists of tuples `(int, float)` just like Circular Normal Representations's use of (mu, kappa) except here they are sets and in CNR they are vectors
             - here, the [0] in tuples are guaranteed unique so order of tuples/elements is insignificant
             - in CNR, the [0] in tuples are not unique but the order of tuple/elements is significant
@@ -480,13 +481,33 @@ References
 - Integer Factorization with Compositional Distributed Representations
   - "Thus, setting the value of 𝛽 allows traversing between two extremes: when 𝛽 is very small, FPEs of scalars that are far away from each other are still very similar (subsymbolic behavior) while when 𝛽 is very large, FPEs of scalars that are near each other are dissimilar (symbolic behavior)."
     - this sound similar to local vs global similarity param in leveling
+- Quantum Hyperdimensional Computing: a foundational paradigm for quantum neuromorphic architectures
+  - [code](https://github.com/cumbof/hdlib/tree/main/examples/quantum)
+  - this is super cool and the first time someone has written about reconciling quantum computing with VSA. as the paper says, binding and bundling coneptually fit perfectly into quantum computing theory
+  - bundle is superposition, bind is entanglement, cossim is hadamard test
+    - "quantum phase oracles for binding, Quantum Fourier Transform (QFT) [34] for permutation, and a combination of Linear Combination of Unitaries (LCU) and Oblivious Amplitude Amplification (OAA) for the bundling"
+  - the paper uses qiskit to do quantum vsa
+  - "To create a tractable quantum experiment, we therefore selected a much smaller, hardware-constrained dimensionality of 16. In order to create a fair and direct comparison, the entire classical analogical reasoning task was subsequently performed using these 16-dimensional vectors"
+    - 16 isn't really "high" dimensional computing...
 - Hyperdimensional Quantum Factorization
   - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
   - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
     - this approach is better than resonator networks
   - hardware does not currently exist to implement. womp womp.
+- Modified Sparse Distributed Memory as Transient Episodic Memory for Cognitive Software Agents
+  - the navy was thinking about "text agents" (chatbots) in 2004
+  - ternary memory, where "dont care" is represented by *, sounds a lot like Gayler's -1,0,1 ternary MAP
 - Learning and generalization of compositional descriptions of visual scenes
 - Computing with Residue Numbers in High-Dimensional Representation
+- Integer Sparse Distributed Memory
+  - appears to be the precursor to MCR
+- INTEGER SPARSE DISTRIBUTED MEMORY AND MODULAR COMPOSITE REPRESENTATION
+  - "The individual values in each dimension of the vectors used in MCR do not have to follow any particular distribution: they can be randomly chosen from {0, r – 1}. In contrast, HRR vectors must follow a normal distribution with specific parameters; otherwise, the operations defined in HRR to combine vectors do not produce the desired results"
+  - "A problem arises when the vectors to group have opposite values for one dimension, since the average then has two possible values that must be defined by chance. For example, the average for a particular dimension of vectors with values 5 and 13 can be either 9 or 1"
+    - phase cancellation
+  - mcr hv can be weighted by multiplying each vector element by a scalar
+  - "When r = 2, MCR is equivalent to Spatter Code"
+    - "The analytical and experimental results show that MCR is more reliable and accurate than Spatter Code for a given number of dimensions; however, Spatter Code utilizes simpler operations, which would be an advantage for some applications."
 - Modular Composite Representation (MCR)
   - Thank you to the University of Memphis for making the research paper EASY to locate on the interwebs and FREE, as ,in beer, to download
     - hurray! open science!
@@ -550,6 +571,12 @@ References
 - EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
 - [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
 - [An Introduction to Hyperdimensional Computing](https://www.esa.int/gsp/ACT/coffee/2024-03-22%20-%20Mike%20Heddes/)
+- Vector-Derived Transformation Binding: An Improved Binding Operation for Deep Symbol-Like Processing in Neural Networks
+  - the d = 4 exanple in section 2.2 is illustrative. one can see how GHRR naturally follows VTB
+  - replacing circular convolution with matrix multiplication for HRR
+  - "this makes the binding a random transformation of x based on y, thus ensuring that the result will be dissimilar to both inputs"
+  - "In contrast to circular convolution, VTB is neither commutative ... nor associative. Thus, a separate unbinding step is required for each binding, whereas circular convolution permits undoing multiple bindings in one step"
+  - VTB is less performant than some other VSA but better "decoding for deep hierarchies"
 - Generalized Holographic Reduced Representations
   - "HDC's simplicity poses challenges for encoding complex compositional structures"
   - GHRR is FHRR with a different binding operation
@@ -772,6 +799,13 @@ References
 - [Structure and Interpretation of Computer Programs](https://ocw.mit.edu/courses/6-001-structure-and-interpretation-of-computer-programs-spring-2005/)
 - Hyperdimensional Computing for ADHD Classification using EEG Signals
   - "when trained on just 8.86% of the dataset, the model reached an accuracy of 72.8%, surpassing the 72.2% achieved by the LSTM-ADHD model trained on the full dataset"
+- A Vector Symbolic Approach to Multiple Instance Learning
+  - MIL supervised learning on labeled sets of samples. samples dont have labels, sets (bags) do.
+    - [take an image, break it up into N patches.](https://miro.medium.com/v2/0*foXL-TiLEu-zamOm.png) each patch does not have a label, but the images as a whole does. 
+  - the paper uses HLB VSA as the authors are the same
+    - take a malware file (labeled bad), dissassemble its functions (bag of functions), determine which functions in a corpus of malware indicates maliciousness. how to find goodware bags?
+  - the paper uses a CNN to produce learnt embeddings (image patches into vectors) then applied VSA operations on those vectors.
+- A Brain-Inspired Low-Dimensional Computing Classifier for Inference on Tiny Devices
 - Hypervector Design for Efficient Hyperdimensional Computing on Edge Devices
   - [tinyML Research Symposium 2021](https://www.youtube.com/watch?v=CSJ9Qr-SkeQ)
 - Autonomous Learning with High-Dimensional Computing Architecture Similar to von Neumann’s
@@ -814,6 +848,33 @@ References
 - [QLS/CAMBAM Seminar - Chris Eliasmith - February 25 2025](https://youtu.be/DvRWP4Xxhro?t=782)
   - i like the penguin+cat explaination of bundling
   - it reminds me of [My Wife and My Mother-in-Law](https://en.wikipedia.org/wiki/My_Wife_and_My_Mother-in-Law)
+- [Breaking the Surface: progress and challenges with Intel's Loihi 2 (Paxon Frady, Intel Labs)](https://www.youtube.com/watch?v=qaxWAmamxd0)
+- Neuromorphic Visual Scene Understanding with Resonator Networks
+  - scaling and rotation can be done in log-polar space
+    - "in log-polar coordinates, the binding operation becomes the equivariant transform for rotation and scaling"
+  - heavy use of Frady's resonator network, e.g.
+    - here's a thing
+    - it is a bound hv
+    - there are 3 things bound together in the thing
+    - the 3 things are taken from these 3 codebooks. 1 from each codebook.
+    - find the 3 things.
+    - instead of doing a bruteforce search, one thing from a codebook at a time, search in parallel using superpositions of the codebooks
+  - implementation on intel's loihi
+  - why do you need continuous (FHRR) model for pixel locations? you can't have 3 fourths of a pixel... is it just because of FHRR's FPE?
+- Visual Odometry with Neuromorphic Resonator Networks
+  - event-base camera to control robot arm
+    - the camera moves
+  - decomposion done by hierarchical resonator network (HRN)
+    - 2 partitions: cartesian and log-polar
+      - matrix transforms convert between cartesian and log-poalr
+    - "After a short orientation phase where several locations are active in superposition, the states converge to a unique solution and follow the camera’s movement after less than ten iterations"
+      - this aligns with the [OODA loop](https://en.wikipedia.org/wiki/OODA_loop). one must observe and orient before they can reason and decide.
+      - HRN solves the second O
+      - Frady describes this as a ["moment of insight"](https://www.youtube.com/watch?v=4qlzSIq1zmI&t=1616s), an "aha" or "eureka"
+  - "map" of scene using coordinate system
+  - FPE
+- Adaptive control of a wheelchair mounted robotic arm with neuromorphically integrated velocity readings and online-learning
+  - another robotic arm controlled with loihi chip
 - A Neurodiversity-Inspired Solver for the Abstraction & Reasoning Corpus (ARC) Using Visual Imagery and Program Synthesis
   - wow.
 - Vector Symbolic Algebras for the Abstraction and Reasoning Corpus
@@ -1359,6 +1420,15 @@ Misc
 ----
 - code
   - Various [data structures](https://github.com/denkle/HDC-VSA_cookbook_tutorial/blob/main/HDVecSym/DS.py) built up from a custom ternary MAP implementation
+  - Resonator Networks
+    - A [simple](https://github.com/spencerkent/resonator-networks/blob/master/resonator_networks/examples/simple.py) Resonator Network
+    - and a Resonator Network [template](https://github.com/epaxon/resonatorNMI/blob/main/resonator_template.ipynb) using fhrr
+  - Frady's papers teasers as ipython notebooks
+    - i wish there was more explaination and demonstration in the notebooks
+    - [Resonator Networks](https://github.com/epaxon/epaxon.github.io/blob/master/Research/resonator_networks.ipynb)
+    - [Spiking Neural Networks](https://github.com/epaxon/epaxon.github.io/blob/master/Research/spiking_networks.ipynb)
+    - [Experimental Neuroscience](https://github.com/epaxon/epaxon.github.io/blob/master/Research/neuroscience_data.ipynb)
+    - [Neural Computation](https://github.com/epaxon/epaxon.github.io/blob/master/Research/theoretical_neuroscience.ipynb)
   - [Binary Sparse Distributed Representation with segments BSBC-SEG](https://github.com/benjamin-asdf/vsa-binary-sparse-distributed-segments-clj) in clojure
   - [HoloVec](https://github.com/Twistient/HoloVec)
     - lovely examples, numpy only, modern looking docs, cool name, uses emojis ✅
@@ -1417,6 +1487,7 @@ Misc
   - FMA: A Dataset For Music Analysis
   - ARCish datasets: Sort-of-ARC, 1D-ARC, KidsARC, ConceptARC, MiniARC
   - A Dataset of EEG Signals from Adults with ADHD and Healthy Controls: Resting State, Cognitive function, and Sound Listening Paradigm
+  - The [event-camera dataset and simulator](https://rpg.ifi.uzh.ch/davis_data.html): Event-based data for pose estimation, visual odometry, and slam
 - pangenomics
   - studying all the genes of all strains of a species
   - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)

@@ -136,30 +136,12 @@ print_header("Self leveling")
 h1 = np.array([0, 1, 2, 3, 4])
 rng = np.random.default_rng(123)
 
-# universe definition remains unchanged
-universe = set(range(len(h1) ** 2))
-
-# persistent state
-removable_ones = set(h1)
-addable_zeros = universe - removable_ones
-
-h2 = add_sub(
-  h1,
-  element_count=2,
-  removable_ones=removable_ones,
-  addable_zeros=addable_zeros,
-  rng=rng
-)
-
-print('original\t', h1)
-print('2 flips \t', h2)
-print()
-
 print("Small HV: Five levels with a single flip per level")
 levels = make_levels(
   level_count=5,
   elements_per_level=1,
   basis_hv=h1,
+  max_val=25,
   seed=123
 )
 for idx, level in enumerate(levels):

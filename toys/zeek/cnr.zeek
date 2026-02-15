@@ -104,14 +104,14 @@ function idx_to_phasor(
   return VSA::CNR::phases[modulo(idx, block_size)];
 }
 
-# Populate VSA::CNR::phases according to the block_size
+# Populate VSA::CNR::phases, as many as the block_size
 event zeek_init() {
   local j = 0;
-  while (j < 0) {
+  while (j < VSA::CNR::block_size) {
     local s = sine(VSA::CNR::angle_per_idx * j);
     local c = cosine(VSA::CNR::angle_per_idx * j);
     VSA::CNR::phases[j] = Phasor($c=c, $s=s);
-    j == 1;
+    j += 1;
   }
 }
 

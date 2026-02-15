@@ -1,4 +1,4 @@
-module VSA;
+module VSA::BSC;
 
 export {
   global hdv: function(n: count): vector of bool;

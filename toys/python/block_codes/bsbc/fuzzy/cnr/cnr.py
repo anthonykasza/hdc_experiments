@@ -12,6 +12,8 @@ def idx_to_angle(mu, block_size):
 def angle_to_idx(theta, block_size):
     """Angle on a circle rounded to a block index"""
     x = block_size * theta / (2 * np.pi)
+    # TODO: adjust kappa somehow to reflect the size of
+    #       the round
     return np.mod(np.floor(x + 0.5), block_size).astype(int)
 
 
