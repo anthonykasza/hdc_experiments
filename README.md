@@ -53,17 +53,6 @@ References
   - data points as well as functions are both hypervectors
   - fractional power encoding (HRR)
   - "the distribution from which elements of the base vector are sampled determines the shape of the FPE kernel, which in turn induces a VFA for computing with band-limited functions".
-
-| VSA  | Vector Element Distribution          | Element Values        |
-|------|--------------------------------------|-----------------------|
-| HRR  | Real values [-1,1)                   | Continuous            |
-| FHRR | Phases [0, 2pi)                      | Continuous            |
-| HLB  | Normal +/-1, scaled by 1/sqrt(d)     | Continuous            |
-| BSC  | {0, 1}                               | Discrete              |
-| MAP-B| {-1, 0, 1}                           | Discrete              |
-| MAP-I| Integer values                       | Both, sort of         |
-| MAP-C| Real values                          | Continuous            |
-
     - although with enough discrete measurements you become continuous. floating point digits (continuous) are represented as binary (discrete)
     - I wonder if HLB supports FPE. HLB elements are real and hv are NOT self-inverses... so maybe?
   - VFA (com)binds Reproducing Kernel Hilbert Spaces with VSA. or 
@@ -99,6 +88,18 @@ References
   - "a VFA vector can be seen as a compact probabilistic data structure or sketch of a function" which can go beyond sketching like bloom filters and count-mins
   - "phasor vectors ... can be naturally represented by spikes". then MCR/BSBC should integrate well with SNN?
   - "Probably closest to the VFA concept are population codes (Pouget et al., 2000; Barber et al., 2003), such as Bayesian population codes (Ma et al., 2006). In these models each neuron typically has a Gaussian-shaped receptive field on the encoding manifold. This leads to an inner product kernel that decays with distance and is translation invariant. Thus Bayesian population codes induce a kernel function space. However, they lack the binding operation (at least we are not aware of one) to perform the algebraic function manipulations possible with VFA"
+
+| VSA  | Vector Element Distribution          | Element Values        |
+|------|--------------------------------------|-----------------------|
+| HRR  | Real values [-1,1)                   | Continuous            |
+| FHRR | Phases [0, 2pi)                      | Continuous            |
+| HLB  | Normal +/-1, scaled by 1/sqrt(d)     | Continuous            |
+| BSC  | {0, 1}                               | Discrete              |
+| MAP-B| {-1, 0, 1}                           | Discrete              |
+| MAP-I| Integer values                       | Both, sort of         |
+| MAP-C| Real values                          | Continuous            |
+
+
 - Computing reaching dynamics in motor cortex with Cartesian spatial coordinates
   - moving an arm with a feed-forward only
   - i mostly just looked at the pictures
@@ -555,7 +556,12 @@ References
     - FHRR is the most robust, but using complex numbers makes it expensive to implement.
     - MCR works like FHRR by operating on phases, but those phases are discretized, so it approximates FHRR using integers instead of real numbers.
     - BSDC-SEG is similar to MCR, but represents those discrete values using binary segments, making it efficient to implement in hardware.
-
+- Von Mises Mixture Distributions for Molecular Conformation Generation
+  - vM mixtures for molecule shape modeling
+  - von Mises fusion should be considered when HDC on modular/block representations
+  - this is a great diagram from [The Neural Von Mises Mixture Model](https://ericmjl.github.io/blog/2024/6/8/the-neural-von-mises-mixture-model/mixture-von-mises.webp)
+    - the CNR toy averages the mus (regardless of kappa) then keeps the smallest (least certain) kappa
+    - true vM would be able to include each mu (location on the circumference) and its height/weight (kappa) in the averaging process
 - Toroidal topology of population activity in grid cells
   - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
   - thank you, rats.

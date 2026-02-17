@@ -77,8 +77,8 @@ def bundle(hvs, block_size, noise_thresh=None):
     kappa = np.abs(z) / len(kappas) # a block's max kappa is 1.0
 
     if noise_thresh and kappa < noise_thresh:
-      mu = np.random.randint(block_size)
-      kappa = 0
+        mu = np.random.randint(block_size)
+        kappa = 0
     return mu, kappa
 
 
