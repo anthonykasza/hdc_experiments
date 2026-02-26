@@ -11,7 +11,7 @@ def new_hv(dims, block_size, kappa=1.0, rng=None):
 
   Returns:
   mu: integer phases in [0, block_size)
-  kappa: concentration values in (0, 1)
+  kappa: concentration values in [0, 1]
 
   μ is only meaningful if κ>0; otherwise μ is arbitrary.
   """

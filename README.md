@@ -500,6 +500,38 @@ References
   - ternary memory, where "dont care" is represented by *, sounds a lot like Gayler's -1,0,1 ternary MAP
 - Learning and generalization of compositional descriptions of visual scenes
 - Computing with Residue Numbers in High-Dimensional Representation
+  - focusses squarely on binding and factorizing. no similiarity preserving operation - no bundle.
+  - "residue hyperdimensional computing (RHC)" built on FHRR
+    - 'addition' is element-wise product
+    - 'multiplication' is element-wise exponentiation
+    - both are bind operators
+  - resonator network for factoring in superposition
+  - figure 2f. the kappa value of von Mises distributions can go to infinity yet your accuracy is bound from 0 to 1. how?
+    - explicitly tracking kappa per dimension could have some utility
+  - "Phase noise is the limiting factor in decoding subinteger states."
+  - i really like A.1 A Brief Survey of Distributed Coding Schemes
+    - thermometer
+      - number of levels limited by dimensionality
+      - global triangular kernel
+    - float
+      - number of levels limited by dimensionality
+      - triangular kernel with controllable widths (localization)
+    - scatter
+      - supports localization
+      - no limit to the number of levels created
+      - bell shaped kernel
+  - 3 years later and the world is still waiting for [source code](https://github.com/cjkymn/residuehdcomputing) :(
+  - [Plate calls out](https://youtu.be/3JWykw6WBJk?t=3837) that the residue number system (RHC) doesn't have a bundle/superposition operator. rightly so, because it's not a VSA.
+  - RHC is HDC but not VSA, just as CDT is
+    - RHC: a ring
+      - bind with modulo addition
+      - bind with modulo multiplication
+    - CDT: a group
+      - bundle with conjunction
+      - thin with some sparsifying scheme
+    - VSA: a field
+      - bundle with superposition
+      - bind with entangle
 - Integer Sparse Distributed Memory
   - appears to be the precursor to MCR
 - INTEGER SPARSE DISTRIBUTED MEMORY AND MODULAR COMPOSITE REPRESENTATION
@@ -517,6 +549,13 @@ References
   - "each model utilizes a different distance (or similarity) measurement, which explains the variations in performance between the two models"
   - same as Cyclic Group Representation "but uses a bundling based on element-wise mode instead of addition of complex numbers"
     - if each element is an approximate angle of a circle, why not bundle with the cyclic mean?
+- [Computing with Modular Arithmetic](https://www.youtube.com/watch?v=qZkwKDThzzg)
+  - in hardware, modulo is free by binary overflow
+  - cosin and sin and be put into lookup tables if the blocksize is static
+  - it sounds like their specialized hardware requires a burnt in static blocksize
+- Hyle: An HLS Framework for Hyperdimensional Computing Accela=erators on FPGAs
+  - BSC is fine for voice
+  - CGR is better for images
 - Efficient Hyperdimensional Computing with Modular Composite Representations
   - hardware! hyperdimensional coprocessing unit on risc-v. neat.
   - after having implemented BSBC, MCR seems like the same thing
@@ -562,6 +601,26 @@ References
   - this is a great diagram from [The Neural Von Mises Mixture Model](https://ericmjl.github.io/blog/2024/6/8/the-neural-von-mises-mixture-model/mixture-von-mises.webp)
     - the CNR toy averages the mus (regardless of kappa) then keeps the smallest (least certain) kappa
     - true vM would be able to include each mu (location on the circumference) and its height/weight (kappa) in the averaging process
+- oscillators and Kuramotosan
+  - [Kuramoto speaking about the model](https://www.youtube.com/watch?v=lac4TxWyBOg)
+      - "although my argument was so crude and involved a number of unjustifiable logical jumps"
+      - he didn't write a big fancy paper because he was just a beginner and couldn't evaluate his own work
+      - experts in the field were critical, research symposia had little interest, his work wasn't encouraged
+      - one word: "circadian rhythms"
+        - SCN neurons exhibit strong coupling
+  - synchronization aka phase locking: https://en.wikipedia.org/wiki/File:KuramotoModelPhaseLocking.ogv
+    - [Self-organization in natural swarms of Photinus carolinus synchronous fireflies](https://pubmed.ncbi.nlm.nih.gov/34233879/)
+    - [Brain Waves Synchronize when People Interact](https://www.scientificamerican.com/article/brain-waves-synchronize-when-people-interact/)
+    - [metronomes](https://www.youtube.com/watch?v=6bU9ZPIm3fc)
+  - [Kuramoto Model of Synchronized Oscillators](https://blogs.mathworks.com/cleve/2019/08/26/kuramoto-model-of-synchronized-oscillators/)
+    - [interactive toy](https://www.complexity-explorables.org/explorables/ride-my-kuramotocycle/)
+      - in von Mises's model, kappa is a measure of concentration
+      - in Kuramoto's model, kappa is a measure of synchronization
+      - if we added a temporal component to CNR it would start to look like Kuramoto
+  - [Magnetically Coupled Harmonic Oscillators](https://ucscphysicsdemo.sites.ucsc.edu/coupled-magnetic-pendulums/)
+  - [physically coupled oscillators](https://www.youtube.com/watch?v=A6fsvsIJcSo)
+- Hyperdimensional Computing Provides a Programming Paradigm for Oscillatory Systems
+  - "coherent beams of light can be used to represent a phase, transported via waveguides, and summed via superposition. However, ‘multiplying’ two beams of light is not as simple to achieve, due to the lack of interaction between photons"
 - Toroidal topology of population activity in grid cells
   - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
   - thank you, rats.
@@ -1017,18 +1076,33 @@ References
     4. the very very smart girl, `bind(THE_hv, VERY_hv, VERY_hv, SMART_hv, GIRL_hv)`
       - VERY_hv bound to VERY_hv will equal the identity HV (all=1)
       - the result of number 2 and number 4 will be indistinguishable
+- Computation Within Cultured Neural Networks
+  - "cortical networks as the computational unit for real-time control systems within autonomous robotic platforms"
+  - "specialized tissue culture dishes" controlling a plane. in 2004. wow.
+  - i wonder if Cortical Labs has tried a flight simulator
+    - not a controling a plane, but they are teaching brain cells to shoot humanoids [DOOM](https://www.newscientist.com/article/2517389-human-brain-cells-on-a-chip-learned-to-play-doom-in-a-week/)
+- Removing some 'A' from AI: Embodied Cultured Networks
+  - i wonder if they tried using other cells besides neurons... like mycelia
+    - they might not learn as fast as neurons but they are likely easier to culture
+    - dried mushrooms are nonperishable
+  - Fig 2 is neat. why fabricate circuits when you could grow them?
+  - they controlled a Khepera robot
+  - "All onemonth-old infants can distinguish between the English L and R sounds. Five months later, Japanese infants lose the ability while American infants maintain it, because the distinction is not needed to understand the Japanese language ... brain (re)wiring depends on environmental context and occurs throughout life"
+-  Development of Hybrid Systems: Interfacing a Silicon Neuron to a Leech Heart Interneuron
+  - leech neurons
+  - "we were able to manipulate a living neuron to create a pattern generator with user-defined characteristics"
+- Mem-fractive Properties of Mushrooms
+  - grey oyster fungi
+- Sustainable memristors from shiitake mycelium for high-frequency bioelectronics
+  - mycelia memristors
+  - edible space computers
+    - shiitake and button
+  - [code](https://github.com/javeharron/abhothData)
+  - "dehydration  can preserve the observed properties in a previously “programmed” sample"
+  - "Unlike expensive conventional memristors, culturing fungal memristors does not require large facilities or rare minerals. The process can be scaled to grow large systems, which can be programmed and pre-served for long-term use at low cost."
 - Learning from Hypervectors: A Survey on Hypervector Encoding
   - TLDR: all you need is coding
   - "resistive RAM-based processing" aka memristors
-    - Mem-fractive Properties of Mushrooms
-      - grey oyster fungi
-    - Sustainable memristors from shiitake mycelium for high-frequency bioelectronics
-      - mycelia memristors
-      - edible space computers
-        - shiitake and button
-      - [code](https://github.com/javeharron/abhothData)
-      - "dehydration  can preserve the observed properties in a previously “programmed” sample"
-      - "Unlike expensive conventional memristors, culturing fungal memristors does not require large facilities or rare minerals. The process can be scaled to grow large systems, which can be programmed and pre-served for long-term use at low cost."
   - szection III. hypervector mapping
     - orthogonal hv for symbolic/categorical data
       - orthogonality can be improved by generating atomic hv from sogol sequence
@@ -1499,6 +1573,12 @@ Misc
   - [a simple pangenomic graph](https://pangenome.github.io/images/genomic-vs-pangenomic-analysis.png)
   - [a tube map visualization](https://pmc.ncbi.nlm.nih.gov/articles/PMC10638906/figure/F1/) of a pangeonmic graph from  "Pangenome graph construction from genome alignments with Minigraph-Cactus" 
     - [a tube map view of the loop](https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Chicago_L_diagram_sb.svg/1827px-Chicago_L_diagram_sb.svg.png)
+- Abstract Algebra
+  - [The Very Basics of Groups, Rings, and Fields](https://www-users.cse.umn.edu/~brubaker/docs/152/152groups.pdf)
+  - [Symmetries of an Equilateral Triangle](https://www.youtube.com/watch?v=DO_pHSZ12nU)
+    - the [entire course](https://www.youtube.com/watch?v=qOoQOJcjD2E&list=PLg8ZEeSiXsjgoQJzRcq60GjK0UrkMsA3-) is pretty rad
+  - "Cyclic groups are groups in which every element is a power of some fixed element"
+    - Fraction power encoding (FPE) in FHRR forms a [cyclic group](https://sites.millersville.edu/bikenaga/abstract-algebra-1/cyclic-groups/cyclic-groups.pdf)
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
@@ -1541,7 +1621,6 @@ Misc
     - vector represents real 1.33, vectot element value: 12 (6 * 6 * 1/3)
   - self-binding/FPE works for binding operators besides element-wise multiplication
 - Resonator Networks
-  - aka Hopfield Network
   - similar to the result of gradient descent
   - an iterative algorithm that searches the combinatoric space of the codebooks without searching by exhaustion
   - given an HV from a binding operation, the codebooks for the input of the binding operation, determine the inputs of binding operation
@@ -1612,7 +1691,7 @@ Misc
   - each operation would essentially be done partially at 33% but would have a deterministic pattern to which elements it 'fails' on
 - binding
   - binding all the hypervectors in a VSA together converges to the binding identity
-  - binding is a symmetric operation. bind with itself to invert.
+  - in MAP, binding is a symmetric operation. bind with itself to invert. this is not true in every VSA
     - A rotated/reflected around the hypercube according to B results in C
   - binding is a group operation
     - element * element = element
@@ -1622,6 +1701,9 @@ Misc
       - multi-binding with multiplcation is commutative
       - multi-binding with permutation is not unless constrained to cyclic shifting
   - binding is how we "combine" concepts into new concepts in our mind
+  - a neat study and [excellent explaination](https://www.youtube.com/watch?v=D7R6EwrCZw8) of cognative binding
+    - i had to look up the phonology and etymology of ophthalmology
+      - φθ is a tough one to pronounce, as in "fifth". yet, so is "sixth".
 - i wonder if our brains bundle when we sleep
 - "science cannot move forward without heaps"
   - [thank you to the heaps](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Memorial_to_the_lab_animals_%2814604111622%29.jpg/1024px-Memorial_to_the_lab_animals_%2814604111622%29.jpg)
