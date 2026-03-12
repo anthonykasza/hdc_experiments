@@ -523,13 +523,13 @@ References
   - 3 years later and the world is still waiting for [source code](https://github.com/cjkymn/residuehdcomputing) :(
   - [Plate calls out](https://youtu.be/3JWykw6WBJk?t=3837) that the residue number system (RHC) doesn't have a bundle/superposition operator. rightly so, because it's not a VSA.
   - RHC is HDC but not VSA, just as CDT is
-    - RHC: a ring
+    - RHC
       - bind with modulo addition
       - bind with modulo multiplication
-    - CDT: a group
+    - CDT
       - bundle with conjunction
       - thin with some sparsifying scheme
-    - VSA: a field
+    - VSA
       - bundle with superposition
       - bind with entangle
 - Integer Sparse Distributed Memory
@@ -619,8 +619,47 @@ References
       - if we added a temporal component to CNR it would start to look like Kuramoto
   - [Magnetically Coupled Harmonic Oscillators](https://ucscphysicsdemo.sites.ucsc.edu/coupled-magnetic-pendulums/)
   - [physically coupled oscillators](https://www.youtube.com/watch?v=A6fsvsIJcSo)
+- Kuramoto Orientation Diffusion Models
+  - [code](https://github.com/KingJamesSong/OrientationDiffusion)
+    - sweet gifs
+  - CNR's bundle op sounds similar to "_desynchronization_"
+  - "Synchronization ... encourages local patterns and orientations to reinforce one another – edges to align, ridges to remain coherent, and flows to stay smooth – before noise erodes these features"
+  - it sounds like they used oscillators to build a generic magic-wand-tool for images
+  - local vs global coupling
+- Artificial Kuramoto Oscillatory Neurons
+  - fig 1 is cool
+  - "a multi-dimensional vector version of the Kuramoto model with a symmetry-breaking term"
+  - solve sudoku, neat
 - Hyperdimensional Computing Provides a Programming Paradigm for Oscillatory Systems
   - "coherent beams of light can be used to represent a phase, transported via waveguides, and summed via superposition. However, ‘multiplying’ two beams of light is not as simple to achieve, due to the lack of interaction between photons"
+  - the paper provides a reinterpretation of HDC
+    - physical oscillators can be used for HD computing. there's a bridge between FHRR and oscillators.
+- Explosive Synchronization Transitions in Scale-Free Networks
+  - not all synchronization happens gradually/continuously
+  - discrete jumps are possible, called "explosive" synch
+  - metronomes on a spring bridge is an example of global coupling, all oscillators influence all others
+  - other graph topologies can be considered
+    - scale-free networks
+      - graphs with a few central nodes (hubs)
+      - if hub degree (connectivity) correlates to a hub's frequency then sudden locking or explosive synchronization can occur
+    - star shaped networks behave similarly
+    - the higher the degree of the oscillator, the more important it's frequency is for synchronization
+  - the paper provides insights into how micro behavior results in macro changes
+    - network topology can influence collective behavior
+    - systems can degrade abruptly instead of gradually
+- Diversity mitigates polarization and consensus in opinion dynamics
+  - "Real life systems consisting of discrete, interacting subsystems can be effectively treated as a system of coupled oscillators"
+    - social networks are oscillator networks so KM can be applied to public opinion
+  - section I uses [0, pi] but section II uses [0, 2pi]
+    - what's the difference between an opinion at degree 90 and 270?
+  - fig 1 (b) shows a neutral zone in yellow where there is no acceptance or rejection
+  - fig 8 (b) shows a bipolar distribution, similar to what HLB draws hypervector elements from
+  - "These results also confirm that the population with a significant number of undecided or stubborn individuals can lead to a situation of not being able to unite, even for a common cause"
+    - indecisive and stubborn congresspeople can lead to nothing getting done
+  - scattered, tripole, bipole, synchronized opinions
+    - ES can occur if the A threshold is adjusted
+    - in CNR kappa only measures the confidence of the leading/winning root of unity
+    - i wonder if there is a simple way to also indicate the number of clusters within the vM distribution
 - Toroidal topology of population activity in grid cells
   - "using simultaneous recordings from many hundreds of grid cells and subsequent topological data analysis, we show that the joint activity of grid cells from an individual module resides on a toroidal manifold, as expected in a two-dimensional CAN. Positions on the torus correspond to positions of the moving animal in the environment"
   - thank you, rats.
@@ -1676,6 +1715,18 @@ Misc
   - projecting higher dimensional data into lower dimensions is often useful too
     - think about the 2d shadow cast by a 3d object
 - hypercomplex hypervectors, quaternions and octonions
+  - [Complex Numbers are Planar Numbers for Rotations and Waves](https://www.youtube.com/watch?v=9ICy2aw6acI&t=460s)
+    - that slide is such a great explaination of number systems, thank you.
+    - VTB and GHHR using matrices make non-commutative VSA
+      - this is useful for nested structures like trees
+    - VSAs which use modular addition to bind can ensure clean division (unbinding) by selecting a prime root of unity
+      - i think this is what residue/RHD was saying
+    - an explaination of [cycles](https://www.youtube.com/watch?v=9ICy2aw6acI&t=3758s) from the same video
+      - MAP and BSC appear to behave like real numbers
+      - HRR and FHRR appear to behave like complex numbers
+      - also interesting to visually see what happens when half of the complex number is through out (such as magnitude). projection flattens the spiral/spring.
+      - real numbers make superposition of waves difficult, complex numbers make it simple
+      - direct, inverse, and lateral. forward, backwards, and sideways.
 - [zotero HDC/VSA group library](https://www.zotero.org/groups/5100301/hdvsa_literature/library)
 - if we can substitute from one HV to another, making hv1 more similar to hv2...
   - can we make hv1 more unlike hv2?
