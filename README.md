@@ -29,7 +29,10 @@ References
     - "addition modulo n as binding operation"
     - sim is measured by the cosine of the phase differences
     - bundling for learning a centroid/prototype is replaced with stochastic gradient decent
+  - 6.3 Non-Abelian Finite Group VSAs
     - "We leave exploration of non-Abelian VSAs to future work"
+      - all finite abelian (commutative) groups collapse to cyclic phase rotation, or products of cyclic groups, or modulus/residue numbers
+      - to express the types of structures provided by non-abelian groups GHRR expands beyond single valued elements into square matrices and introduces a diagonality parameter
 - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
 - SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
@@ -532,6 +535,7 @@ References
     - VSA
       - bundle with superposition
       - bind with entangle
+  - what were to happen if the use of primes from this paper was combined with the use of small diagonal matrices from GHRR? Small diagonal marices of small prime numbers could be neat. primes for factorization, matrix mixing for order
 - Integer Sparse Distributed Memory
   - appears to be the precursor to MCR
 - INTEGER SPARSE DISTRIBUTED MEMORY AND MODULAR COMPOSITE REPRESENTATION
@@ -595,6 +599,9 @@ References
     - FHRR is the most robust, but using complex numbers makes it expensive to implement.
     - MCR works like FHRR by operating on phases, but those phases are discretized, so it approximates FHRR using integers instead of real numbers.
     - BSDC-SEG is similar to MCR, but represents those discrete values using binary segments, making it efficient to implement in hardware.
+- Exploring Symmetry and Representation in Vector Symbolic Architectures
+  - Figure 7: Visualization of Product Retrieval on Torus Under Iteration
+    - appears to explain iterations of a resonator on the torus. very nice
 - Von Mises Mixture Distributions for Molecular Conformation Generation
   - vM mixtures for molecule shape modeling
   - von Mises fusion should be considered when HDC on modular/block representations
@@ -912,6 +919,7 @@ References
 - A Brain-Inspired Low-Dimensional Computing Classifier for Inference on Tiny Devices
 - Hypervector Design for Efficient Hyperdimensional Computing on Edge Devices
   - [tinyML Research Symposium 2021](https://www.youtube.com/watch?v=CSJ9Qr-SkeQ)
+  - non linear leveling for better class separation and much much much smaller dimensionality of symbols
 - Autonomous Learning with High-Dimensional Computing Architecture Similar to von Neumann’s
   - "the circuits in the cerebellum are laid out beautifully in 3D for a massive long-term memory for high-dimensional vectors"
   - "The vectors can be binary or integer or real or complex—the computing power comes more from high dimensionality (e.g., H = 10,000) than from the nature of vector components."
@@ -1360,6 +1368,13 @@ References
     - transposition reduces similarity less than replacement
     - this provides equivariance to sequence shifts
   - see also "Shift-Equivariant Similarity-Preserving Hypervector Representations of Sequences"
+- HyperSpace: A Generalized Framework for Spatial Encoding in Hyperdimensional Representations
+  - comparing individual operators across VSA (e.g. which bundling operation is most efficient) doesn't give a complete view of performance, hyperspace is a framework which allows end-to-end performance eval of VSA. HRR vs FHRR is the example used in the paper.
+  - FHRR has fewer operations but HRR takes half the memory. computation vs space
+  - i'm interested to see their implementation of hopfield and resonator nets but [the code]( https://github.com/Parsa-Research-Laboratory/HyperSpace) has yet to be published :(
+  - the paper mentions how other implmentations focus on a single backend. as the name implies, torchhd was built for torch but holovec has a few different backends
+  - fig 4, what's that green square at the top-right of the HRR heatmap?
+
 
 Summary
 -------
@@ -1533,11 +1548,26 @@ HDC Operations
   - Sparsity: proportion of nonzero or active elements
   - Precision: effects of approximate calculations and normalization/clipping/pooling
   - Reliability: partial/faulty operations. Are operations permitted to fail occasionally? If pair-wise multiply fails on 10% of the elements of bound/bundled/permuted vector, what is the affect on the system?
+- Representing Word Meaning and Order Information in a Composite Holographic Lexicon
+  - BEAGLE, bound encoding of the aggregate language environment
+  - co-occurence and transitional information in sequences
+  - words appear inthe same sentence are related, words that appear in similar contexts are related
+  - the n-grams used in the paper are words, not letters
+  - "To take advantage of the asymmetric temporal structure of language, a binding operation that is noncommutative is required"
+    - "For computational efficiency, we use the noncommutative permutation convolution proposed by Plate"
+- Distributed Representations of Sentences and Documents
+  - paragraph vectors (doc2vec)
+  - no parsing
+- Sequence Prediction with Sparse Distributed Hyperdimensional Coding Applied to the Analysis of Mobile Phone Use Patterns
+  - categorical sequence prediction
+  - studied "application launch logs, sequences of GPS locations, and music playback logs"
+
 
 
 Misc
 ----
 - code
+  
   - Various [data structures](https://github.com/denkle/HDC-VSA_cookbook_tutorial/blob/main/HDVecSym/DS.py) built up from a custom ternary MAP implementation
   - Resonator Networks
     - A [simple](https://github.com/spencerkent/resonator-networks/blob/master/resonator_networks/examples/simple.py) Resonator Network
@@ -1564,6 +1594,9 @@ Misc
   - [hdlib](https://github.com/cumbof/hdlib)
   - [hypervector](https://github.com/rishikanthc/hypervector)
     - encoder.rs utilizes MBAT to encode JSON into HV. very cool.
+  - [hypervector](https://github.com/jesper-olsen/hypervector/)
+    - A Rust library for hyperdimensional computing (HDC)
+    - i like comparison of [element types](https://github.com/jesper-olsen/hypervector/blob/master/READMEplate.md)
   - [hdc](https://github.com/Zeldax64/hdc), HDC examples in C++ including BSC Vector classes and item memories
     - no license :(
   - [HDCpy](https://github.com/jdcasanasr/hdcpy)
