@@ -8,7 +8,7 @@ from qhrr import *
 # ============================================================
 
 def mean_distance(a, b):
-    return np.mean(quaternion_geodesic_distance(a, b))
+    return np.mean(qhrr_similarity(a, b))
 
 
 # ============================================================
@@ -140,25 +140,10 @@ plt.plot(xs, results_lie, marker='o', label="Lie algebra")
 plt.plot(xs, results_noise, linestyle='--', label="Random hypervector (noise baseline)")
 
 
-# --- π-scaled y-axis ---
-pi = np.pi
-yticks = np.linspace(0, pi, 7)
-plt.yticks(
-    yticks,
-    [r"0",
-     r"π/6",
-     r"π/3",
-     r"π/2",
-     r"2π/3",
-     r"5π/6",
-     r"π"]
-)
-plt.ylim(0, np.pi)
-
 plt.xticks(range(0, N + 1))
 
 plt.xlabel("Number of bundled hypervectors")
-plt.ylabel("Geodesic distance (radians)")
+plt.ylabel("Similarity")
 plt.title("QHRR vs Lie Algebra Bundling")
 plt.grid(True)
 plt.legend()

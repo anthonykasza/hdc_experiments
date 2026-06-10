@@ -38,14 +38,6 @@ def qhrr_bundle(vectors):
   summed = np.sum(vectors, axis=0)   # (D, 4)
   return normalize_quaternion(summed)
 
-def quaternion_geodesic_distance(q1, q2):
-  dot = np.sum(q1 * q2, axis=-1)
-  dot = np.clip(np.abs(dot), -1.0, 1.0)
-  return 2.0 * np.arccos(dot)
-
-def mean_geodesic_distance(hv1, hv2):
-  return np.mean(quaternion_geodesic_distance(hv1, hv2))
-
 def permute_roll(hv, k=1):
   return np.roll(hv, shift=k, axis=0)
 
@@ -56,7 +48,7 @@ def permute_conjugation(hv, p):
   )
 
 def qhrr_similarity(hv1, hv2):
-  return 1.0 - mean_geodesic_distance(hv1, hv2) / np.pi
+  return np.mean(np.sum(hv1*hv2, axis=-1))
 
 def quaternion_power(q, alpha):
   '''power encoding'''
@@ -83,12 +75,12 @@ def quaternion_power(q, alpha):
   return np.concatenate([w_new[..., None], v_new], axis=-1)
 
 def cleanup(query, codebook):
-  distances = {}
+  similarities = {}
   for symbol, hv in codebook.items():
-    distances[symbol] = mean_geodesic_distance(query, hv)
+    similarities[symbol] = qhrr_similarity(query, hv)
 
-  best_symbol = min(distances, key=distances.get)
-  return best_symbol, distances
+  best_symbol = max(similarities, key=similarities.get)
+  return best_symbol, similarities
 
 
 
@@ -137,8 +129,7 @@ if __name__ == "__main__":
   print("Half ⊗ Half ≈ original:",
     qhrr_similarity(recomposed, ROLE) > 0.999)
 
-  print("\n--- Geodesic distance & similarity test ---")
-  print("Distance identical:", mean_geodesic_distance(ROLE, ROLE))
+  print("\n--- Similarity test ---")
   print("Similarity identical:", qhrr_similarity(ROLE, ROLE))
   print("Similarity random:", qhrr_similarity(ROLE, FILLER))
 
@@ -155,14 +146,14 @@ if __name__ == "__main__":
 
   print("\n--- Cleanup / nearest neighbor test ---")
   codebook = {
-  "A": qhrr_random(D),
-  "B": qhrr_random(D),
-  "C": qhrr_random(D),
+    "A": qhrr_random(D),
+    "B": qhrr_random(D),
+    "C": qhrr_random(D),
   }
 
   query = qhrr_bind(codebook["A"], codebook["B"])
   recovered = qhrr_unbind(query, codebook["A"])
-  symbol, distances = cleanup(recovered, codebook)
+  symbol, similarities = cleanup(recovered, codebook)
 
-  print("Recovered symbol:", symbol)
-  print("Distances:", distances)
+  print("Recovered symbol should be B:", symbol)
+  print("Similarities:", similarities)

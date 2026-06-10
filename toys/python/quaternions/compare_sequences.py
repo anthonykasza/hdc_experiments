@@ -6,6 +6,7 @@
 
 
 import numpy as np
+from qhrr import *
 
 # ============================================================
 # FHRR (Fourier HRR) with positional permutation
@@ -30,57 +31,6 @@ def fhrr_similarity(a, b):
 
 def fhrr_permute(v, shift):
   return np.roll(v, shift)  # simple circular permutation
-
-
-# ============================================================
-# QHRR (Quaternion HRR)
-# ============================================================
-
-def normalize_quaternion(q):
-  return q / np.linalg.norm(q, axis=-1, keepdims=True)
-
-def random_unit_quaternion(shape):
-  return normalize_quaternion(np.random.randn(*shape, 4))
-
-def quaternion_conjugate(q):
-  qc = q.copy()
-  qc[..., 1:] *= -1
-  return qc
-
-def quaternion_multiply(q1, q2):
-  w1, x1, y1, z1 = np.split(q1, 4, axis=-1)
-  w2, x2, y2, z2 = np.split(q2, 4, axis=-1)
-  return np.concatenate([
-    w1*w2 - x1*x2 - y1*y2 - z1*z2,
-    w1*x2 + x1*w2 + y1*z2 - z1*y2,
-    w1*y2 - x1*z2 + y1*w2 + z1*x2,
-    w1*z2 + x1*y2 - y1*x2 + z1*w2
-  ], axis=-1)
-
-def qhrr_random(D):
-  return random_unit_quaternion((D,))
-
-def qhrr_bind(a, b):
-  return normalize_quaternion(quaternion_multiply(a, b))
-
-def qhrr_unbind(bound, key):
-  return normalize_quaternion(quaternion_multiply(bound, quaternion_conjugate(key)))
-
-def qhrr_bundle(vectors):
-  vectors = np.stack(vectors, axis=0)
-  summed = np.sum(vectors, axis=0)
-  return normalize_quaternion(summed)
-
-def quaternion_geodesic_distance(q1, q2):
-  dot = np.sum(q1 * q2, axis=-1)
-  dot = np.clip(np.abs(dot), -1.0, 1.0)
-  return 2.0 * np.arccos(dot)
-
-def mean_geodesic_distance(hv1, hv2):
-  return np.mean(quaternion_geodesic_distance(hv1, hv2))
-
-def qhrr_similarity(hv1, hv2):
-  return 1.0 - mean_geodesic_distance(hv1, hv2) / np.pi
 
 
 
