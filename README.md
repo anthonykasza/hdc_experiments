@@ -469,18 +469,6 @@ References
           ---------------------------------
           C:  ? ? ? ?  ? ? ? ? 
           ```
-- Geometric Analogue of Holographic Reduced Representation
-  - "Replacing convolutions by geometric products one arrives at reduced representations analogous to HRR but interpretable in terms of geometry"
-  - intro
-    - quantum computation is "tensor products of two-dimensional complex vectors called qubits"
-    - replace tensor product with geometric ones from geometric algebra (GA)
-    - "Systems where HRR are applicable might therefore, at least in principle, perform quantum algorithms"
-  - the beef
-    - BSC is mapped to HRR thru an exponential map
-    - "the 'algebra' formalizes a procedure that resembles an IQ test". if groups/algebras define IQ tests then of course we should be using them to build AI
-    - wow, math.
-  - conclusion
-    - something about the geometric product?
 - Computing with Hypervectors for Efficient Speaker Identification
 - Integer Factorization with Compositional Distributed Representations
   - "Thus, setting the value of 𝛽 allows traversing between two extremes: when 𝛽 is very small, FPEs of scalars that are far away from each other are still very similar (subsymbolic behavior) while when 𝛽 is very large, FPEs of scalars that are near each other are dissimilar (symbolic behavior)."
@@ -1373,7 +1361,42 @@ References
   - FHRR has fewer operations but HRR takes half the memory. computation vs space
   - i'm interested to see their implementation of hopfield and resonator nets but [the code]( https://github.com/Parsa-Research-Laboratory/HyperSpace) has yet to be published :(
   - the paper mentions how other implmentations focus on a single backend. as the name implies, torchhd was built for torch but holovec has a few different backends
+- Representing Word Meaning and Order Information in a Composite Holographic Lexicon
+  - BEAGLE, bound encoding of the aggregate language environment
+  - co-occurence and transitional information in sequences
+  - words appear inthe same sentence are related, words that appear in similar contexts are related
+  - the n-grams used in the paper are words, not letters
+  - "To take advantage of the asymmetric temporal structure of language, a binding operation that is noncommutative is required"
+    - "For computational efficiency, we use the noncommutative permutation convolution proposed by Plate"
+- Distributed Representations of Sentences and Documents
+  - paragraph vectors (doc2vec)
+  - no parsing
+- Sequence Prediction with Sparse Distributed Hyperdimensional Coding Applied to the Analysis of Mobile Phone Use Patterns
+  - categorical sequence prediction
+  - studied "application launch logs, sequences of GPS locations, and music playback logs"
   - fig 4, what's that green square at the top-right of the HRR heatmap?
+- On Geometric Algebra representation of Binary Spatter Codes
+  - GA can represent BSC
+  - each binary hypervector corresponds to a basis blade
+  - 1-bit indices indicate that the corresponding basis vector participates in the blade
+  - the count of 1-bits (the Hamming weight) equals the blade's grade k
+  - bundling corresponds to addition of blades, producing multivectors (superpositions of blades)
+  - binding is the geometric product
+  - GA is XOR but with ordering information in sign
+- Geometric Analogue of Holographic Reduced Representation
+  - "Replacing convolutions by geometric products one arrives at reduced representations analogous to HRR but interpretable in terms of geometry"
+  - quantum computation is "tensor products of two-dimensional complex vectors called qubits"
+  - replace tensor product with geometric ones from geometric algebra (GA)
+  - "Systems where HRR are applicable might therefore, at least in principle, perform quantum algorithms"
+- Geometric Algebra Model of Distributed Representations
+  - i don't grasp much of this paper but figure 8 is neat
+- Tensor-product vs. geometric-product coding
+  - fig 1. sliding combs past each other reminds me of convolution. teeth annihilating each other reminds me of XOR
+  - fig 3
+    - you can transpose segments but doing so flips sign
+    - consecutive identical segments cancel
+  - quantum computation has a geometric analogue
+  - cartoons!
 
 
 Summary
@@ -1548,19 +1571,6 @@ HDC Operations
   - Sparsity: proportion of nonzero or active elements
   - Precision: effects of approximate calculations and normalization/clipping/pooling
   - Reliability: partial/faulty operations. Are operations permitted to fail occasionally? If pair-wise multiply fails on 10% of the elements of bound/bundled/permuted vector, what is the affect on the system?
-- Representing Word Meaning and Order Information in a Composite Holographic Lexicon
-  - BEAGLE, bound encoding of the aggregate language environment
-  - co-occurence and transitional information in sequences
-  - words appear inthe same sentence are related, words that appear in similar contexts are related
-  - the n-grams used in the paper are words, not letters
-  - "To take advantage of the asymmetric temporal structure of language, a binding operation that is noncommutative is required"
-    - "For computational efficiency, we use the noncommutative permutation convolution proposed by Plate"
-- Distributed Representations of Sentences and Documents
-  - paragraph vectors (doc2vec)
-  - no parsing
-- Sequence Prediction with Sparse Distributed Hyperdimensional Coding Applied to the Analysis of Mobile Phone Use Patterns
-  - categorical sequence prediction
-  - studied "application launch logs, sequences of GPS locations, and music playback logs"
 
 
 
