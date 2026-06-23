@@ -6,6 +6,53 @@ References
 - Language Geometry using Random Indexing
 - Hyperdimensional Computing: An Introduction to Computing in Distributed Representation with High-Dimensional Random Vectors (Kanerva)
 - Holographic Reduced Representations (Plate)
+- Holographic Reduced Representation: Distributed Representation for Cognitive Structures
+  - "Representations in which many units are active are fully distributed, those with just a few units active are somewhat localist and are sometimes called sparse distributed representations, and those with just one unit active are fully localist"
+  - conjunctive codes bind together concepts but lead to dimensionality growth
+    - conjunective codes can be superimposed
+    - "In the terms of linear algebra, this is equivalent to multiplying the color vector by the binding matrix, and thresholding the result"
+    - "we can superimpose bindings by ordinary summation"
+    - "all conjunctive codes ... can be viewed as tensor products or subsets of tensor products"
+  - figures 28 and 29 compare the outer product with convolution
+    - the outer product of a vector of length N and a vector of length M results in a matrix of size NxM. the outer product is non-commutative
+    - convolution of vectors results in a vector of length k(n-1)+1. convolution loses the non-commutativity of the outer product (tensor product). convolution is associative. convolution can be reversed/decoded with correlation but is noisy. high dimensionality reduces the noise.
+      - convolution requires the vectors are normally distribtued with mean 0 and variance 1/n. and the elements sum to 1.
+    - both outer products and convolution product can be superimposed to create memory traces
+    - both operations result in growth of representation
+  - wow, i didn't realize how common convolution was for binding. lots of models were exploring its use
+  - "Binary Spatter Codes are equivalent to HRRs in the frequency domain ... with phase angles quantized to 0 and pi"
+  - sparse distributed representations are great, but superposition can increase density of representations
+    - APNN's ensure sparsity after operations. remove elements from an overly-dense vector in a way that depends on that vector
+      - thin a vector based on permutations of itself
+        - permutations can be random but must be fixed throughout learning
+  - distributed representations can be:
+    - random
+      - e.g. HRR draw elements from a gaussian, then normalizes
+    - handcoded
+    - learned via supervision
+      - backprop
+    - learned via nonsupervision
+      - backprop + autoencoder networks
+    - derived from sumstats
+      - e.g. latent semantic analysis
+        - construct a term-frequency matrix
+          - [an example](https://youtu.be/NgMWHEC2A4g?t=2050) by Kanerva
+        - filter out certain words that are too frequent or too infrequent
+        - singular value decomposition
+  - "There is also a circular version of correlation, which under certain conditions is an approximate inverse of circular convolution"
+  - what would a sparse HRR look like? "I do not use binary representations in this book because of diﬃculties with maintaining constant density"
+  - "For example, the floating-point numbers could be stored in reduced precision"
+    - like as modular ints?
+  - "Convolution powers [or fractional powers] provide an easy way of generating a sequence of uncorrelated vectors from a single vector."
+  - figure 37 illustrates well the fhrr's multiplication and analogy to phases
+    - the first element of f(x) and f(y) are how i visualize BSC
+    - figure 38 is great too. seeing the phases of the vectors is very explainitory
+  - "the elementwise multiplication of the transforms of two vectors x and y"
+    - what if the vectors represented transforms themselves?
+  - integer exponentiation can be useful and fractional powers are continuous trajectories through a space
+  - permutations and matrix multiplications stops commutivity "because convolution is commutative (ab=ba), whereas the outer product is not"
+  - figure 41 makes me think ... what would the result look like visually if i mutiplied 2 bw images of the same shape?
+  - 
 - HDCluster: An Accurate Clustering Using Brain-Inspired High-Dimensional Computing
 - A comparison of vector symbolic architectures
 - [Computing with High-Dimensional Vectors](https://www.youtube.com/watch?v=zUCoxhExe0o) (Kanerva) 
@@ -687,6 +734,10 @@ References
     - unitary matrices have inverse
   - hypervectors with elements of matrices are more expressive than hv with elements of scalars
 - Recasting Self-Attention with Holographic Reduced Representations
+  - it would seem that attention could be represented by a weighted bundle of some codebook.
+    - a query hv is compared to all items in a codebook
+    - the similiarity metric can be used to create a weighted bundled of the codebook
+    - all keys/values are represented in the bundle proportional to their similarity to the query hv
 - Deploying Convolutional Networks on Untrusted Platforms Using 2D Holographic Reduced Representations
 - Fractional Binding in Vector Symbolic Architectures as Quasi-Probability Statements
 - [Category Theory Illustrated](https://github.com/abuseofnotation/category-theory-illustrated/tree/master)
@@ -925,6 +976,11 @@ References
   - "Detecting. Recognizing previously encountered states makes it possible to detect irregularities and anomalies that can serve as an alarm, for example."
   - he keeps using this term "regularities" to refer to patterns/structure in data. regularities are anything that isn't random.
   - everytime i read something by this Pentti guy, i wish there was more 
+- [Some talks about Sparse Distributed Memory and assoc. topics](https://www.youtube.com/playlist?list=PLISEtDmihMo2TUw5x0s8FAzB4ainh6q59)
+  - these talks are incredible. i wish there were more.
+  - Pentti talks about how the context vectors for words in sentences were ternary and 10k dims but very sparse: 15 1s, 15 -1s, the rest 0. 
+    - this makes sense as word vectors are chosen randomly and context vectors are updated with bundle which does not propegate 0s as multiplication would
+    - if you're model is mostly bundling, start with very sparse symbols
 - Computing with Hypervectors for Efficient Speaker Identification
   - "The proposed speech encoder aims to capture the pronunciation variations between speakers"
   - algo
@@ -1397,6 +1453,70 @@ References
     - consecutive identical segments cancel
   - quantum computation has a geometric analogue
   - cartoons!
+- Waking Up From The Boolean Dream
+  - are ants symbols? Hofstadter thinks not
+    - "No one ant is essential; even large numbers of ants are dispensable. All that matters is the statistics: thanks to it, the information moves around at a level far above that of the ants. Ditto for neural firings in brains"
+  - "perhaps weather prediction is an intrinsically intractable problem"
+  - "In physics, temperature is a number that measures the degree of random thermal jumbling going on in a system composed of many similar parts. In Smolensky's work, a "computational temperature" controls how much randomness is injected into the system"
+  - the anagrams analogy seems overly complicated, like intelligence is something special imbibed upon those blessed with engrish skillz. anagrams is achieved with statistics: first, you have to know a lot of words. then, you have a strong notion of which letters typically combine (ch, sh, th, wh, ph, but not kh, yh or dh). then you start clumping letters (symbols) and guessing at word parts (syllables) until you're able to construct multisyllabic combinations, leading to full words.
+    - being able to do anagrams does not prove creativity or intelligence, it proves that you are statistical. and you have a large lexicon.
+    - being good at anagrams in one language doesn't make you good at anagram in another
+  - the discussion of symbols is worthwhile to consider and seeing all the different font faces is interesting.
+    - knowing that the images contain the alphabet my brain can eventually recognize the letters. however if i saw the  images without context, most of them would look like random squiggles
+  - this article is the first I've read of his. the style seems to be very stream of consciousness. perhaps on purpose to illustrate how brains can jump between topics/concepts in the most unexpected, yet stastically probable, ways.
+- Sparse Distributed Memory
+  - wow. a very lucid description of Kanerva's early theory on memory. a rather stark constrast to Hofstadter  - more engineeringy
+  - math. computers. brains and neurons. he connects them all.
+  - the memory is not only sparse and distributed by redundant - both in memory locations (writing to all addresses within the critical distance of a circle) but also in symbol (symbols are robust when they are thousands of coordinates)
+  - the idea of converging and diverging iteratives reads reminds me of ressonator networks
+  - the theory of the bundling operation (bit counters and majority rule) and the power of hyperdims clearly came from this work
+    - no mention of binding tho
+    - thinning becomes the obvious next step after reading about the calculations on capacity of such a memory and how brains are known to forget
+  - he also lays out how sequences can be remembered using k-folds. very neat.
+  - i'm a big fan of his writing style. i wish he wrote more stuff.
+- Optimal hyperdimensional representation for learning and cognitive computation
+  - they explore kernel widths, w, on FHRR's PFE. they build on top of VFA
+  - encoding types
+    - correlated: leveling. good for learning
+    - exclusive: pseudoorthogonal symbols. good for cognative tasks, not sure what that means.
+  - they are creating a framework which finds the balance between the two
+  - fig 2 looks lik edge detection and reminds me of Hyperdimensional computing as a framework for systematic aggregation of image descriptors
+  - they b/w binarize mnist
+  - they build a decoder, very cool. i think this is the first time I've seen a paper make an HDC decoder
+    - bruteforce: construct each pixel (binding of x, y, and b/w), comapre it to the image hv, repeat for all pixels, discriminate based on mean distance
+      - its easier to do thisif x and y indices are exclusive encodings because they are easier to separate. maybe thats what happened in "Detecting COVID-19 Related Pneumonia on CT Scans using Hyperdimensional Computing" and "HyperCam: Low-Power Onboard Computer Vision for IoT Cameras" too
+  - this paper got me thinking about ways to encode images.
+    - treat rows and columns of pixels like sequences of values
+    - each row/column hv could then be bound to an index hv to represent location
+    - then all row/column hv could be bundled to create an hv representing all horizontal or vertical lines
+    - somehow repeat for diagonals
+    - would this be comparable to edge detection?
+- The vision of David Marr
+  - explicit naming
+  - modular design
+  - least commitment
+  - gradeful degradation
+  - Kanizsa triangles, woahdude.
+  - "how early in visual processing might one usefully regard visual processing as symbolic?"
+  - computer pipelines are often, for efficiency reasons, cascading pipelines of data. vision is often recurrent.
+  - "Instead of attempting to describe intrinsic geometry, the extrinsic geometry of surfaces would be described and matched against an associative memory of extrinsic shape"
+    - a dictionary of known shape patches
+    - a dictionary of known perspectives/orientations for shape patches
+  - the article keeps talking about depth perception. painters have known for a long time how to create depth in an image - things that are far away are small, pale in value, and blue in color (at least in landscapes)
+- HDCC: A Hyperdimensional Computing compiler for classification on embedded systems and high-performance computing
+  - a compiler for HDC learning algos. turn your HDC research into a standalone C code
+  - i was unable to locate the source code for this project
+- Accelerating Permute and N-gram Operations for Hyperdimensional Learning in Embedded Systems
+  - single instruction, multiple data
+  - they compare against HDCC and torchhd on a raspberrypi
+- Why an animal needs a brain
+  - "The mechanism, by using the past to set receptor sensitivity, determines the bacterium’s response in the present—a reasonable definition of memory. Thus, a single cell can store information cheaply through chemistry, by covalently modifying a signaling molecule"
+  - "A worm remembers the temperature at which it was well fed and later seeks this temperature by moving up or down a thermal gradient"
+    - neural reprogramming
+  - brains consume a lot of energy and resources in an organism, but they add efficiency and optimizations
+  - use chemical signals (slower) instead of electrical when possible because they are cheaper
+    - transcellular vs intracellular
+  - use as little wiring as possible
 
 
 Summary
@@ -1661,6 +1781,14 @@ Misc
     - the [entire course](https://www.youtube.com/watch?v=qOoQOJcjD2E&list=PLg8ZEeSiXsjgoQJzRcq60GjK0UrkMsA3-) is pretty rad
   - "Cyclic groups are groups in which every element is a power of some fixed element"
     - Fraction power encoding (FPE) in FHRR forms a [cyclic group](https://sites.millersville.edu/bikenaga/abstract-algebra-1/cyclic-groups/cyclic-groups.pdf)
+- Visual Group Theory
+  - Example in APA style:
+    - Carter, N. & Ellis, R. (2019). Group Explorer. Retrieved May 11, 2019, from https://nathancarter.github.io/group-explorer/.
+    - (You should fill in the date you view it, rather than the example date above.)
+  - Figure 8.6 illustrates homomorphisms nicely
+  - Figure 8.7 appears similar to BSBC/MCR block size
+  - [Group Explorer](https://nathancarter.github.io/group-explorer/GroupExplorer.html)
+    - the multiplication tables reminds me of fig 3 from "An Extension to Basis-Hypervectors for Learning from Circular Data in Hyperdimensional Computing"
 - HDC accuracy can be improved by increasing vector lengths (dimensions) or making elements types more complex
   - increasing complexity of each element is "better" at conveying information than making the vectors longer
   - more complex element types make for more complex hardware needs
