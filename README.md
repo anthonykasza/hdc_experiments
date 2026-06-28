@@ -52,7 +52,19 @@ References
   - integer exponentiation can be useful and fractional powers are continuous trajectories through a space
   - permutations and matrix multiplications stops commutivity "because convolution is commutative (ab=ba), whereas the outer product is not"
   - figure 41 makes me think ... what would the result look like visually if i mutiplied 2 bw images of the same shape?
-  - 
+  - convolution is but one operation that can form assoiciations
+  - convolution is the same as elementwise multiplication in the frequency domain
+    - "circular HRR"
+    - elementwise multiply is O(n)
+    - normalize well
+    - exact inverses
+    - all elements have magnitude of 1, so we just need to keep the angle
+  - table 12 is a nice comparison of FHRR (circular system) and HRR (standard system)
+  - he references Hinton often
+  - figure 43, the power comes from the high dimensionality
+- Holographic Recurrent Networks
+  - method of loci
+  - handwriting recognition in figure 3?
 - HDCluster: An Accurate Clustering Using Brain-Inspired High-Dimensional Computing
 - A comparison of vector symbolic architectures
 - [Computing with High-Dimensional Vectors](https://www.youtube.com/watch?v=zUCoxhExe0o) (Kanerva) 
