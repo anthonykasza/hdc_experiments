@@ -788,6 +788,8 @@ References
 - KiloGrams: Very Large N-Grams for Malware Classification
   - kilogramming: top-k most frequent ngram
   - hdc can embed an entire ngram histogram, not just top-k ngrams
+- MalHDC: A Lightweight Hyperdimensional Computing Approach to Malware Image Classification
+  - it's cool and all but if the executable is packed/obfuscated then the resulting b/w images won't behave nicely
 - A Walsh Hadamard Derived Linear Vector Symbolic Architecture
   - [HLB code](https://github.com/FutureComputing4AI/Hadamard-derived-Linear-Binding)
     - based on torchhd
@@ -884,6 +886,31 @@ References
         - then `pixel_binding0 = bind(x_hv, y_hv, value_hv)`
         - then `image_bundle = bundle(pixel_binding0, pixel_binding1 ... pixel_bindingN)`
   - "Future research needs to be done to discover an encoding that is not dependent upon pixel position and that could be implemented to three-dimensional images"
+- One-Class Classification with Hyperdimensional Computing
+  - what is OCC? fig 1.1 is great. OCC is a binary classifier such as Not Hotdog
+  - used binary 10k bit vectors
+  - encoding methods:
+    - random / pseudo orthogonal
+    - linear / leveling
+    - ngram / subsequence frequencies
+      - linear ngram
+        - i think this is similar to circular leveling in An Extension to Basis-Hypervectors for Learning from Circular Data in Hyperdimensional Computing
+  - used synthetic data in HDC setting
+  - "patient data is linear by nature"
+  - Ch 5: Detecting COVID-19 Related Pneumonia in CT Scans using HD-OCC
+    - 200x300 pxl png images of lungs
+    - [adaptive mean thresholding](https://docs.opencv.org/4.13.0/ada_threshold.jpg) and normalization to make images b/w which is nice for their binary hypervectors
+    - each pixel gets an orthogonal hv
+    - used the pixel's index 0..60k as a seed for rng for creating hv, no need to store pixel's hv in a codebook
+    - "Future research needs to be done to discover an encoding that is not dependent upon pixel position and that could be implemented to three-dimensional images"
+      - we need a voxel embedding method
+    - downsides of using raw images as hypervectors:
+      - raw image data needs preprocessed
+      - images (200x300) are higher dimensionality than hypervectors (10k), so the process of embedding actually reduces (compresses) the dimensionality of the original dataset
+      - every image needs to be centered or framed exactly the same so that pixels have the same meaning across images
+        - "More research need to be done to discover a way to do automatic encoding and context detection with HD computing"
+        - this was written in 2020. what has changed since then?
+  - overall, a very approachable read
 - [A Brain-Inspired Hyperdimensional Computing Approach for Classifying Massive DNA Methylation Data of Cancer](https://github.com/cumbof/chopin2)
   - they, too, use uncorrelated levels to encode a range of numberical values. why?
     - i tried MNIST classification with leveled codebooks and it didn't work as well as randomized codebooks. i don't understand why
