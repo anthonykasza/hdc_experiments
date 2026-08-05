@@ -778,6 +778,10 @@ References
     - [pyhdc](https://github.com/ncos/pyhdc)
     - shout outs to San Jose and Cardiff U
   - [April 2024 AICamp Boston meetup - Peter Sutor - Hyperdimensional Computing](https://www.youtube.com/watch?v=Nob2j5aY0yw)
+- NOVA: Real-Time Visualization and Streaming for Neuromorphic Event Cameras
+  - monitoring additive manufacturing
+  - [link](https://github.com/Utsawb/nova)
+  - [link](https://github.com/ashlxyzhang/nova)
 - Holographic Global Convolutional Networks for Long-Range Prediction Tasks in Malware Detection
   - [code](https://github.com/FutureComputing4AI/HGConv)
 - What Can N-Grams Learn for Malware Detection?
@@ -1259,6 +1263,21 @@ References
       - bipolar is easiest to reason about and is fundamentally the same as binary
       - integers allow for variations on leveling and clipping. binding/bundling operations are still relatively intuitive
       - f32 can hold more info than a single bit but they are treated more like vectors of blocks instead of vectors of bits which makes their binding/bundling operations less intuitive
+  - "[Can] pseudo-randomness ... be replaced by quasirandomness in HDC encoding?"
+    - there are many choices in generating randomness: sobol, weyl, r2, kasami, latin hypercube, gold code, hadamard, faure, hammersly, zadoff-chu, niederreiter, poisson disk, van der corput
+      - noise has [colors](https://en.wikipedia.org/wiki/Colors_of_noise)
+    - fig 2 shows scatter plots of different random sampling methods. random (blue) has clumps while other methods can provide a gaurenteed minimum distance between points
+  - "The widespread adoption of HDC architectures in the next-generation of computing systems seems inevitable"
+- Sobol Sequence Optimization for Hardware-Efficient Vector Symbolic Architectures
+  - this line of work focusses on BSC/MAP but I wonder how it wuold influence continuous architectures like FHRR
+- Improved Data Encoding for Emerging Computing Paradigms: From Stochastic to Hyperdimensional Computing
+- AMS-HD: Hyperdimensional Computing for Real-Time and Energy-Efficient Acute Mountain Sickness Detection
+  - using HDC for realtime altitude sickness detection targeting wearable devices (smart watch/phone)
+  - used existing dataset by Pham et al
+  - hadamard matrices for random symbols instead of high-discrepency RNGs
+    - greater seperability of levels using unary ala fig 7
+  - samsung galaxy smartwatch and a Kotlin APK
+  - binary/one class classifier: AMS or No AMS
 - An Encoding Framework for Binarized Images using HyperDimensional Computing
   - local linear leveling
   - Figure 5
@@ -1783,6 +1802,7 @@ Misc
   - holovec provides best VSA/HDC for expressivity - deeply nested structures like trees and graphs
   - torchhd provides best VSA/HDC for hardware-friendliness - RISCV, FPGA, ASIC friendly
 - datasets mentioned in literature
+  - [Inflammatory gene expression during acute high‐altitude exposure](https://datadryad.org/dataset/doi:10.6086/D1XM45)
   - Secure Water Treatment (SWaT) from [iTrust](https://itrust.sutd.edu.sg/itrust-labs_datasets/dataset_info/) or [Kaggle](https://www.kaggle.com/datasets/vishala28/swat-dataset-secure-water-treatment-system)
     - [Anomaly Detection for Industrial Control Systems](https://www.kaggle.com/code/scarss/anomaly-detection-for-industrial-control-systems)
   - voxceleb and voxceleb2
