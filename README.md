@@ -767,6 +767,47 @@ References
         - hamming distance is cosine sim for binary
     - what about other distance/edit metrics? 4.4 is a slim section
     - what about uncertainty propagation through operations?
+- Symbolic Representation and Learning With Hyperdimensional Computing
+  - hashing neural networks to embed image diffs from a DVS into binary hypervectors
+    - how is this different from other papers that use NN as a frontend for HDC/VSA?
+  - Hyperdimensional Inference Layer (HIL)
+  - can be use to fuse learning systems / sensor types
+  - this work extends Hyperdimensional Active Perception (2019)
+  - egomotion prediction via velocity binning on sparse pixel events
+  - paper used [DeepHash](https://github.com/thulab/DeepHash) lib
+  - fig 4
+    - convert images to hypervector using HNN
+    - bind the result with the bundle of codebook (class prototypes)
+    - nearest neigbor search the codebook for the result of the bind, that's the class of the input
+  - fig 5
+    - send an image to multiple HNN
+    - bind those results with a randomly chosen binary "key" vector
+    - bundle the key:value (HNN result vector:HNN ID vector) pairs
+    - "The idea asiws that, individually, these Hash Networks have diﬀerent strengths and weaknesses based on their formulation. When fused into a HIL, each contributes toward the overall classification result, allowing the best matching classification across all models simultaneously"
+  - alexnet and imagenet are used to process images before sending them to HNNs
+  - using multiple hash networks to represent image data... isn't this similar to how Bloom filters work? which are themselves an HDC technique...
+  - i wonder why they made their own hdc python library instead of using an existing one or simply numpy
+  - overall, a neat paper
+- Gluing Neural Networks Symbolically Through Hyperdimensional Computing
+  - again fusing differnt NN output using binding
+    - "This consensus process can learn online and even grow or lose models in real time."
+  - again uses BSC
+  - again uses HIL (searching in superposition)
+  - "HD-Glue" for short
+  - they embed real valued output from neural net using tanh and leveling
+  - i like that the authors included diagrams but i find them confusing
+  - life long learnging can be achieved by making a second model based on the incorrect samples from training, then gluing it with the main model based on a weighted bundle
+  - if gluing together multiple NN outputs and one of those NN is unavailable or isn't producing output in a reasonable amount of time or is found to be malfunctioning, it can be dropped/excluded from the final ensemble ON THE FLY
+    - additionally, if a new NN comes online its output can be incorporated (glued) into the final ensemble model
+    - this architecture appears as though neural networks are like our senses (perception) while HDC is logic/reasoning
+      - this sounds a lot like dual process theory
+  - "there is nothing stopping the creation of a super-model that incorporates every pre-trained image model in existence"
+    - a joke on super-models: "A supermodel is a highly paid fashion model who has a worldwide reputation and background in haute couture and commercial modeling."
+    - gluing models of different modalities is also possible
+  - "An interesting side effect of such an approach, is that transfer learning is much easier, since we could simply use the hypervectors as input to our new task, and constrain learning to that domain"
+  - "This would provide a hypercompression of neural models, which can be put directly into autonomous vehicles, using minimal space or resources"
+    - train using nn + hdc, then throw ou the nn and just use the hdc model
+    - so you wouldn't need to run the full NN on the autonomous vehicle
 - [Learning sensorimotor control with neuromorphic sensors: Toward hyperdimensional active perception](https://ece.umd.edu/release/helping-robots-remember-hyperdimensional-computing-theory-could-change-the-way-ai-works)
   - DVS are super neat
   - CNN-level performance without a CNN
