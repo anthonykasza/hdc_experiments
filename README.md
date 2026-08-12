@@ -92,6 +92,15 @@ References
     - "We leave exploration of non-Abelian VSAs to future work"
       - all finite abelian (commutative) groups collapse to cyclic phase rotation, or products of cyclic groups, or modulus/residue numbers
       - to express the types of structures provided by non-abelian groups GHRR expands beyond single valued elements into square matrices and introduces a diagonality parameter
+- Laplace-HDC: Understanding the Geometry of Binary Hyperdimensional Computing
+  - they show that the similarity structure under HDC binding induces a Laplace kernel
+    - Laplace-HDC, a new encoding method
+  - binary HDC, "most common in practice", has issues encoding spatial structure of images
+    - Haar convolution matrices to encode simple spatial information
+    - "translation-equivariant" encoding?
+  - "We note that more complicated feature extraction methods could be used to increase the performance further. For example, the features derived from the output of one or more layers of a convolutional neural network trained on image data could be used"
+    - "spatial relationships are not encoded in the inner product structure of the binding operation. It may be possible to recover spatial information via another method"
+  - [code](https://github.com/HDStat/Laplace-HDC)
 - A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part I: Models and Data Transformations, A Survey on Hyperdimensional Computing aka Vector Symbolic Architectures, Part II: Applications, Cognitive Models, and Challenges
 - Hyper-Dimensional Computing Challenges and Opportunities for AI Applications
 - SearcHD: A Memory-Centric Hyperdimensional Computing with Stochastic Training
@@ -1213,6 +1222,10 @@ References
 - Hyperdimensional computing as a framework for systematic aggregation of image descriptors
   - place recognition datasets: Nordland1k, StLucia, CMU Visual Localization, GardensPointWalking3, OxfordRobotCar, and SFUMountain
   - uses "local" linear leveling. Concatenation (c) as described in figure 5 of An Encoding Framework for Binarized Images using HyperDimensional computing
+  - image descriptors can come from CNNs the paper then "use[s] L2 normalization to standardize the descriptor magnitudes, followed by mean-centering"
+    - this makes the image descriptor vectors have the same properties as randomly generated HDC symbols
+  - "Exploiting the similarity of temporally neighbored images can significantly improve place recognition performance in mobile robotics [38, 17, 41]. SeqSLAM [38] is a simple yet powerful approach that accumulates similarities of short sequence of image comparisons. This requires the computation of all similarities individually. An appropriate bundling of image descriptors (each bound to its position within the sequence) can achieve very similar results with a single vector comparison [40, 50]."
+  - HDC-DELF
 - [Navigation Using a Biologically Inspired Spatial Representation](https://www.youtube.com/watch?v=QrvUVECQDkk)
   - "SSPs utilize the concept of fractional binding to extend vector symbolic architectures to include continous value signals in addition to discrete symbols"
 - The Recommendation Functional Architecture as the Basis for a Neurophysiological Understanding of Cognition
@@ -1355,6 +1368,50 @@ References
       - this reminds me of MBAT
     - use HD operations, like add and clip, to learn class prototypes. use cossim operation for inference.
     - i dont understand (3) FE tuning
+- Hyperdimensional Computing vs. Neural Networks: Comparing Architecture and Learning Process
+  - assuming a record-style encoding (role:filer bindings)
+    - multiplication between input hv and item memory matrix
+    - NN weights are the item memory
+  - "After the encoding of input samples, HVs are often bipolarized or binarized, where the numbers larger than 0 are set to 1 and numbers smaller than 0 are set to -1 (or 0)"
+    - this can be the case, such as in HLB, but isn't always true for all HDC schemes
+  - "the inference process of HDC is the iterative similarity calculation between the query HV and each class HV in the associative memory"
+    - aka the nearest neighbor search across some codebook of symbols. aka argmax
+    - this can be viewed as another matrix multiplication
+  - the paper claims that HDC learning (bundle) is similar to back-propegation but I'm not sure I see the similiarity
+    - "this explains why HDC training is much faster than the neural networks as the accuracy could saturate after much less epochs"
+      - some models don't even need a full epoch, they can begin to be useful after a just few samples 
+    - "The training of HDC models is also similar to the training of a neural network. Instead of using back-propagation with gradient descent, HDC use HV addition and subtraction to guide model to converge at the direction of higher accuracy which is easier to implement."
+  - "HDC resembles the architecture of a extremely compact neural network with just 2 layers."
+    - This is not true for all HDC architectures. It may perhaps be true for BSC/MAP implementations of associative memories which is what this paper seems to define HDC as
+  - "One major challenge of HDC is that the encoding process is not application-agnostic. System designers are required to spend manual effort to design, develop, and evaluate the encoding process, which can often lead to sub-par results as there may exist undiscovered encoding methods with better performance and also prohibits the scalability and flexibility"
+    - Yes, they nailed this. Determining the best encoding is often the toughest challenge of using HDC. However, many encodings are already published. Also, a benefit of HDC which alleviates this challenge is noise robustness. Even if your encoding is a little bit inaccurate the produced models tend to work "enough" to still be useful 
+- LeHDC: Learning-Based Hyperdimensional Computing Classifier
+  - [code](https://github.com/sjduan/LeHDC)
+  - the main claim: binary HDC models are essentially very wide single-layer binary neural network
+  - Not all HDC is binary but the hardware friendly HDC is binary
+    - binary HDC can benefit from retraining (subtraction)
+  - "the binary weights in the BNN can be viewed as the class hypervectors in binary HDC, and the Hamming distance between the encoded hypervector and the class hypervectors in binary HDC can be linearly transformed into multiplication of the encoded hypervector and the binary weights"
+  - i wonder if the higher accuracy the paper claims would still hold if the symbols were generated using low discrepency sequences instead of being randomly generated?
+  - this paper does address both record and ngram based encodings, but there are others...
+  - "In the basic HDC training process, each class hypervector 𝑐𝑘 is obtained by simply averaging the sample hypervectors 𝐸𝑛(𝑥) of all the samples belonging to that class."
+    - bundling is not always averaging. there are different ways to create bundles: random selection, majority vote, normalized sum, clipped sum, evidence fusion ... 
+  - when retraining a multiclass model, adjust all prototype/centroid bundles, not just the true class
+    - what about applying "dropout subtraction" where each dimension has some likelihood of being operated on?
+    - subtraction but only on e.g. 30% of the dimensions
+    - i called this partial bundling in toys/python `def partial_bundle_random50(`
+- [Intro to Binarized Neural Networks](https://www.youtube.com/watch?v=d9AeVyRzU5Q)
+  - around 18:02 there's a slide on floats vs other types
+    - float types can only quantize a continuous range so far
+    - in FHRR's pure math theory, hv elements can take on any value from -pi to pi
+      - as soon as you implement FHRR in floating point representations then you've quantized the reals and have actually created a sort of high accuracy (large block_size) CGR/MCR
+      - floating point numbers are not evenly distributed you may not get evenly divided angles of the unit circle
+        - do FHRR implementations need to account for this?
+        - does it really matter?
+    - IEEE 754 binary32 (float)
+      - 1,086,918,617 positive floating-point values from 0 to pi so about twice that many between -pi and pi
+      - FHRR implmenetations have a block size of just over 2 billion
+        - each quantized phase is not evenly distributed. resolution get larger closer to zero
+  - these wide binary networks do remind me of binary/ternary VSA
 - Designing Vector-Symbolic Architectures for Biomedical Applications: Ten Tips and Common Pitfalls
   - molto bene. grazie mille. i love tip #10. science needs more tutorial style papers that include code. this paper is great even for those who study VSAs but are outside of the the biomedical domain.
   - [use-cases](https://github.com/cumbof/Biomed-VSAs) that are licensed permissively. very cool.
@@ -1616,6 +1673,148 @@ References
   - use chemical signals (slower) instead of electrical when possible because they are cheaper
     - transcellular vs intracellular
   - use as little wiring as possible
+- Arithmetic Logic Design with Color-Coded Ternary for Ternary Computing
+  - multiply-add-permute's use of -1, 0, and 1 are exactly the trits used in balanced ternary computation
+  - [Fowler](https://en.wikipedia.org/wiki/Thomas_Fowler_(inventor)#Calculating_machine)'s machine
+    - [A model](https://www.youtube.com/watch?v=uTo1M_ClN74) of the mysterious machine
+    - Babbage had his adding machine and Fowler had his multiplying machine
+  - "Base three [is] a prospective field of research in the nearest future for computer scientists, because they can potentially lead to smaller, cheaper, more efficient and less power consuming Arithmetic Machines"
+  - fig 1 is the replica
+  - SETUN and TERNAC are interesting history
+  - "By putting logical restrictions on the paint artist impression of how primary colors combine to form secondary colors, Ternary states can be fruitfully represented as the three primary colors"
+    - use color theory to build ternary computers based on optics or colors of light
+- [Third Base](https://www.americanscientist.org/article/third-base)
+  - 3 is close to e so it's great
+    - see figure 2
+  - Hindu Vedas reference ternary?
+- Deep metric learning using Triplet network
+  - figure 1, using a reference point train on + and -
+    - this reminds me of relativity where speed and orientation are relative to another object
+  - the training method reminds me of using subtraction to remove incorrectly labeled samples from a taught prototype bundle
+    - the referece hv is the current class prototype bundle
+    - the negative sample is an example of the opposite class
+    - the positive sample is an example of the current prototype
+  - FaceNet: A Unified Embedding for Face Recognition and Clustering
+    - i didn't fully grasp this paper but it's a great use of triplets
+- THDC: Training Hyperdimensional Computing Models with Backpropagation
+  - binary neural network: 1 layer BNN just like LeHDC. they use the same code
+    - only BSC and MAP considered? what about other VSAs?
+  - also uses randomly initialized hypervectors. again, what about ld sequences for better symbol separability?
+  - :( hdc sadfaces which this paper addresses
+    - hdc requires hd
+    - hdc relies on randomly initialized, static hv
+    - training is heuristic, bundling isn't adaptive and can suffer from saturation
+  - backprop to the rescue
+  - encoding images
+    - transform images to long flat vectors then binding pixel value hv to pixel location hv
+    - instead of "flattening the channels" they:
+      - create 64 bins (levels) for each channel
+      - bind the color bin hv with the location/position hv
+      - bundle the 3 bind(channel_level, position) together to form the pixel embedding
+  - "weights are binarized in the forward pass, while gradients are taken with respect to their real-valued counterparts"
+    - if gradients were binary too they would not be differentiable, so they keep around the real values for training
+    - "Training uses crossentropy loss and the Adam optimizer" 
+- CompHD: Efficient Hyperdimensional Computing Using Model Compression
+  - segment long symbols into multiple smaller symbols then combine them into 1 smaller symbol
+    - compress too small and results will suffer. there's no free lunch
+      - "on the Valve Monitoring dataset, when dimension reduction reduces the length of the hypervectors by 90%, the model loses 48.98% accuracy"
+  - more operations can result in smaller memory footprint for a stored codebook
+  - they implemented in C++ and eval'd on a Raspberry Pi 3 and FPGA (verilog)
+- Large-Margin Hyperdimensional Computing: A Learning-Theoretical Perspective
+  - "a binary HDC classifier can be reformulated as a special case of a linear SVM classifier"
+  - they propose MM-HDC: "an iterative algorithm to train a novel binary maximum-margin HDC (MM-HDC) classifier"
+  - the paper mentions successes such as OnlineHD, DependableHD, LeHDC
+  - "OnlineHD algorithm [51] implements the adaptive retraining algorithm based on (3) by weighting the misclassified hypervectors with similarity values corresponding to the refined prototypes. The retraining procedure of LeHDC [52] refines every prototype with higher similarity than that of the correct-class prototype. The DependableHD framework [37] introduces the similarity margin that controls the maximum possible violation of the similarity check"
+  - add samples to correct prototypes, subtract from incorrect prototypes, try to maximize the margin: sim(sample, correct_centroid) - sim(sample, incorrect_centroid) but not just for incorrectly classified samples but also for correctly classified samples that are too near the support vector / boundary of the two classes
+  - i don't understand much of the SVM terminology
+- Encoding Structure in Holographic Reduced Representations
+  - "we introduce shuffling as a technique for using HRRs with vectors that are not generated by sampling from a probability distribution, such as vectors storing pixels from an image"
+  - latin squares
+    - this paper explores the invertibility of bind operations through latin square tables 
+    - cayley tables
+    - HRR and binary (no zed) MAP are full latin squares
+      - once MAP uses bundle and zilch-valued elements are present, binding is not a full latin sqr
+      - binary {-1,+1} MAP "vectors are mathematically equivalent to binary spatter codes and binary-valued frequency-domain HRRs"
+        - {-1,+1} is "isomorphic to Z2"
+  - they use the term "trace" for a binding (*) and "approximation" for unbinding (#)
+    - since we're building on HRR, convolution for binding and correlation for unbinding
+    - later, the paper switches notation, a box with an x in it is bind and a triangle is unbind... why?
+  - they use the term "shuffle" for permutation
+    - shuffling makes binding non-commutative
+    - BEAGLE uses this for creating positional embeddings
+  - atomic vs complex (composite) vectors, although any composite vector has a chance of being generated randomly from the vector space
+  - embedding:
+    - concat all cols/rows into a single long vector
+    - each pixel location gets an atomic hv
+    - an image is a bundle of atomic hv weighted by intensity (value)
+  - "... by concatenating the columns of pixels into a single vector. We can normalize the vector to a mean of zero and a Euclidean length of one"
+    - preprocess the image so that it has the nice properties of a HRR/HDC/VSA symbol, then work on the image as if it was a symbol
+  - "Thus any compression of the outer-product defined by a Latin square is an optimal encoding operation for a VSA."
+    - this is starting to sound similar to why others use hadamard matrices for binary/ternary architectures
+    - "in high dimensional spaces, any randomly chosen compression of the outer-product will almost always still be close enough to being a Latin square to be an effective encoding operation"
+    - "If E is symmetrical, that is, if Eij Eji, then D1 D2, and the encoding operation defined by E will be commutative, that is, avb bva for any a and b where v is defined by a symmetrical E. If E is approximately symmetrical, that is, if Eij Eji for most i and j, the encoding defined by E will be approximately commutative"
+      - this is starting to sound like GHRR's "diagonality" parameter used to control commutativity in their architecture
+  - architectures discussed in table 1
+    - HRR: vectors of real values, circuluar convolution
+    - Square matrix representations: matrices of real values, matrix multiplication
+    - BSC: vectors of binary, element-wise XOR
+    - FHRR: vectors of complex values, element-wise multiplication (phase addition)
+    - MAP: vectors of real values, element-wise multiplication
+      - MAP, BSC, and FHRR have exact unbinding aka full, not partial, Latin square. MAP is the only one with a null/zed/zilch value (from bundling)
+      - "The low decoding-accuracy of MAP coding for normally distributed values can be addressed by periodically recasting the MAP vectors to binary values or by using a clean-up memory. If vectors are always recast to binary values after addition, MAP vectors are mathematically equivalent to binary spatter codes and binary-valued frequency-domain HRRs"
+      - this is starting to sound like hadamard-derived linear binding (HLB)
+  - figure 4 is fantastic! it illustrates different binding operations as their equivalent full/partial latin sqr
+  - figure 6
+    - images are highly structured
+    - when a strcutured binding, like circular convolution, is used on images the binding's strcuture becomes "confounded" with the image's structure
+    - figure 7
+      - if an image's pixels are first permuted to "protect" the structure of the pixels, then bound, then unbound, then unpermuted, the recovered image is very close the original
+      - figure 8
+        - two permuted images can be bound together to make what looks like an image of noise, then either permuted image can be recovered/queried from the binding. the recovered symbol unpermuted is very close to the original image. wow!
+        - so the commutativity of the binding operator gets in the way of the pixel structure, but if you permute (protect) that pixel structure before binding then it can be recovered from the binding
+        - so non-commutative bindings work well with structured symbols (so long as the symbol's pixel value frequencies are centered at 0 and sum to 1)?
+          - "A compression of the outer-product defined by a randomly generated, highly unstructured Latin square will not be commutative (Plate, 2003, p. 121), which is useful in any application where the order of the items is important, such as in language processing (e.g., Jones & Mewhort, 2007). We have found that an unstructured compression is also able to store and retrieve structured data, such as images."
+  - something about randomly disordered cross-wiring of neural groups in the brain implements random permutation
+  - "By normalizing a vector to have a mean of zero, and then shuffling (i.e., randomly permuting) the elements, it is possible to store and retrieve vectors of structured data in an HRR"
+    - i wonder if this is what happens in human vision? the pupil adjusts to try to "normalize" the image we see by adjusting brightness/contrast perceived by our visual sensors
+  - "The image is smudged on retrieval because the structure of the image is confounded with the structure of the outer-product compression defined by circular convolution. Convolution is more or less computed as a sum of the diagonals of the outer-product matrix. To work, convolution memories need the elements of the diagonals to have values that are evenly and independently distributed around zero in order for the irrelevant terms to cancel ... The compression thus introduces systematic distortions in the data recovered from memory"
+  - "Shuffling does change how the values are distributed within the vector, destroying the autocorrelation structure of the image."
+    - permute to protect the structure within the image, then treat it like a VSA symbol, then unpermute it to restore the structure of the image. that makes a lot of sense
+  - "If the two images are shuffled in the same way (as in Figure 8) the shuffled versions of the images will be as similar to each other as the unshuffled versions of the images"
+  - figure 11 again shows that permuting the pixels of an image "protects" the image's structure prior to binding. the recovered image is then unpermuted and the result is very similar to the original image plus some noise
+  - i *really* like this paper. you can visually see what's happening to the symbols. great work, indeed.
+  - figure 12: the more image structure maintained during the shuffling (permuation) operation, the worse the recovered image
+  - we want the noise to be random. if the symbols have structure so will thier noise. random noise is easier to disregard
+    - if you're cleaning up a symbol which contains both structure information and structured noise, which structure is desired?
+    - if you're cleaning up a symbol which contains structure information and unstructure (random) noise, the desired structure is easier to "pull out" of the symbol
+  - "the discrete cosine transform, which serves as the basis for JPEG compression, can substitute for shuffling"
+  - figure 13, i wonder if you can combine different permuation/compression methods in a single architecture to improve it. have 2 models: 1 that uses random permut. and 1 that uses cosine transform, then "glue" their results together
+  - "symmetric Latin squares define a commutative encoding operation and asymmetric Latin squares are noncommutative. Encoding defined by partial Latin squares is more lossy than encoding defined by complete Latin squares."
+  - "the structure of the encoded data must be orthogonal to the structure of the Latin square used for encoding, or else the structure of the data becomes confounded with [the structure of the binding operation] ... Thus, regardless of the nature of the structure, shuffling provides a tool for hiding or protecting that structure from the structure of vector operations."
+  - i wish i would have read this paper before making all the junk in `toys/python/2d/images_as_values`
+- Capacity Analysis of Vector Symbolic Architectures
+  - lots of theorem and proofs
+  - VSAs are related to other sparse vector representations like Bloom filters
+- Hyperdimensional computing: a framework for stochastic computation and symbolic AI
+  - survey the components of HDC
+  - graph classification, GraphHD
+    - "the overall strategy of GraphHD's encoding is to map each element that composes the graph, i.e. its vertices and edges, individually to a hypervector and then combine the information using the bundling operation"
+      - use pagerank centrality to make an ID for each vertex
+      - bind vertices to make edge hvs
+      - bundle edges to make graph hvs
+    - Figure 7, wow. inference time: way less, training time: waay less, accuracy: comparable
+  - dynamic hash table, hyperdimensional hashing
+    - circular levels (correlated lists of hv)
+      - constructed half-circle at a time
+      - "For ease of understanding, we assume that m is even. To generate a set of circular-hypervectors with odd cardinality, simply generate 2m and return just {c1, c3, c5, . . . , c2 m}."
+    - load-balancing hyperscalers' IaaS
+      - static sizing
+        - modular arithmetic
+      - dynamic sizing
+        - consistent
+        - rendezvous (hrw)
+          - i wonder if [zeek](https://docs.zeek.org/en/master/scripts/base/utils/hash_hrw.zeek.html) could benefit from HD hashing
+
 
 
 Summary
@@ -1796,7 +1995,6 @@ HDC Operations
 Misc
 ----
 - code
-  
   - Various [data structures](https://github.com/denkle/HDC-VSA_cookbook_tutorial/blob/main/HDVecSym/DS.py) built up from a custom ternary MAP implementation
   - Resonator Networks
     - A [simple](https://github.com/spencerkent/resonator-networks/blob/master/resonator_networks/examples/simple.py) Resonator Network
@@ -1843,6 +2041,7 @@ Misc
   - holovec provides best VSA/HDC for expressivity - deeply nested structures like trees and graphs
   - torchhd provides best VSA/HDC for hardware-friendliness - RISCV, FPGA, ASIC friendly
 - datasets mentioned in literature
+  - [Condition monitoring of hydraulic systems](https://archive.ics.uci.edu/dataset/447/condition+monitoring+of+hydraulic+systems)
   - [Inflammatory gene expression during acute high‐altitude exposure](https://datadryad.org/dataset/doi:10.6086/D1XM45)
   - Secure Water Treatment (SWaT) from [iTrust](https://itrust.sutd.edu.sg/itrust-labs_datasets/dataset_info/) or [Kaggle](https://www.kaggle.com/datasets/vishala28/swat-dataset-secure-water-treatment-system)
     - [Anomaly Detection for Industrial Control Systems](https://www.kaggle.com/code/scarss/anomaly-detection-for-industrial-control-systems)
