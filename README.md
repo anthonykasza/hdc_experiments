@@ -735,7 +735,6 @@ References
 - [Vector Symbolic Architectures](https://video.ucdavis.edu/media/Vector+Symbolic+Architectures/1_9b6hn4p2) (Luis El Srouji)
 - Classification and Recall With Binary Hyperdimensional Computing: Tradeoffs in Choice of Density and Mapping Characteristics
 - Robust Hyperdimensional Computing Against Cyber Atacks and Hardware Errors: A Survey
-- EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
 - [Get to know SAR, Interferometry](https://nisar.jpl.nasa.gov/mission/get-to-know-sar/interferometry/)
 - [An Introduction to Hyperdimensional Computing](https://www.esa.int/gsp/ACT/coffee/2024-03-22%20-%20Mike%20Heddes/)
 - Vector-Derived Transformation Binding: An Improved Binding Operation for Deep Symbol-Like Processing in Neural Networks
@@ -913,6 +912,7 @@ References
     - i really like the idea of a partial bundling operation
       - it seems related to leveling strategies (replace, average, inc/dev)
       - how would other other operation modifications be useful? partial permutation?
+        - Yes! Partial permutations
       - partial bundling sounds similar to what Gayler calls "random selection" bundling or randsel bundling. however, randsel bundling is just random weighted (50-50 in the case of 2 constituents) concatenation. a leveling strategy.
         - parital bundling is element-wise failure or success some percent of the time. when it partial bundle fails it could use randsel as a result instead.
     - they are very concerned with performance. why not reduce HV dimensions? this would have made all operations more efficient (and less accurate)
@@ -973,15 +973,58 @@ References
     - then they continually bundle the sample_hv into the correct class prototype HV until the accuracy reaches some threshold 
   - they also demonstrate that more dimensions and more levels doesn't mean better accuracy. table 4 shows that there's a sweet-spot for the datasets they use
 - HDC-MiniROCKET: Explicit Time Encoding in Time Series Classification with Hyperdimensional Computing
-  - i don't understand most of this paper but...
-  - they bind in the timestep of the observation when encoding, which validates what thingy/ does
-    - they use fractional binding (power encoding) to level the timesteps
-      - they also mention DFT so i assume they're using FHRR
-    - "To be able of adjust the temporal similarity of feature vectors, we introduce a parameter s, which influences the graded similarity between consecutive timestamps"
-    - "s weigths the importance of temporal position – the higher its value, the more dissimilar become timestamps"
-    - "the similarity of two feature vectors, each bound to the encoding of their timestamp, gradually decreases with increasing difference of the timestamps."
-    - "It is very important to keep in mind that not all tasks and datasets benefit from explicit temporal encoding (e.g.. we can similarly construct datasets where temporal encoding is harmful."
-    - "In practice, selecting s should incorporate knowledge about the particular task."
+  - minirocket: minimally random convolutional kernel transformation
+    - transform a timeseries using a small fixed set of sparse convolutional kernels, space the kernels with log to capture things are different scales
+    - proportion of positive values (PPV) pooling/averaging makes a high dimensional representation
+      - PPV is actually bundling in HDC terms
+    - magic numbers in minirocket
+      - 84 kernels of length 9
+      - weights are {-1, 2}
+      - kernels are dilated by some factor, d
+      - 119 combinations of d and b (some bias values created from a random sample)
+      - 9,996 dimensional vector for each timestep
+        - each timestep gets it's own ~10k symbol
+        - bind the value hv to the timestep hv
+    - sktime python module has an implementation of minirocket
+  - symbolic representations that aren't embeddings in a vector space: BOSS (Bag-of-SFA-Symbols), WEASEL, symbolic fourier approximation, ordinal patterns
+  - hdc-minirocket
+    - binds "convolution results to timestamps before creation of the final output"
+    - fraction binding / FPE mentioned so they must be using FHRR
+      - but then they go on to give examples using MAP architecture. a bit confusing...
+      - they "window" timestep similarity using FPE
+        - how similar should time t0 be to t1, t2, t3, etc? when does the similarity vanish?
+        - the same could be done on MAP/BSC using leveling (correlated symbols)
+        - time scale of 0 is exactly minirocket
+        - "There is no single value of the scale parameter that works for all datasets."
+          - of course, there is no time window that will apply to every dataset
+          - why not bind hv of different time scales together? or the outputs of different models? e.g. bind multi to mini rocket vectors
+            - "Gluing Neural Networks Symbolically Through Hyperdimensional Computing" glues outputs together 
+            - "Structured temporal representation in time series classification with ..." incorporates binding
+          - they just learn the best scale while training
+  - i didn't replicate their work but the results are convincing
+- Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
+  - convolutional kernel methods: minirocket, multirocket, hyrda
+    - gripes: "these models encode temporal features over short temporal windows and then aggregate them as an unordered set of encodings over the longer temporal window of the entire data sequence"
+      - they have problems with long range patterns
+      - this work incorporates "temporal order of ... short-term features" using HDC methods
+  - their overview of multirocket and hydra sounds like arbitrary summary statistics per timestep
+    - Figure 1, different types of bundling (averaging) and frequency counting
+  - contributions:
+    - bind timestep to feature vectors
+    - apply the work to 3 SOTA rocket-based models
+    - efficient selection of HDC parameters "cross-validation procedure based on the ridge classifier"
+    - eval their work on public datasets
+  - [code](https://github.com/TUC-ProAut/HDC-ROCKETS)
+  - figure 2 is great, "basic processing steps in MiniROCKET"
+  - they use a synthetic dataset with a single peak same as HDC-MiniROCKET
+  - they too use FPE which means FHRR
+    - yet, "permutation of hypervectors can represent time series by permuting each hypervector according to its position. While this method does not inherently preserve similarity between nearby positions (Kanerva 2009), partial permutations (Kussul et al. 2006) retain similarity of adjacent positions while (Rachkovskij 2024) does it in a shift-equivariant manner"
+  - figure 5, shows what Vector Function Architectures demonstrated, different hv generation procedures creates different similarity kernels
+  - they combine FHRR hv and MAP's element-wise multiply 
+  - hdc-minirkcet used a grid search to tfind the optimal time scale value for FPE. this paper uses leave-one-out crossvalidation
+    - they use RidgeClassifier in scikit-learn
+  - none of these rocket-based HDC papers mention timeseries data that allows transpositions
+    - what if the postal system, due to a bottleneck, delivers postcards out of order? perhaps that's better represented as spikes?
 - [MIT 9.13 The Human Brain, Spring 2019](https://www.youtube.com/watch?v=ba-HMvDn_vU&list=PLUl4u3cNGP60IKRN_pFptIBxeiMc0MCJP)
   - this course is radical
   - grid cells, whoa
@@ -1527,7 +1570,6 @@ References
 - Brain Inspired Probabilistic Occupancy Grid Mapping with Vector Symbolic Architectures
   -  multi-agent mapping is neat. hive mind.
   - [code](https://github.com/Parsa-Research-Laboratory/VSA-OGM)
-- Structured temporal representation in time series classification with ROCKETs and hyperdimensional computing
 - Implementing Holographic Reduced Representations for Spiking Neural Networks
   - [code](https://github.com/vidurayashan/SNN_VSA)
     - python, lava
@@ -1567,7 +1609,95 @@ References
     - position location 3 is near position 2 but is far from position 33
     - transposition reduces similarity less than replacement
     - this provides equivariance to sequence shifts
-  - see also "Shift-Equivariant Similarity-Preserving Hypervector Representations of Sequences"
+- Shift‑Equivariant Similarity‑Preserving Hypervector Representations of Sequences
+  - random sparse vectors, Sparse Binary Distributed Representations
+  - random but fixed permutation (not circular shift)
+  - "Our methods represent the sequence elements by compositional hypervectors and exploit permutations of hypervectors for representing the order of sequence elements"
+    - other methods: `THE = bundle( T_hv, perm(H_hv,1), perm(E_hv,2) )` where perm is cyclic shift
+    - this paper: each letter is represented by a bundle of positional values. a parameter R is required to control how many positions to include the following example uses 3
+      - `T_hv = bundle(T_hv, perm(T_hv,1), perm(T_hv,2))`
+      - `H_hv = bundle(perm(H_hv,1), perm(H_hv,2), perm(H_hv,3))`
+      - `E_hv = bundle(perm(E_hv,2), perm(E_hv,3), perm(E_hv,4))`
+      - `THE_hv = bundle(T_hv, H_hv, E_hv)`
+      - THE_hv will be similar to TEH_hv
+        - THE_hv will also be similar to THAE_hv, because both will include `perm(E_hv,4)`. notice the different lengths of strings
+      - since we are using sparse hv we can do lots of bundling
+  - partial permutations rely on density of vectors
+    - if a 10k vector is all zeros but 2 elements are 1, and we attempt partial permutation ... there are only 2 bits to permute. it wouldn't work well
+  - proposed applications include spellcheckers and molecular biology
+    - supporting transposition is helpful to our postal service example where postcards may arrive slightly out of order
+  - [holovec](https://github.com/Twistient/HoloVec/blob/master/holovec/models/bsdc.py) only includes cyclic permutation and a random permutation for CDT
+    - holovec doesn't implement sequence encoding from this paper.
+      - Position binding: item_i ⊗ ρⁱ(position)
+      - N-grams: Bundle all n-grams in sequence
+    - other methods include using FPE (but this requires FHRR which is much more expensive than BSDR)
+  - [corncob](https://github.com/sibosop/speclib/blob/master/corncob_lowercase.txt) english lowercase dictionary
+  - "not all string processing tasks benefit from accounting for symbol insertions/deletions"
+- Permutation Coding Technique for Image Recognition Systems
+  - I don't understand most of this paper yet
+- Maintaining Knowledge about Temporal Intervals
+  - a qualitative framework for reasoning about intervals, time between two things
+    - sequences can be:
+      - continuous, time is a metric
+      - ordinal, items have no duration. integer order, like letters in words.
+      - qualitative, items/events have a duration but exact time doesn't matter
+        - Allen's Interval Algebra is this one
+  - "In some applications, such as keeping medical records, the time course of events becomes a critical part of the data"
+  - qualities of a good temporal representation system:
+    - relativity, "Much temporal knowledge is strictly relative"
+    - flexibility, "The representation should allow uncertainty of information"
+    - adjustability/granularity, "When modeling knowledge of computer design, one may need to consider times on the order of nanoseconds or less"
+    - persistability, "The model should support persistence"
+  - figure 2 is nice but [table 1](https://ics.uci.edu/~alspaugh/cls/shr/allen.html) has nicer pictures
+    - Allen defines 7 relationships and their inverses, one relation is its own inverse, making 13 total
+    - X before Y
+    - X equal Y (no inverse)
+    - X meets Y
+    - X overlaps Y
+    - X during Y
+    - X starts Y
+    - X finishes Y
+  - figure 4 has the transitivity table for the relations
+  - models are constructed as trees or graphs, both of which could be embedded into a vector using HDC/VSA
+- EventHD: Robust and efficient hyperdimensional learning with neuromorphic sensor
+  - "a neurally-inspired hyperdimensional system for real-time learning from a neuromorphic sensor"
+  - embeds data from a DVS sensor
+    - "Unlike all prior works that operate over preprocessed data, to the best of our knowledge, EventHD is the first HDC-based solution that directly operates over raw neuromorphic data"
+    - "assume the output of the DVS camera is in a form of Ek =(xk, tk, pk), signaling at time tk and location xk =(xk, yk). When the illumination change surpasses a threshold pk·C, where pk ∈{−1, 1} and C is a predetermined threshold"
+  - image embeddings, figure 1
+    - *pixel illumination* is represented by a randomly generated hv (for positive change) and its inverse (for negative change)
+    - *pixel positions* are represented by a correlated codebook
+      - this is done by something i call "landmark leveling":
+        - partion the image space into major landmarks
+        - assign each major landmark a random hv
+        - create intermediary hv (minor landmarks) between the major landmark hv with linear leveling
+      - the paper partions a 2d space, so minor landmark hv are created by interpolating from 4 major landmark hv
+      - they reference the follow for more on the spatial partioning/leveling
+        - Positional binding with distributed representations
+        - Efficient brain-inspired hyperdimensional learning with spatiotemporal structured data
+    - bind the illumination hv with the position hv
+    - bundle pixel event binding results for a given timestep
+    - i wonder if the methods from Shift‑Equivariant Similarity‑Preserving Hypervector Representations of Sequences could be used to create shift‑equivariant 2d spaces, like if the camera shakes a little 
+  - time embeddings, figure 2
+    - cyclic shift is used to create an order
+      - but ordinal sequencing is not enough
+    - continuous time is embedded using major/minor leveling again
+      - see `toys/python/streams/continuous_time.py` for a dumb example
+      - "Our temporal correlation goes beyond a single-window; hypervectors in two neighbor windows are also correlated"
+        - event encoding benefit from continuous time, not just ordinal information
+          - i wonder if events would benefit from focussing on intervals between events instead of continuous time?
+    - the shifted spatial (pixel) bundles are bound with the continuous time symbols
+      - these bindings are then bundled into a memory (my guess is that bundle is called iteratively) to represent a realtime video
+    - "Our evaluation shows that the association-based encoding provides a lower error rate by enabling a notion of continuous-time dynamic, while permutation-based encoding [cyclic shift] only preserves the orders of events"
+  - they use class/prototype/centroid methods to learn a class
+    - they also use adaptive learning to not only update the true class but also negative classes if those negative prototypes are too near the sample data
+      - reminiscent of MM-HDC
+  - the embedding is rather complicated but seems logical, the training method appears robust.
+  - implemented on Kintex-7 FPGA KC705 Evaluation Kit
+  - eval datasets
+    - the Neuromorphic MNIST (N-MNIST)
+    - the Multi-Vehicle Stereo Event Camera (MVSEC) dataset
+  - "a hyperdimension of D=4,000, a window size of k= 5 for positional, and a time window size of t = 50(ms) across all experiments"
 - HyperSpace: A Generalized Framework for Spatial Encoding in Hyperdimensional Representations
   - comparing individual operators across VSA (e.g. which bundling operation is most efficient) doesn't give a complete view of performance, hyperspace is a framework which allows end-to-end performance eval of VSA. HRR vs FHRR is the example used in the paper.
   - FHRR has fewer operations but HRR takes half the memory. computation vs space
@@ -1844,6 +1974,22 @@ Why use HDC?
 - by pushing most of the heavy computations into embedding, the compelxities of learning are reduced
 - binary models fail when the world is continuous. continuous models fail when the world is symbolic. HDC blends the two.
 
+Questions to ask while reading an HDC/VSA paper.
+- Is the paper using a known HDC architecture or discovering a new one?
+  - Does the paper make assumptions about HDC/VSA because they are using only one architecture?
+  - Is the architecture a pure/mathematic object or is it readily implementable?
+    - Does the implementation use specialized hardware or off-the-shelf components?
+- Is the paper applying a known embedding method or discovering a new one?
+  - Which HDC/VSA operations does the embedding utilize?
+  - Which types of structures are embeded? Are they complex/composite structures?
+- Is the paper tying HDC/VSA to another field?
+- Is the paper offering math proofs or evaluations on public datasets?
+  - Which datasets?
+  - Does the choice of embedding or architecture influence the evaluation results?
+- Does the paper provide code?
+- Who funded the paper and which institutions are the authors associated with?
+- What other papers have the authors authored?
+
 
 Notable VSAs
 ------------
@@ -2041,6 +2187,9 @@ Misc
   - holovec provides best VSA/HDC for expressivity - deeply nested structures like trees and graphs
   - torchhd provides best VSA/HDC for hardware-friendliness - RISCV, FPGA, ASIC friendly
 - datasets mentioned in literature
+  - [Multi-Vehicle Stereo Event Camera](https://daniilidis-group.github.io/mvsec/)
+  - [UCR Time Series Classification Archive](https://www.cs.ucr.edu/~eamonn/time_series_data_2018/)
+  - [UEA multivariate Time Series Classification problems](https://www.timeseriesclassification.com/mtsc_bakeoff.php)
   - [Condition monitoring of hydraulic systems](https://archive.ics.uci.edu/dataset/447/condition+monitoring+of+hydraulic+systems)
   - [Inflammatory gene expression during acute high‐altitude exposure](https://datadryad.org/dataset/doi:10.6086/D1XM45)
   - Secure Water Treatment (SWaT) from [iTrust](https://itrust.sutd.edu.sg/itrust-labs_datasets/dataset_info/) or [Kaggle](https://www.kaggle.com/datasets/vishala28/swat-dataset-secure-water-treatment-system)
