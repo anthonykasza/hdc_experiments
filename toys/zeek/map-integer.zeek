@@ -1,4 +1,8 @@
-module VSA;
+
+# Integer Multiply-Add-Permute
+
+
+module VSA::MAP::I;
 
 export {
   global hdv: function(n: count): vector of int;

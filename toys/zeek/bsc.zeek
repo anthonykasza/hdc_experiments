@@ -54,7 +54,7 @@ function hdv(n: count &default=100000): vector of bool {
   return v;
 }
 # as soon as hdv() is defined, define the HV that will break ties
-redef VSA::tie_break = hdv();
+redef VSA::BSC::tie_break = hdv();
 
 
 function bundle(hdvs: vector of vector of bool): vector of bool {
@@ -76,7 +76,7 @@ function bundle(hdvs: vector of vector of bool): vector of bool {
     # majority vote, "clipped" to T or F, ties broken deterministically
     if (total > 0) {
       v[element_idx] = T;
-    } else if (total == 0 && VSA::tie_break[element_idx]) {
+    } else if (total == 0 && VSA::BSC::tie_break[element_idx]) {
       v[element_idx] = T;
     } else {
       v[element_idx] = F;

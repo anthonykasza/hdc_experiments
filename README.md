@@ -613,7 +613,9 @@ References
   - in hardware, modulo is free by binary overflow
   - cosin and sin and be put into lookup tables if the blocksize is static
   - it sounds like their specialized hardware requires a burnt in static blocksize
-- Hyle: An HLS Framework for Hyperdimensional Computing Accela=erators on FPGAs
+- qFHRR: Rethinking Fourier Holographic Reduced Representations through Quantized Phase and Integer Arithmetic
+  - This seems to be the exact same stuff as CGR/MCR
+- Hyle: An HLS Framework for Hyperdimensional Computing Accelerators on FPGAs
   - BSC is fine for voice
   - CGR is better for images
 - Efficient Hyperdimensional Computing with Modular Composite Representations
