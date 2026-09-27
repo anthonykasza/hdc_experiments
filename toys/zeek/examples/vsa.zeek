@@ -12,6 +12,18 @@ export {
   global clip: function(hv: Hvec): Hvec;
   global permute: function(hv: Hvec, shift: count): Hvec;
   global cossim: function(hv1: Hvec, hv2: Hvec): double;
+
+  global additive_identity: function(n: count): Hvec;
+}
+
+function additive_identity(n: count): Hvec {
+  local v: Hvec = vector();
+  local idx = 0;
+  while (idx < n) {
+    v[idx] = 0;   # all zeros
+    idx += 1;
+  }
+  return v;
 }
 
 # TODO
@@ -60,6 +72,20 @@ function bundle(hdvs: vector of Hvec): Hvec {
     }
   }
   return clip(v);
+}
+
+function bundle_no_clip(hdvs: vector of Hvec): Hvec {
+  local idx: count;
+  local v: Hvec = vector();
+
+  for (element_idx in hdvs[0]) {
+    # initialize to additive identity
+    v[element_idx] = 0;
+    for (hv_idx in hdvs) {
+      v[element_idx] += hdvs[hv_idx][element_idx];
+    }
+  }
+  return v;
 }
 
 function bind(hv1: Hvec, hv2: Hvec): Hvec {
