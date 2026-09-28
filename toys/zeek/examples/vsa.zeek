@@ -14,6 +14,8 @@ export {
   global cossim: function(hv1: Hvec, hv2: Hvec): double;
 
   global additive_identity: function(n: count): Hvec;
+  global multibind: function(hdvs: vector of Hvec): Hvec;
+  global bundle_no_clip: function(hdvs: vector of Hvec): Hvec;
 }
 
 function additive_identity(n: count): Hvec {
@@ -26,8 +28,22 @@ function additive_identity(n: count): Hvec {
   return v;
 }
 
-# TODO
-function permute(hv: Hvec, shift: count): Hvec { return hv; }
+function permute(hv: Hvec, shift: count): Hvec {
+  while (shift >= |hv|) {
+    shift -= |hv|;
+  }
+  local r: Hvec = vector();
+  local idx = 0;
+  for (x in hv[shift:]) {
+    r[idx] = hv[shift + x];
+    idx += 1;
+  }
+  for (x in hv[:shift]) {
+    r[idx] = hv[x];
+    idx += 1;
+  }
+  return r;
+}
 
 function new_hv(n: count &default=10): Hvec {
   local v: Hvec = vector();
@@ -85,6 +101,21 @@ function bundle_no_clip(hdvs: vector of Hvec): Hvec {
       v[element_idx] += hdvs[hv_idx][element_idx];
     }
   }
+  return v;
+}
+
+function multibind(hdvs: vector of Hvec): Hvec {
+  local idx: count;
+  local v: Hvec = vector();
+
+  for (element_idx in hdvs[0]) {
+    # initialize to multiplicative identity
+    v[element_idx] = 1;
+    for (hv_idx in hdvs) {
+      v[element_idx] = v[element_idx] * hdvs[hv_idx][element_idx];
+    }
+  }
+
   return v;
 }
 
