@@ -37,7 +37,7 @@ function new_hashed_symbol(s: string, n: count &default=DIMS): BloomFilter {
   }
 
   local hash = fnv1a32(s);
-  while (hash > DIMS) { hash = hash - DIMS; }
+  while (hash > n) { hash = hash - n; }
   # 1-hot, based on hashed input
   r[hash] = 1;
   return r;

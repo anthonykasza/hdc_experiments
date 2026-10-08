@@ -549,11 +549,36 @@ References
   - the paper uses qiskit to do quantum vsa
   - "To create a tractable quantum experiment, we therefore selected a much smaller, hardware-constrained dimensionality of 16. In order to create a fair and direct comparison, the entire classical analogical reasoning task was subsequently performed using these 16-dimensional vectors"
     - 16 isn't really "high" dimensional computing...
+  - "the power of HDC stems from a set of core arithmetic operations defined on hypervectors, also known as the MAP (Multiply–Add–Permute)"
+    - MAP is but 1 architecture. HDC encompasses many besides MAP
+    - the very next sentence mentions circular convolution which is not a MAP opetation. no mention of modular addition as a binding op?
+  - "The permutation operation is essential for encoding ordered sequences"
+    - only in noncommutative HDC architectures. additionally, orderinality of data can be captured by other methods such as binding
+  - "encoded and MAPed class hypervectors"
+    - MAP as a verb? i like it.
 - Hyperdimensional Quantum Factorization
   - in archetectures where unbinding is noisy (bind is not the exact inverse of unbind) a cleanup step is used
   - this paper utilizes Grover's algo to speed up the memory search done in the cleanup step
     - this approach is better than resonator networks
   - hardware does not currently exist to implement. womp womp.
+- QeHDC: Hyperdimensional Computing based on Quantum-enhanced binding and SuperClass Construction
+  - "HDC is computationally efficient because it relies primarily on vector arithmetic rather than complex matrix operation"
+    - not all HDC/VSA schemes use vectors and even some that do end up doing matrix maths. VBAT, GHRR, and HRR use matrices
+  - "still faces serious computing and storage bottlenecks with the increase in data complexity and scale."
+    - I'd love to see a reference for this claim
+  - i make seplling mitakes all the time, so i am not someone who should be throwing stones
+    - "Referencec-State-Based Quanutm Binding"
+    - "Backgroud"
+    - "... presentations, we Then, ..."
+  - "...preforms HDC operations like binding and construction"
+    - what is "construction"? I don't think that's a common HDC term but I could be wrong.
+  - "such as element-wise multiplication or circular convolution, lead to an exponential explosion in the number of required qubits when directly applied to quantum systems."
+    - what about phase addition in FHRR or cyclic block permutation as in BSBC?
+    - the explaination afterward has repeated sentences regarding vectors A, B and C
+  - "It is worth noting that previous studies have explored this "amplitude-as-vector" binding approach. Nevertheless, these studies typically relied on classical simulations rather than actual implementations on real quantum hardware."
+    - again, this could use a citation
+  - the authors use open datasets, :) hurray! but without source code we cannot validate the paper's claims :(
+  - I couldn't grok most of this paper, I think because I don't have as strong of a grasp of QC as HDC
 - Modified Sparse Distributed Memory as Transient Episodic Memory for Cognitive Software Agents
   - the navy was thinking about "text agents" (chatbots) in 2004
   - ternary memory, where "dont care" is represented by *, sounds a lot like Gayler's -1,0,1 ternary MAP
