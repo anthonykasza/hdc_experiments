@@ -1958,6 +1958,42 @@ References
     - no mention of other HDC schemes, just MAP
   - VSAs are related to other sparse vector representations like Bloom filters
   - asks the question: what is the best binding op for sparse vectors?
+- Finding Frequent Items in Data Streams
+  - count sketch
+    - an improvement on random sampling
+  - useful for finding trends in search engine queries
+  - one of the important findings is around memory bounding and error guarantees
+  - counters can be combined using median
+    - or min as in count-min sketch
+  - count sketch is used to create other objects like top-k
+- Gentle-Sketch: a high-performance and compact invertible sketch for top-K estimation
+  - top-k is super useful for networks: load balancing, cybersec, and performance/caching
+    - elephant flows
+  - gentle-sketch, "an invertible sketch that supports high-accuracy top-k estimation"
+  - I didn't attempt to implement the algo, but there's lots of diagrams and pseudo-code in the paper
+- SketchLib: Enabling Efficient Sketch-based Monitoring on Programmable Switches
+  - sketching on switching hardware
+  - CAIDA traces for eval
+- Fast and Scalable Polynomial Kernels via Explicit Feature Maps
+  - "we propose a novel randomized tensor product technique, called Tensor Sketching"
+    - sketching the tensor product sounds similar to the intent of the bind operation in VSA/HDC, which is itself a compression of TPR
+  - convolution of count sketches
+- Sequence similarity estimation by random subsequence sketching
+  - "SubseqSketch, a novel alignment-free scheme that maps a sequence to an integer vector"
+    - [code](https://github.com/Shao-Group/SubseqSketch)!
+    - "The idea of SubseqSketch is to identify long common subsequences between input sequences through random sampling"
+  - i wonder how this method compares to "Language Geometry using Random Indexing"
+    - both support arbitrarily long kmers/ngrams
+- Count Me In: Viable Distributed Summary Statistics for Securing High-Speed Networks
+  - i've built on top of the framework described in this paper. it's a great framework and works well
+  - i find it funny that the abstract describes the framework as "transparent" but the data type available to scriptland is called an "opaque"
+    - "hides ... behind a simple, intent-based API"
+    - the core's [probabilistic](https://github.com/zeek/zeek/tree/master/src/probabilistic) backings
+      - the core already has bloomfilter and bitvector types
+    - scriptland's [sumstats](https://github.com/zeek/zeek/tree/master/scripts/base/frameworks/sumstats) framework
+      - in a cluster setting map-reduce is used to do distributed count sketching 
+  - section 4 is most interesting, i think
+    - scans, bruteforce logins, sqli attempts, tracert detection
 - Hyperdimensional computing: a framework for stochastic computation and symbolic AI
   - survey the components of HDC
   - graph classification, GraphHD
