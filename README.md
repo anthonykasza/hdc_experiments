@@ -1950,8 +1950,14 @@ References
   - "the structure of the encoded data must be orthogonal to the structure of the Latin square used for encoding, or else the structure of the data becomes confounded with [the structure of the binding operation] ... Thus, regardless of the nature of the structure, shuffling provides a tool for hiding or protecting that structure from the structure of vector operations."
   - i wish i would have read this paper before making all the junk in `toys/python/2d/images_as_values`
 - Capacity Analysis of Vector Symbolic Architectures
-  - lots of theorem and proofs
+  - VSA bundling is sketching
+  - hints at CDT when he talks about bundling as set intersection
+  - While using MAP...
+    - iterative clipping causes bundling to have a recency bias, otherwise you need to construct an entire matrix, sum columns, then clip
+    - When considering similarity between 2 hypervectors in bipolar/ternary MAP, comparing a coordinate with value 1 to a coordinate with value 0 is btter than comparing 1 to -1
+    - no mention of other HDC schemes, just MAP
   - VSAs are related to other sparse vector representations like Bloom filters
+  - asks the question: what is the best binding op for sparse vectors?
 - Hyperdimensional computing: a framework for stochastic computation and symbolic AI
   - survey the components of HDC
   - graph classification, GraphHD
