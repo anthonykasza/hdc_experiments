@@ -1,329 +1,260 @@
+# Circular Normal Representation based on FHRR and MCR
+
+
 module VSA::CNR;
 
 export {
-  option dims: count = 10000;
-  option block_size: count = 64;
-  option kappa: double = 1.0;
-
-  const PI: double = 3.14159265358979;
-  const angle_per_idx: double = (2 * PI) / block_size;
-
   type hypervector: record {
-    mus: vector of count &default = vector();
+    mus: vector of double &default = vector();
     kappas: vector of double &default = vector();
   };
 
-  type Phasor: record {
-    s: double;
-    c: double;
-  };
+  # VSA/HDC operations
+  global new_hv: function(n: count, k: double): hypervector;
+  global bind: function(hv1: hypervector, hv2: hypervector): hypervector;
+  global unbind: function(hv1: hypervector, hv2: hypervector): hypervector;
+  global bundle: function(hv1: hypervector, hv2: hypervector): hypervector;
+  global sim: function(hv1: hypervector, hv2: hypervector): double;
+  # TODO: permute
 
-  global phases: vector of Phasor = vector();
+  # Used in trig math
+  const PI: double = 3.1415926535;
+  const TWO_PI: double = PI * 2;
+  const HALF_PI: double = PI / 2;
 
-  global idx_to_phasor: function(
-    idx: count
-  ): Phasor;
-
-  global phasor_to_idx: function(
-    p: Phasor
-  ): count;
-
-  global new_hv: function(
-    dims: count,
-    kappa: double,
-    block_size: count
-  ): hypervector;
-
-  global bind: function(
-    hvs: vector of hypervector,
-    block_size: count,
-  ): hypervector;
-
-  global bundle: function(
-    hvs: vector of hypervector,
-    block_size: count,
-  ): hypervector;
-
-  global unbind: function(
-    h1: hypervector,
-    h2: hypervector,
-    block_size: count,
-  ): hypervector;
-
-  global similarity: function(
-    h1: hypervector,
-    h2: hypervector
-    block_size: count
-  ): double;
+  # Used to generate random phases
+  const PI_RANGE: count      = 31415926535;
+  const PI_PRECISION: double = 10000000000;
 }
 
 
-function sine(x: double): double {
-  return (
-    x
-    - (x**3) / 6
-    + (x**5) / 120
-    - (x**7) / 5040
-    + (x**9) / 362880
-    - (x**11) / 39916800
-    + (x**13) / 6227020800
-  );
+###########################################
+# Trig approximation functions
+function wrap_angle(x: double): double {
+  while (x > PI)  { x -= TWO_PI; }
+  while (x < -PI) { x += TWO_PI; }
+  return x;
 }
 
+function sin(x: double): double {
+  x = wrap_angle(x);
 
-function cosine(x: double): double {
+  if (x > HALF_PI) {
+    x = PI - x;
+  } else if (x < -HALF_PI) {
+    x = -PI - x;
+  }
+
   local x2 = x * x;
-  return (
-    1
-    - x2 / 2
-    + (x2 * x2) / 24
-    - (x2 * x2 * x2) / 720
-    + (x2 * x2 * x2 * x2) / 40320
-    - (x2 * x2 * x2 * x2 * x2) / 3628800
+
+  return x * (
+    1.0
+    - x2 / 6.0
+    + (x2 * x2) / 120.0
+    - (x2 * x2 * x2) / 5040.0
+    + (x2 * x2 * x2 * x2) / 362880.0
   );
 }
 
-
-function modulo(
-  i: int,
-  m: count
-): count {
-
-  local f: count = 0;
-  if (i < 0) { f = (i % m) + m; }
-  if (i > 0) { f = i % m; }
-  return f;
+function cos(x: double): double {
+  return sin(x + HALF_PI);
 }
 
-
-function idx_to_phasor(
-    idx: count,
-    block_size: count &default = VSA::CNR::block_size
-  ): Phasor {
-
-  return VSA::CNR::phases[modulo(idx, block_size)];
+function atan(x: double): double {
+  local a = x;
+  if (a < 0) {
+    a = -a;
+  }
+  return (
+    PI / 4.0 * x
+    - x * (a - 1.0) * (0.2447 + 0.0663 * a)
+  );
 }
 
-# Populate VSA::CNR::phases, as many as the block_size
-event zeek_init() {
+function atan2(y: double, x: double): double {
+  if (x > 0) { return atan(y / x); }
+  if (x < 0 && y >= 0) { return atan(y / x) + PI;}
+  if (x < 0 && y < 0) { return atan(y / x) - PI; } 
+  if (x == 0 && y > 0) { return HALF_PI; } 
+  if (x == 0 && y < 0) { return -HALF_PI; } 
+  return 0.0;
+}
+#
+###########################################
+
+
+
+
+
+###########################################
+# Vector symbolic architecture operations
+function new_hv(n: count &default=10, k: double &default=1.0): hypervector {
+  local v: hypervector = hypervector();
   local j = 0;
-  while (j < VSA::CNR::block_size) {
-    local s = sine(VSA::CNR::angle_per_idx * j);
-    local c = cosine(VSA::CNR::angle_per_idx * j);
-    VSA::CNR::phases[j] = Phasor($c=c, $s=s);
-    j += 1;
-  }
-}
-
-
-function phasor_to_idx(
-  p: Phasor,
-  block_size: count &default = VSA::CNR::block_size
-): count {
-
-  local angle0 = VSA::CNR::phases[0];
-  local best_dot = p$c * angle0$c + p$s * angle0$s;
-  local best_idx: count = 0;
-
-  local j: count = 1;
-  while (j < block_size) {
-    local angle = VSA::CNR::phases[j]
-    local dot = p$c * angle$c + p$s * angle$s;
-    if (dot > best_dot) { best_dot = dot; best_index = j} 
-    j += 1;
-  }
-
-  return best_idx;
-}
-
-
-function new_hv(
-  dims: count &default = VSA::CNR::dims,
-  kappa: double &default = VSA::CNR::kappa,
-  block_size: count &default = VSA::CNR::block_size
-): hypervector {
-
-  local h: hypervector = hypervector();
-  local j: count = 0;
-  while (j < dims) {
-    h$mus[j] = rand(block_size);
-    h$kappa[j] = kappa;
-    j += 1;
-  }  
-}
-
-
-function bind(
-  hvs: vector of hypervector,
-  block_size: count &default = VSA::CNR::block_size,
-): hypervector {
-
-  local b_hv: hypervector = hypervector();
-  local dims = |hvs[0]$mus|;
-  local j: count = 0;
-  while (j < dims) {
-
-    local mu_sum: count = 0;
-    local k_mini: double = VSA::CNR::kappa;
-    for (idx in hvs) {
-      local hv = hvs[idx];
-      mu_sum += hv$mus[j];
-      k_mini = k_mini < hv$ks[j] ? k_mini : hv$ks[j];
-    }
-    b_hv$mus[j] = modulo(mu_sum, block_size);
-    b_hv$ks[j] = k_mini;
-
-    j += 1;
-  }
-  return b_hv;
-}
-
-function unbind(
-  h1: hypervector,
-  h2: hypervector,
-  block_size: count &default = VSA::CNR::block_size
-): hypervector {
-
-  local b_hv: hypervector = hypervector();
-  local dims = |h1$mus|;
-  local j: count = 0;
-  while (j < dims) {
-    b_hv$mus[j] = modulo((h1$mus[j] - h2$mus[j]), block_size);
-    b_hv$ks[j] = h1$kappas[j] < h2$kappas[j] ? h1$kappas[j] : h2$kappas[j];
-    j += 1;
-  }
-}
-
-function bundle(
-  hvs: vector of hypervector,
-  block_size: count &default = VSA::CNR::block_size
-): hypervector {
-
-  local b_hv: hypervector = hypervector();
-  local dims = |hvs[0]$mus|;
-  local j: count = 0;
-  while (j < dims) {
-    for (idx in hvs) {
-      local hv = hvs[idx];
-      # TODO - circular weighted mean ala von Mises
+  while (j < n) {
+    local phase: count = rand(PI_RANGE);
+    local sign: count = rand(2);
+    if (sign == 0) {
+      v$mus[j] = (phase / PI_PRECISION) as double;
+      v$kappas[j] = k;
+    } else {
+      v$mus[j] = ((phase / PI_PRECISION) * -1) as double;
+      v$kappas[j] = k;
     }
     j += 1;
   }
-  return b_hv;
+  return v;
 }
 
+# Kappa weighted circular mean
+function bundle(hv1: hypervector, hv2: hypervector): hypervector {
+  local r: hypervector = hypervector();
+  for ( idx in hv1$mus ) {
+    local k1 = hv1$kappas[idx];
+    local k2 = hv2$kappas[idx];
 
-function hypot(x: double, y: double): double {
-  return sqrt(x*x + y*y);
-}
+    local real_sum = k1 * cos(hv1$mus[idx]) + k2 * cos(hv2$mus[idx]);
+    local imag_sum = k1 * sin(hv1$mus[idx]) + k2 * sin(hv2$mus[idx]);
+    r$mus[idx] = atan2(imag_sum, real_sum);
 
-
-function similarity(
-  h1: hypervector,
-  h2: hypervector,
-  block_size: count &default = VSA::CNR::block_size
-): double {
-
-  local h1_cos: double = 0.0;
-  local h1_sin: double = 0.0;
-  local h2_cos: double = 0.0;
-  local h2_sin: double = 0.0;
-  for (idx in h1$mus) {
-    local p1: Phasor = idx_to_phasor(h1$mus[idx], block_size);
-    local k1: double = h1$kappas[idx];
-    h1_cos += p1$c * k1;
-    h1_sin += p1$s * k1;
-
-    local p2 = idx_to_phasor(h2$mus[idx], block_size);
-    local k2 = h2$kappas[idx];
-    h2_cos += p2$c * k2;
-    h2_sin += p2$s * k2;
+    local total_weight = k1 + k2;
+    if (total_weight > 0.0) {
+      local magnitude = sqrt(real_sum * real_sum + imag_sum * imag_sum);
+      r$kappas[idx] = magnitude / total_weight;
+    } else {
+      r$mus[idx] = 0.0;
+      r$kappas[idx] = 0.0;
+    }
   }
 
-  local norm_h1 = hypot(h1_cos, h1_sin);
-  local norm_h2 = hypot(h2_cos, h2_sin);
-  if (norm_h1 == 0 || norm_h2 == 0) { return 0.0; }
-  return (h1_cos * h2_cos + h1_sin * h2_sin) / (norm_h1 * norm_h2);
+  return r;
+}
+
+# Addition of angles wrapped to the circle, uncertainty propagates
+function bind(hv1: hypervector, hv2: hypervector): hypervector {
+  local idx: count;
+  local r: hypervector = hypervector();
+  for (idx in hv1$mus) {
+    r$mus[idx] = wrap_angle(hv1$mus[idx] + hv2$mus[idx]);
+
+    local k1 = hv1$kappas[idx];
+    local k2 = hv2$kappas[idx];
+    local denom = k1 + k2 - k1 * k2;
+    if (denom > 0.0) {
+      r$kappas[idx] = (k1 * k2) / denom;
+    } else {
+      r$kappas[idx] = 0.0;
+    }
+  }
+
+  return r;
 }
 
 
+# Subtraction of angles wrapped to the circle
+function unbind(hv1: hypervector, hv2: hypervector): hypervector {
+  local idx: count;
+  local r: hypervector = hypervector();
+  for (idx in hv1$mus) {
+    r$mus[idx] = wrap_angle(hv1$mus[idx] - hv2$mus[idx]);
+
+    local k1 = hv1$kappas[idx];
+    local k2 = hv2$kappas[idx];
+    local denom = k1 + k2 - k1 * k2;
+    if (denom > 0.0) {
+      r$kappas[idx] = (k1 * k2) / denom;
+    } else {
+      r$kappas[idx] = 0.0;
+    }
+  }
+
+  return r;
+}
+
+
+# Kappa weighted cosine sim
+function sim(hv1: hypervector, hv2: hypervector): double {
+  local sum: double = 0.0;
+  for (idx in hv1$mus) {
+    local delta = hv1$mus[idx] - hv2$mus[idx];
+    sum += hv1$kappas[idx] * hv2$kappas[idx] * cos(delta);
+  }
+  return (sum / |hv1$mus| + 1.0) / 2.0;
+}
+
+###########################################
+
+
+
+# Tests
 event zeek_init() {
-  # TODO - test end-to-end using analogy
-  return;
+  srand(42);
+  local dims: count = 100;
 
+  print "Kappa: 1.0";
+  local hv1 = new_hv(dims);
+  local hv2 = new_hv(dims);
+  local bud = bundle(hv1, hv2);
+  local bid = bind(hv1, hv2);
 
-  # keys of the maps
-  local country = new_hv();
-  local capital = new_hv();
-  local currency = new_hv();
-
-  # country values
-  local usa = new_hv();
-  local mex = new_hv();
-  local hun = new_hv();
-
-  # capital values
-  local wdc = new_hv();
-  local mxc = new_hv();
-  local bud = new_hv();
-
-  # currency values
-  local usd = new_hv();
-  local mxn = new_hv();
-  local huf = new_hv();
-
-  # a map of the keys and United States's values
-  local tmp1 = bind(vector(country, usa));
-  local tmp2 = bind(vector(capital, wdc));
-  local tmp3 = bind(vector(currency, usd));
-  local tmp4 = bundle(vector(tmp1, tmp2));
-  local usa_map = bundle(vector(tmp3, tmp4));
-  print "united states map vector", usa_map[0:3], "...", usa_map[-3:];
-
-  # a map of the keys and Mexico's values
-  tmp1 = bind(vector(country, mex));
-  tmp2 = bind(vector(capital, mxc));
-  tmp3 = bind(vector(currency, mxn));
-  tmp4 = bundle(vector(tmp1, tmp2));
-  local mex_map = bundle(vector(tmp3, tmp4));
-  print "mexico map vector", mex_map[0:3], "...", mex_map[-3:];
-
-  # a map of the keys and Hungary's values
-  tmp1 = bind(vector(country, hun));
-  tmp2 = bind(vector(capital, bud));
-  tmp3 = bind(vector(currency, huf));
-  tmp4 = bundle(vector(tmp1, tmp2));
-  local hun_map = bundle(vector(tmp3, tmp4));
-
-  print "hungary map vector", hun_map[0:3], "...", hun_map[-3:];
+  print "sim hv1 hv2", sim(hv1, hv2);
+  print "sim hv1 bundle", sim(hv1, bud);
+  print "sim hv2 bundle", sim(hv2, bud);
+  print "";
+  print "sim hv1 binding", sim(hv1, bid);
+  print "sim hv2 binding", sim(hv2, bid);
+  print "recover hv1", sim(hv1, unbind(bid, hv2));
+  print "recover hv2", sim(hv2, unbind(bid, hv1));
   print "";
 
-  # this analogy represents a table of all countries and their mapped values
-  local analogy = bind(vector(hun_map, bind(vector(usa_map, mex_map))));
 
-  # we can query the analogy by removing things from it
-  local query = unbind(unbind(analogy, hun_map), usd);
-  print "what is the dollar of mexico?";
-  print "how similar is the query to USD?", similarity(query, usd);
-  print "how similar is the query to MXN?", similarity(query, mxn);
-  print "how similar is the query to HUF?", similarity(query, huf);
+  print "Kappa: 0.8";
+  local hv1_08 = new_hv(dims, 0.8);
+  local hv2_08 = new_hv(dims, 0.8);
+  local bud_08 = bundle(hv1_08, hv2_08);
+  local bid_08 = bind(hv1_08, hv2_08);
+
+  print "sim hv1 hv2", sim(hv1_08, hv2_08);
+  print "sim hv1 bundle", sim(hv1_08, bud_08);
+  print "sim hv2 bundle", sim(hv2_08, bud_08);
   print "";
+  print "sim hv1 binding", sim(hv1_08, bid_08);
+  print "sim hv2 binding", sim(hv2_08, bid_08);
+  print "recover hv1", sim(hv1_08, unbind(bid_08, hv2_08));
+  print "recover hv2", sim(hv2_08, unbind(bid_08, hv1_08));
   print "";
 
-  # we can query the analogy is different ways
-  query = unbind(unbind(analogy, usa_map), mxc);
-  print "what is the mexico city of hungary?";
-  print "how similar is the query to Washington DC?", similarity(query, wdc);
-  print "how similar is the query to Mexico City?  ", similarity(query, mxc);
-  print "how similar is the query to Budapest?     ", similarity(query, bud);
+
+  print "Kappa: 0.5";
+  local hv1_05 = new_hv(dims, 0.5);
+  local hv2_05 = new_hv(dims, 0.5);
+  local bud_05 = bundle(hv1_05, hv2_05);
+  local bid_05 = bind(hv1_05, hv2_05);
+
+  print "sim hv1 hv2", sim(hv1_05, hv2_05);
+  print "sim hv1 bundle", sim(hv1_05, bud_05);
+  print "sim hv2 bundle", sim(hv2_05, bud_05);
   print "";
-  # none of these vectors are similar to bud because they currecies, not capitals
-  print "how similar is the query to USD?", similarity(query, usd);
-  print "how similar is the query to MXN?", similarity(query, mxn);
-  print "how similar is the query to HUF?", similarity(query, huf);
+  print "sim hv1 binding", sim(hv1_05, bid_05);
+  print "sim hv2 binding", sim(hv2_05, bid_05);
+  print "recover hv1", sim(hv1_05, unbind(bid_05, hv2_05));
+  print "recover hv2", sim(hv2_05, unbind(bid_05, hv1_05));
   print "";
-  # none of these vectors are similar to bud because they countries, not capitals
-  print "how similar is the query to United States?", similarity(query, usa);
-  print "how similar is the query to Mexico?       ", similarity(query, mex);
-  print "how similar is the query to Hungary?      ", similarity(query, hun);
+
+
+  print "Kappa: 0.3";
+  local hv1_03 = new_hv(dims, 0.3);
+  local hv2_03 = new_hv(dims, 0.3);
+  local bud_03 = bundle(hv1_03, hv2_03);
+  local bid_03 = bind(hv1_03, hv2_03);
+
+  print "sim hv1 hv2", sim(hv1_03, hv2_03);
+  print "sim hv1 bundle", sim(hv1_03, bud_03);
+  print "sim hv2 bundle", sim(hv2_03, bud_03);
+  print "";
+  print "sim hv1 binding", sim(hv1_03, bid_03);
+  print "sim hv2 binding", sim(hv2_03, bid_03);
+  print "recover hv1", sim(hv1_03, unbind(bid_03, hv2_03));
+  print "recover hv2", sim(hv2_03, unbind(bid_03, hv1_03));
+  print "";
 }
